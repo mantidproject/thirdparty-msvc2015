@@ -9,3 +9,6 @@
 :: Assume cmake, git, 7-zip is in standard windows location
 @set PATH=C:\Program Files (x86)\CMake\bin;C:\Program Files (x86)\Git\bin;C:\Program Files\7-Zip;%~dp0;%PATH%
 
+:: Install root for dependencies
+set INSTALL_ROOT=%~dp0..\..\
+
