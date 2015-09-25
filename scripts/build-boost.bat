@@ -27,7 +27,7 @@ set BOOST_ROOT=%BUILD_DIR%\boost_1_59_0
 if not exist %BOOST_ROOT% @call extract-zip-file.cmd %SRC_PKG% %CD%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Build
+:: Build & Install
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @cd %BOOST_ROOT%
 :: Bootstrap b2 executable
@@ -41,6 +41,4 @@ set COMMON_BUILD_OPTS=link=shared threading=multi address-model=64 runtime-link=
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@cd %~dp0
-
-pause
+@call try-pause.cmd
