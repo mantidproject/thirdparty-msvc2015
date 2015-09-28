@@ -17,7 +17,7 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @set SRC_PKG_URL="http://downloads.sourceforge.net/project/boost/boost/1.59.0/boost_1_59_0.zip?r=http%3A%2F%2Fwww.boost.org%2Fusers%2Fhistory%2Fversion_1_59_0.html&ts=1443101740&use_mirror=kent"
 @set SRC_PKG=boost_1_59_0.zip
-@set BUILD_DIR=%~dp0\builds\boost
+@set BUILD_DIR=%BUILD_ROOT%\boost
 
 @call try-mkdir.cmd %BUILD_DIR%
 @cd %BUILD_DIR%

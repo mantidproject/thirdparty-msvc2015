@@ -15,7 +15,7 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @set SRC_PKG_URL="https://github.com/pocoproject/poco/archive/poco-1.4.7p1-release.zip"
 @set SRC_PKG=poco-1.4.7p1-release.zip
-@set BUILD_DIR=%~dp0\builds\poco
+@set BUILD_DIR=%BUILD_ROOT%\poco
 
 @call try-mkdir.cmd %BUILD_DIR%
 @cd %BUILD_DIR%
