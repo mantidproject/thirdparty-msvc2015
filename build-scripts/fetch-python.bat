@@ -19,9 +19,8 @@
 
 @call try-mkdir.cmd %BUILD_DIR%
 @cd %BUILD_DIR%
-call download-file.cmd %BUILD_DIR%\%SRC_PKG% %SRC_PKG_URL%
+@call download-file.cmd %BUILD_DIR%\%SRC_PKG% %SRC_PKG_URL%
 
-set PYTHON_INSTALL_ROOT=%INSTALL_ROOT%\lib\python2.7
 if not exist %PYTHON_INSTALL_ROOT% (
   @echo Extracting Python bundle to %PYTHON_INSTALL_ROOT%
   msiexec /a %BUILD_DIR%\%SRC_PKG% /q TARGETDIR=%PYTHON_INSTALL_ROOT%
@@ -58,10 +57,11 @@ if not exist %PYTHON_INSTALL_ROOT%\Lib\site-packages\pip (
   )
 )
 
-:: packages
-:: numpy
-@call download-file.cmd "numpy-1.9.3+mkl-cp27-none-win_amd64.whl" "http://www.lfd.uci.edu/~gohlke/pythonlibs/xmshzit7/numpy-1.9.3+mkl-cp27-none-win_amd64.whl"
-@call %PYTHON_INSTALL_ROOT%\Scripts\pip.cmd install -U "numpy-1.9.3+mkl-cp27-none-win_amd64.whl"
+:: site-packages
+@echo Installing site-packages
+for %%f in (%~dp0python-site-packages\*.cmd) do (
+  @call %%f
+)
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize

@@ -14,6 +14,10 @@
 
 :: Install root for dependencies (goes via a 'function' to make it absolute)
 @call:set-install-root %~dp0..\..\
+
+:: This will be used by a lot of scripts
+@set PYTHON_INSTALL_ROOT=%INSTALL_ROOT%\lib\python2.7
+
 goto:eof
 
 :set-install-root
