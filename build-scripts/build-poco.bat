@@ -1,7 +1,7 @@
 @setlocal enableextensions
 ::
 :: Build script for the Poco libraries for Mantid. All libraries are built.
-:: Requires OpenSSL
+:: Requires OpenSSL to have been built and installed in INSTALL_ROOT
 ::
 @echo Building poco
 
@@ -29,8 +29,11 @@ if not exist %POCO_ROOT% @call extract-zip-file.cmd %SRC_PKG% %CD%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @cd %POCO_ROOT%
 set VS_SUFFIX_OLD=120
-set LIBRARIES=Foundation XML Util Net  Zip
-:: Crypto NetSSL_OpenSSL -- require SSL
+set OPENSSL_INCLUDE=%INSTALL_ROOT%\include
+set OPENSSL_LIB=%INSTALL_ROOT%\lib
+set INCLUDE=%INCLUDE%;%OPENSSL_INCLUDE%
+set LIB=%LIB%;%OPENSSL_LIB%
+set LIBRARIES=Foundation XML Util Net  Zip Crypto NetSSL_OpenSSL
 
 for %%C in (%LIBRARIES%) do call:upgrade-and-build-project %%C\%%C_x64_vs%VS_SUFFIX_OLD%.vcxproj
 
