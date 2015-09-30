@@ -31,16 +31,16 @@ if not exist %BOOST_ROOT% @call extract-zip-file.cmd %SRC_PKG% %CD%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @cd %BOOST_ROOT%
 :: Bootstrap b2 executable
-@call bootstrap.bat
+if not exist b2.exe @call bootstrap.bat
 
 :: Build libraries with no external dependencies
 :: --layout=tagged ensures the the include directory is %prefix%/include/boost and not %prefix%/include/boost_X_XX_X/boost
 set COMMON_BUILD_OPTS=link=shared threading=multi address-model=64 runtime-link=shared
-@call b2.exe %COMMON_BUILD_OPTS% --with-date_time --with-regex variant=release variant=debug install --prefix=%INSTALL_ROOT% --layout=tagged
+@call b2.exe %COMMON_BUILD_OPTS% --with-date_time --with-regex --with-python variant=release variant=debug install --prefix=%INSTALL_ROOT% --layout=tagged
 
 :: We want the dlls in bin but b2 won't allow that
 echo Moving dlls to %INSTALL_ROOT%\bin
-@move %INSTALL_ROOT%\lib\boost*.dll %INSTALL_ROOT%\bin
+@move /Y %INSTALL_ROOT%\lib\boost*.dll %INSTALL_ROOT%\bin
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize
