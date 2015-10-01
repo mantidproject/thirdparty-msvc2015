@@ -5,6 +5,7 @@
 :: Current version of VS
 @set VS_VERSION=140
 @call "%VS140COMNTOOLS%\..\..\VC\vcvarsall.bat" amd64
+@set CMAKE_GENERATOR="Visual Studio 14 2015 Win64"
 
 :: Assume perl, cmake, git, 7-zip is in standard windows location. Perl needs to be before Git to pick up the activestate version
 @set PATH=C:\Perl64\bin;C:\Program Files (x86)\CMake\bin;C:\Program Files (x86)\Git\bin;C:\Program Files\7-Zip;%~dp0;%PATH%
@@ -17,7 +18,6 @@
 
 :: This will be used by a lot of scripts
 @set PYTHON_INSTALL_ROOT=%INSTALL_ROOT%\lib\python2.7
-
 goto:eof
 
 :set-install-root
