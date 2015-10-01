@@ -21,8 +21,8 @@
 @cd %BUILD_DIR%
 @call download-file.cmd %SRC_PKG% %SRC_PKG_URL%
 
-set POCO_ROOT=%BUILD_DIR%\poco-poco-1.4.7p1-release
-if not exist %POCO_ROOT% @call extract-zip-file.cmd %SRC_PKG% %CD%
+@set POCO_ROOT=%BUILD_DIR%\poco-poco-1.4.7p1-release
+@call extract-zip-file.cmd %SRC_PKG% %CD%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build

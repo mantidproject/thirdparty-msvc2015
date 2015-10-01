@@ -24,7 +24,7 @@
 @call download-file.cmd %SRC_PKG% %SRC_PKG_URL%
 
 set BOOST_ROOT=%BUILD_DIR%\boost_1_59_0
-if not exist %BOOST_ROOT% @call extract-zip-file.cmd %SRC_PKG% %CD%
+@call extract-zip-file.cmd %SRC_PKG% %CD%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build & Install
