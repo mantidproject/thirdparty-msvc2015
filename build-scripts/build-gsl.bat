@@ -16,7 +16,7 @@ set CMAKE_DIR=%~dp0cmake
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @set BUILD_DIR=%BUILD_ROOT%\gsl
 @set REMOTE_URL=https://github.com/martyngigg/gnu-gsl-for-windows.git
-@set SHA1=0cb73e6661c930fa6012347cc7c4001ca32a2d22
+@set SHA1=a1c0c258827eee5f4a8a5b527dca11fcf9cbe333
 @set GSL_SRC_DIR=%BUILD_DIR%\gnu-gsl-for-windows
 
 @call try-mkdir %BUILD_DIR%
