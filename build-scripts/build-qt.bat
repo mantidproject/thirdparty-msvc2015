@@ -68,17 +68,3 @@ jom.exe -j%NJOBS%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call try-pause.cmd
 goto:eof
-
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Functions
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:upgrade-and-build-project
-set BUILD_TOOL=msbuild
-set ACTION=/t:build
-set EXTRASW=/m
-set USEENV=/p:UseEnv=true
-
-if not exist %~dp1UpgradeLog.htm (call devenv %1 /upgrade)
-:: The vs120 solution is now actually vs140
-%BUILD_TOOL% %USEENV% %EXTRASW% %ACTION% /p:Configuration=%2 %1
-goto:eof
