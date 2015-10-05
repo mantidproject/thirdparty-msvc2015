@@ -64,7 +64,7 @@ goto:eof
 
 :: %1 Configuration to install
 :install-libs
-xcopy /Y %VS_BUILD_DIR%\dll\x64\%1\*.lib %INSTALL_ROOT%\lib
-xcopy /Y /I %VS_BUILD_DIR%\dll\x64\%1\*.pdb %INSTALL_ROOT%\bin
-xcopy /Y /I %VS_BUILD_DIR%\dll\x64\%1\*.dll %INSTALL_ROOT%\bin
+xcopy %VS_BUILD_DIR%\dll\x64\%1\*.lib %INSTALL_ROOT%\lib /Y /I
+xcopy %VS_BUILD_DIR%\dll\x64\%1\*.pdb %INSTALL_ROOT%\bin /Y /I
+xcopy %VS_BUILD_DIR%\dll\x64\%1\*.dll %INSTALL_ROOT%\bin /Y /I
 goto:eof

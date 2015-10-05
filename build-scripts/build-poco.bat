@@ -22,7 +22,7 @@
 @call download-file.cmd %SRC_PKG% %SRC_PKG_URL%
 
 @set POCO_ROOT=%BUILD_DIR%\poco-poco-1.4.7p1-release
-@call extract-zip-file.cmd %SRC_PKG% %CD%
+@if not exist %POCO_ROOT% @call extract-zip-file.cmd %SRC_PKG% %CD%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build
@@ -33,14 +33,19 @@ set OPENSSL_INCLUDE=%INSTALL_ROOT%\include
 set OPENSSL_LIB=%INSTALL_ROOT%\lib
 set INCLUDE=%INCLUDE%;%OPENSSL_INCLUDE%
 set LIB=%LIB%;%OPENSSL_LIB%
-set LIBRARIES=Foundation XML Util Net  Zip Crypto NetSSL_OpenSSL
+set LIBRARIES=Foundation XML Util Net Zip Crypto NetSSL_OpenSSL
 
-for %%C in (%LIBRARIES%) do call:upgrade-and-build-project %%C\%%C_x64_vs%VS_SUFFIX_OLD%.vcxproj
+for %%C in (%LIBRARIES%) do (
+  call:upgrade-and-build-project %%C\%%C_x64_vs%VS_SUFFIX_OLD%.vcxproj release_shared
+  call:upgrade-and-build-project %%C\%%C_x64_vs%VS_SUFFIX_OLD%.vcxproj debug_shared
+)
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Install
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
+for %%C in (%LIBRARIES%) do xcopy %%C\include %INSTALL_ROOT%\include /Y /E
+xcopy %POCO_ROOT%\bin64\*.dll %INSTALL_ROOT%\bin /Y
+xcopy %POCO_ROOT%\lib64\*.lib %INSTALL_ROOT%\lib /Y
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize
@@ -54,12 +59,10 @@ goto:eof
 :upgrade-and-build-project
 set BUILD_TOOL=msbuild
 set ACTION=/t:build
-set CONFIGSW=/p:Configuration=
 set EXTRASW=/m
 set USEENV=/p:UseEnv=true
 
 if not exist %~dp1UpgradeLog.htm (call devenv %1 /upgrade)
 :: The vs120 solution is now actually vs140
-%BUILD_TOOL% %USEENV% %EXTRASW% %ACTION% %CONFIGSW%release_shared %1
-%BUILD_TOOL% %USEENV% %EXTRASW% %ACTION% %CONFIGSW%debug_shared %1
+%BUILD_TOOL% %USEENV% %EXTRASW% %ACTION% /p:Configuration=%2 %1
 goto:eof
