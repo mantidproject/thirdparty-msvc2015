@@ -1,0 +1,11 @@
+--- config\cmake_ext_mod\ConfigureChecks.cmake.orig	Wed Oct  7 14:03:34 2015
++++ config\cmake_ext_mod\ConfigureChecks.cmake	Wed Oct  7 14:03:39 2015
+@@ -90,7 +90,7 @@
+   endif (NOT UNIX AND NOT CYGWIN AND NOT MINGW)
+   set (${HDF_PREFIX}_HAVE_FUNCTION 1)
+   set (${HDF_PREFIX}_GETTIMEOFDAY_GIVES_TZ 1)
+-  set (${HDF_PREFIX}_HAVE_TIMEZONE 1)
++  #set (${HDF_PREFIX}_HAVE_TIMEZONE 1)
+   set (${HDF_PREFIX}_HAVE_GETTIMEOFDAY 1)
+   if (MINGW)
+     set (${HDF_PREFIX}_HAVE_WINSOCK2_H 1)
