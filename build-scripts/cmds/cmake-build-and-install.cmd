@@ -3,28 +3,16 @@
 :: It requires a cache file to set any cmake options and then
 :: builds both release & debug configurations
 :: %1 The root of the source code. The build will happen in %1\build
-:: %2 Path to the cache file to setup the cmake options
+:: %2 Cache file options. Should include -C prefix for each file
 :: %3 Install prefix for the library destinations
 :: %4-%9 Projects to build
-set build_dir=%~p1build
+set src_dir=%1
+set build_dir=%1\build
 set cache_file=%2
+echo %cache_file%
 set install_prefix=%3
 set project_files=%4 %5 %6 %7 %8 %9
-if not exist %build_dir% mkdir %build_dir%
-cd %build_dir%
-cmake -G"Visual Studio 14 2015 Win64" -C %cache_file% -DCMAKE_INSTALL_PREFIX=%install_prefix% ..
-for %%P in (%project_files%) do (
-  @call:build-release-and-debug %%P
-  @call:build-release-and-debug INSTALL.vcxproj
-)
+call cmake-configure %src_dir% -C "%cache_file%" "-DCMAKE_INSTALL_PREFIX=%install_prefix%"
+call build-and-install %build_dir% %project_files%
 @endlocal
-goto:eof
-
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Functions
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: %1 Project file path
-:build-release-and-debug
-msbuild /nologo /p:Configuration=Release %1
-msbuild /nologo /p:Configuration=Debug %1
 goto:eof
