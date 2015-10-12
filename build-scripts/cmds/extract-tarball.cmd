@@ -8,6 +8,6 @@ if not exist %_extracted% (
   echo Extracting %_tarball%
   7z x %_tarball% -o%2 -y
   :: now extract .tar
-  7z x %_tarball:.gz=% -y
+  7z x %_tarball:.gz=% -o%2 -y
 )
 @endlocal
