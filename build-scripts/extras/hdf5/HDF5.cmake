@@ -18,7 +18,3 @@ set (HDF5_BUILD_FORTRAN OFF CACHE BOOL "" FORCE)
 set (HDF5_ENABLE_Z_LIB_SUPPORT ON CACHE BOOL "" FORCE)
 set (HDF5_ENABLE_SZIP_SUPPORT ON CACHE BOOL "" FORCE)
 set (HDF5_ENABLE_SZIP_ENCODING OFF CACHE BOOL "" FORCE)
-# Requires the TGZPATH variable to be set by the caller to point to the directory
-# containing the SZip.tar.gz & ZLib.tar.gz.
-# See https://www.hdfgroup.org/HDF5/release/cmakebuild.html#bldfiles
-set (HDF5_ALLOW_EXTERNAL_SUPPORT TGZ CACHE STRING "" FORCE)

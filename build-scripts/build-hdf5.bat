@@ -1,8 +1,7 @@
 @setlocal enableextensions
 ::
-:: Build script for HDF5, ZLib and SZip. The HDF5 build
-:: is able to build zlilb and szip if provided with the source
-:: as downloaded from the HDF5 webpage
+:: Build script for HDF5, ZLib and SZip. It requires ZLib and SZip
+:: to have been installed into INSTALL_ROOT first
 @echo Building HDF5
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -12,19 +11,13 @@
 @set HDF5_EXTRAS_DIR=%~dp0extras\hdf5
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Download and unpack source
+:: Download and unpack source. We use the HDF5 patched source that has been
+:: patched to build with CMake
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @set SRC_PKG_URL="http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.15-patch1.zip"
-@set SRC_PKG=hdf5-1.8.15-patch1.zip
 @set BUILD_DIR=%BUILD_ROOT%\hdf5
-
-@call try-mkdir.cmd %BUILD_DIR%
-@cd %BUILD_DIR%
-@call download-file.cmd %SRC_PKG% %SRC_PKG_URL%
-
-@set HDF5_ROOT=%BUILD_DIR%\hdf5-1.8.15-patch1
-@if not exist %HDF5_ROOT% @call extract-zip-file.cmd %SRC_PKG% %CD%
-cd %HDF5_ROOT%
+@set SRC_PKG=hdf5-1.8.15-patch1.zip
+@call download-and-extract.cmd %BUILD_DIR%\%SRC_PKG% %SRC_PKG_URL%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Patches
@@ -32,39 +25,23 @@ cd %HDF5_ROOT%
 ::   - https://gitlab.kitware.com/ben.boeckel/vtk/commit/718941125d967015e366172dd09793268f4c9eb5
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 echo Patching cmake files for Visual Studio 2015
+@set SRC_ROOT=%BUILD_DIR%\%SRC_PKG:.zip=%\
+cd %SRC_ROOT%
 @if not exist config\cmake_ext_mod\HDFTests.c.orig patch -p0 --input=%HDF5_EXTRAS_DIR%\HDFTests.c.patch --backup
 @if not exist config\cmake_ext_mod\ConfigureChecks.cmake.orig patch -p0 --input=%HDF5_EXTRAS_DIR%\ConfigureChecks.cmake.patch --backup
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@if not exist %HDF5_ROOT%\build mkdir %HDF5_ROOT%\build
-cd %HDF5_ROOT%\build
-cmake -G"Visual Studio 14 2015 Win64" -C "%HDF5_ROOT%\config\cmake\cacheinit.cmake" -C "%HDF5_EXTRAS_DIR%\HDF5.cmake" -DTGZPATH=%BUILD_DIR%\external -DCMAKE_INSTALL_PREFIX=%INSTALL_ROOT% ..
-:: zlib
-@call:build-project ZLIB.vcxproj
-:: szip
-@call:build-project SZIP.vcxproj
-:: hdf5
-@call:build-project src\hdf5.vcxproj
-@call:build-project c++\src\hdf5_cpp.vcxproj
-@call:build-project hl\src\hdf5_hl.vcxproj
-@call:build-project hl\c++\src\hdf5_hl_cpp.vcxproj
-
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Install
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+@call cmake-configure %SRC_ROOT% -C "%SRC_ROOT%\config\cmake\cacheinit.cmake" -C "%HDF5_EXTRAS_DIR%\hdf5.cmake" ^
+ "-DCMAKE_PREFIX_PATH:PATH=%INSTALL_ROOT:\\=/%" "-DCMAKE_INSTALL_PREFIX=%INSTALL_ROOT%"
+cd %BUILD_DIR%\hdf5-1.8.15-patch1\build
+@call build-and-install src\hdf5.vcxproj c++\src\hdf5_cpp.vcxproj hl\src\hdf5_hl.vcxproj hl\c++\src\hdf5_hl_cpp.vcxproj
+:: remove unwanted files
+for %%F in (COPYING USING_HDF5_CMake.txt USING_HDF5_VS.txt Release.txt) do ( del %INSTALL_ROOT%\%%F )
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call try-pause.cmd
 goto:eof
-
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Functions
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: %1 Project file path
-:build-project
-msbuild /nologo /p:Configuration=Release %1
-msbuild /nologo /p:Configuration=Debug %1
