@@ -1,0 +1,20 @@
+--- Makefile.orig	Mon Oct  5 16:05:19 2015
++++ Makefile	Mon Oct  5 16:10:13 2015
+@@ -5,7 +5,7 @@
+ QMAKE_OPENSOURCE_EDITION = yes
+ 
+ 
+-!IF "$(QMAKESPEC)" == "win32-msvc" || "$(QMAKESPEC)" == "win32-msvc.net" || "$(QMAKESPEC)" == "win32-msvc2002" || "$(QMAKESPEC)" == "win32-msvc2003" || "$(QMAKESPEC)" == "win32-msvc2005" || "$(QMAKESPEC)" == "win32-msvc2008" || "$(QMAKESPEC)" == "win32-msvc2010" || "$(QMAKESPEC)" == "win32-msvc2012" || "$(QMAKESPEC)" == "win32-msvc2013" || "$(QMAKESPEC)" == "win32-icc"
++!IF "$(QMAKESPEC)" == "win32-msvc" || "$(QMAKESPEC)" == "win32-msvc.net" || "$(QMAKESPEC)" == "win32-msvc2002" || "$(QMAKESPEC)" == "win32-msvc2003" || "$(QMAKESPEC)" == "win32-msvc2005" || "$(QMAKESPEC)" == "win32-msvc2008" || "$(QMAKESPEC)" == "win32-msvc2010" || "$(QMAKESPEC)" == "win32-msvc2012" || "$(QMAKESPEC)" == "win32-msvc2013" || "$(QMAKESPEC)" == "win32-msvc2015" || "$(QMAKESPEC)" == "win32-icc"
+ 
+ !if "$(SOURCE_PATH)" == ""
+ SOURCE_PATH = ..
+@@ -31,7 +31,7 @@
+ #
+ !if "$(QMAKESPEC)" == "win32-msvc2005"
+ CFLAGS_EXTRA      = /Zc:wchar_t-
+-!elseif "$(QMAKESPEC)" == "win32-msvc2008" || "$(QMAKESPEC)" == "win32-msvc2010" || "$(QMAKESPEC)" == "win32-msvc2012" || "$(QMAKESPEC)" == "win32-msvc2013"
++!elseif "$(QMAKESPEC)" == "win32-msvc2008" || "$(QMAKESPEC)" == "win32-msvc2010" || "$(QMAKESPEC)" == "win32-msvc2012" || "$(QMAKESPEC)" == "win32-msvc2013" || "$(QMAKESPEC)" == "win32-msvc2015"
+ CFLAGS_EXTRA      = /MP
+ !endif
+ 

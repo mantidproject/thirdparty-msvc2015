@@ -10,6 +10,7 @@
 @call %~dp0cmds\common-setup.cmd
 @set INCLUDE=%INSTALL_ROOT%\include;%INCLUDE%
 @set LIB=%INSTALL_ROOT%\lib;%LIB%
+@set PATH=%INSTALL_ROOT%\bin;%PATH%
 
 @set QT_EXTRAS_DIR=%~dp0extras\qt
 @set NJOBS=8
@@ -51,10 +52,16 @@
 cd %QT_ROOT%\qmake
 if not exist Makefile.win32.orig patch -p0 --input=%QT_EXTRAS_DIR%\qmake-makefile.win32.patch --backup
 cd %QT_ROOT%
+:: patch make files for our changed zlib library name
+if not exist src\tools\bootstrap\bootstrap.pri.orig patch -p0 --input=%QT_EXTRAS_DIR%\bootstrap.pri.patch --backup
+if not exist src\3rdparty\zlib_dependency.pri.orig  patch -p0 --input=%QT_EXTRAS_DIR%\zlib_dependency.pri.patch --backup
+
+:: patch other sources for 2015 support
+if not exist src\3rdparty\javascriptcore\JavaScriptCore\wtf\TypeTraits.h.orig patch -p1 --input=%QT_EXTRAS_DIR%\fix-build-msvc2015.patch --backup
 
 :: configure
-@configure -prefix %INSTALL_ROOT% -platform win32-msvc2015 -opensource -confirm-license -debug-and-release -no-plugin-manifests^
- -qt-sql-sqlite -system-zlib -webkit -nomake examples -nomake demos -make nmake
+@configure -prefix %INSTALL_ROOT% -platform win32-msvc2015 -opensource -confirm-license -debug-and-release -no-plugin-manifests ^
+ -openssl -webkit -nomake examples -nomake demos -make nmake -no-vcproj
 
 :: build everything
 jom.exe -j%NJOBS%
