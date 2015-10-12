@@ -19,6 +19,14 @@
 @call download-and-extract.cmd %BUILD_DIR%\%SRC_PKG% %SRC_PKG_URL%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: Patch
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+echo Patching cmake files for Visual Studio 2015
+@set SRC_ROOT=%BUILD_DIR%\%SRC_PKG:.tar.gz=%\
+cd %SRC_ROOT%
+@if not exist config\cmake\zlib-config.cmake.in.orig patch -p0 --input=%ZLIB_EXTRAS_DIR%\zlib-config.cmake.in.patch --backup
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call cmake-build-and-install %BUILD_DIR%\ZLib\ %ZLIB_EXTRAS_DIR%\zlib.cmake %INSTALL_ROOT% zlib.vcxproj

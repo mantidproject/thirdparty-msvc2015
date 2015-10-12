@@ -1,0 +1,8 @@
+--- config/cmake/zlib-config.cmake.in.orig	Mon Oct 12 13:51:53 2015
++++ config/cmake/zlib-config.cmake.in	Mon Oct 12 13:52:28 2015
+@@ -36,4 +36,4 @@
+ 
+ check_required_components(${ZLIB_PACKAGE_NAME})
+ 
+-set (${ZLIB_PACKAGE_NAME}_LIBRARIES ${ZLIB_PACKAGE_NAME}_EXPORT_LIBRARIES)
++set (${ZLIB_PACKAGE_NAME}_LIBRARIES ${${ZLIB_PACKAGE_NAME}_EXPORT_LIBRARIES})

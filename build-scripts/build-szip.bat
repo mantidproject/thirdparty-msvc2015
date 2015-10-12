@@ -19,6 +19,14 @@
 @call download-and-extract.cmd %BUILD_DIR%\%SRC_PKG% %SRC_PKG_URL%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: Patch
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+echo Patching cmake files for Visual Studio 2015
+@set SRC_ROOT=%BUILD_DIR%\%SRC_PKG:.tar.gz=%\
+cd %SRC_ROOT%
+@if not exist config\cmake\szip-config.cmake.in.orig patch -p0 --input=%SZIP_EXTRAS_DIR%\szip-config.cmake.in.patch --backup
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call cmake-build-and-install %BUILD_DIR%\SZip\ %SZIP_EXTRAS_DIR%\szip.cmake %INSTALL_ROOT% src\szip.vcxproj
