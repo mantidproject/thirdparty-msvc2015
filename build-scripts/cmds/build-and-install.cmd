@@ -7,7 +7,7 @@ set project_files=%2 %3 %4 %5 %6 %7 %8 %9
 cd %build_dir%
 for %%P in (%project_files%) do (
   @call:build-release-and-debug %%P
-  @call:build-release-and-debug INSTALL.vcxproj
+  @call:build-release-and-debug %%~pPINSTALL.vcxproj
 )
 @endlocal
 goto:eof
