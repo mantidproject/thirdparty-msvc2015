@@ -1,0 +1,44 @@
+--- src/3rdparty/webkit/Source/JavaScriptCore/wtf/HashSet.h
++++ src/3rdparty/webkit/Source/JavaScriptCore/wtf/HashSet.h
+@@ -177,7 +177,9 @@ namespace WTF {
+     template<typename T, typename U, typename V>
+     inline pair<typename HashSet<T, U, V>::iterator, bool> HashSet<T, U, V>::add(const ValueType& value)
+     {
+-        return m_impl.add(value);
++        typedef typename HashSet<T, U, V>::iterator iter_type;
++        auto& p = m_impl.add(value);
++        return make_pair((iter_type)p.first, p.second);
+     }
+
+     template<typename Value, typename HashFunctions, typename Traits>
+@@ -186,7 +188,9 @@ namespace WTF {
+     HashSet<Value, HashFunctions, Traits>::add(const T& value)
+     {
+         typedef HashSetTranslatorAdapter<ValueType, ValueTraits, T, HashTranslator> Adapter;
+-        return m_impl.template addPassingHashCode<T, T, Adapter>(value, value);
++        typedef typename HashSet<Value, HashFunctions, Traits>::iterator iter_type;
++        auto& p = m_impl.template addPassingHashCode<T, T, Adapter>(value, value);
++        return make_pair((iter_type)p.first, p.second);
+     }
+
+     template<typename T, typename U, typename V>
+--- src/3rdparty/webkit/Source/JavaScriptCore/wtf/MathExtras.h
++++ src/3rdparty/webkit/Source/JavaScriptCore/wtf/MathExtras.h
+@@ -110,7 +110,7 @@
+ 
+ #endif
+ 
+-#if COMPILER(MSVC) || (COMPILER(RVCT) && !(RVCT_VERSION_AT_LEAST(3, 0, 0, 0)))
++#if (COMPILER(MSVC) && _MSC_VER < 1800) || (COMPILER(RVCT) && !(RVCT_VERSION_AT_LEAST(3, 0, 0, 0)))
+ 
+ // We must not do 'num + 0.5' or 'num - 0.5' because they can cause precision loss.
+ static double round(double num)
+@@ -135,7 +135,7 @@
+ 
+ #endif
+ 
+-#if COMPILER(MSVC)
++#if COMPILER(MSVC) && _MSC_VER < 1800
+ // The 64bit version of abs() is already defined in stdlib.h which comes with VC10
+ #if COMPILER(MSVC9_OR_LOWER)
+ inline long long abs(long long num) { return _abs64(num); }

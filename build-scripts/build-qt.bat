@@ -58,10 +58,10 @@ if not exist src\3rdparty\zlib_dependency.pri.orig  patch -p0 --input=%QT_EXTRAS
 
 :: patch other sources for 2015 support
 if not exist src\3rdparty\javascriptcore\JavaScriptCore\wtf\TypeTraits.h.orig patch -p1 --input=%QT_EXTRAS_DIR%\fix-build-msvc2015.patch --backup
+if not exist src\3rdparty\webkit\Source\JavaScriptCore\wtf\HashSet.h.orig patch -p0 --input=%QT_EXTRAS_DIR%\fix-webkit-msvc2015.patch --backup
 
 :: configure
-@configure -prefix %INSTALL_ROOT% -platform win32-msvc2015 -opensource -confirm-license -debug-and-release -no-plugin-manifests ^
- -openssl -webkit -nomake examples -nomake demos -make nmake -no-vcproj
+@if not exist configure.cache configure -prefix %INSTALL_ROOT% -platform win32-msvc2015 -opensource -confirm-license -debug-and-release -no-plugin-manifests -openssl -webkit -nomake examples -nomake demos -make nmake -no-vcproj
 
 :: build everything
 jom.exe -j%NJOBS%
@@ -69,6 +69,15 @@ jom.exe -j%NJOBS%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Install
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: the makefile install rule uses [DRIVE]:$(INSTALL_ROOT)\...
+:: remove the definition temporarily
+set INSTALL_PREFIX=%INSTALL_ROOT%
+set INSTALL_ROOT=
+nmake install
+
+:: remove stuff we don't want to keep
+for %%D in (demos doc examples tests) rmdir /S /Q %INSTALL_PREFIX%\%%D
+for %%F in (q3porting.xml) del %INSTALL_PREFIX%\%%F
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize
