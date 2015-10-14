@@ -31,17 +31,17 @@ cd %SRC_ROOT%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: TKBO,TKBRep,TKernel,TKG2d,TKG3d,TKGeomAlgo,TKGeomBase,TKMath,TKPrim
 ::,TKTopAlgo
-REM @call cmake-configure %SRC_ROOT%\ -C "%OCE_EXTRAS_DIR%\oce.cmake" ^
- REM "-DCMAKE_INSTALL_PREFIX=%INSTALL_ROOT%" "-DOCE_INSTALL_PREFIX=%INSTALL_ROOT%"
-REM cd %SRC_ROOT%\build\adm\cmake
+@call cmake-configure %SRC_ROOT%\ -C "%OCE_EXTRAS_DIR%\oce.cmake" ^
+ "-DCMAKE_INSTALL_PREFIX=%INSTALL_ROOT%" "-DOCE_INSTALL_PREFIX=%INSTALL_ROOT%"
+cd %SRC_ROOT%\build\adm\cmake
 
-REM :: Requires 2 calls to build all as the script can only take 8 project arguments
-REM set PROJECTS=TKBO\TKBO.vcxproj TKBRep\TKBRep.vcxproj TKernel\TKernel.vcxproj ^
- REM TKG2d\TKG2d.vcxproj TKG3d\TKG3d.vcxproj
-REM @call build-and-install %PROJECTS%
-REM set PROJECTS=TKGeomAlgo\TKGeomAlgo.vcxproj TKGeomBase\TKGeomBase.vcxproj ^
- REM TKMath\TKMath.vcxproj TKMesh\TKMesh.vcxproj TKPrim\TKPrim.vcxproj TKTopAlgo\TKTopAlgo.vcxproj
-REM @call build-and-install %PROJECTS%
+:: Requires 2 calls to build all as the script can only take 8 project arguments
+set PROJECTS=TKBO\TKBO.vcxproj TKBRep\TKBRep.vcxproj TKernel\TKernel.vcxproj ^
+ TKG2d\TKG2d.vcxproj TKG3d\TKG3d.vcxproj
+@call build-and-install %PROJECTS%
+set PROJECTS=TKGeomAlgo\TKGeomAlgo.vcxproj TKGeomBase\TKGeomBase.vcxproj ^
+ TKMath\TKMath.vcxproj TKMesh\TKMesh.vcxproj TKPrim\TKPrim.vcxproj TKTopAlgo\TKTopAlgo.vcxproj
+@call build-and-install %PROJECTS%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Post-install
