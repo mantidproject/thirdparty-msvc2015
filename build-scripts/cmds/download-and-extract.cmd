@@ -12,11 +12,6 @@ call download-file.cmd %output_path% %src_location%
 if "%output_path:~-3%"=="zip" (
   call extract-zip-file.cmd %output_path% %output_dir%
 ) else (
-  if "%output_path:~-6%"=="tar.gz" (
-    call extract-tarball.cmd %output_path% %output_dir%
-  ) else (
-    echo Unknown archive file type
-    exit /b 1
-  )
+  call extract-tarball.cmd %output_path% %output_dir%
 )
 @endlocal
