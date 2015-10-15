@@ -22,6 +22,7 @@
 @call build-boost.bat
 @call build-gsl.bat
 @call build-jsoncpp.bat
+@call build-muparser.bat
 @call build-nexus.bat
 @call build-oce.bat
 @call build-poco.bat
@@ -29,3 +30,6 @@
 :: gui
 @call build-qt4.bat
 @call build-qwt5.bat
+
+:: TODO
+::@call build-qwtplot3d.bat
