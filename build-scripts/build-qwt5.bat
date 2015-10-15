@@ -8,7 +8,7 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call %~dp0cmds\common-setup.cmd
 @set QWT5_EXTRAS_DIR=%~dp0extras\qwt5
-@set PATH=%INSTALL_ROOT%\bin;%INSTALL_ROOT%\lib\qt4;%BUILD_ROOT%\jom;%PATH%
+@set PATH=%INSTALL_ROOT%\bin;%INSTALL_ROOT%\lib\qt4\bin;%BUILD_ROOT%\jom;%PATH%
 @set NJOBS=8
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

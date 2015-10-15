@@ -61,7 +61,9 @@ if not exist src\3rdparty\javascriptcore\JavaScriptCore\wtf\TypeTraits.h.orig pa
 if not exist src\3rdparty\webkit\Source\JavaScriptCore\wtf\HashSet.h.orig patch -p0 --input=%QT_EXTRAS_DIR%\fix-webkit-msvc2015.patch --backup
 
 :: configure
-@if not exist configure.cache configure -prefix %INSTALL_ROOT% -platform win32-msvc2015 -opensource -confirm-license -debug-and-release -no-plugin-manifests -openssl -webkit -nomake examples -nomake demos -make nmake -no-vcproj
+configure -platform win32-msvc2015 -opensource -confirm-license -debug-and-release -no-plugin-manifests ^
+ -openssl -webkit -nomake examples -nomake demos -make nmake -no-vcproj ^
+ -prefix %INSTALL_ROOT%\lib\qt4
 
 :: build everything
 jom.exe -j%NJOBS%
@@ -76,8 +78,8 @@ set INSTALL_ROOT=
 nmake install
 
 :: remove stuff we don't want to keep
-for %%D in (demos doc examples tests) rmdir /S /Q %INSTALL_PREFIX%\%%D
-for %%F in (q3porting.xml) del %INSTALL_PREFIX%\%%F
+for %%D in (demos doc examples tests) do rmdir /S /Q %INSTALL_PREFIX%\lib\qt4\%%D
+for %%F in (q3porting.xml) do del %INSTALL_PREFIX%\lib\qt4\%%F
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize
