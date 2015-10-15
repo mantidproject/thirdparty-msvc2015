@@ -1,0 +1,18 @@
+--- Qt4Qt5/qscintilla.pro.orig	Thu Oct 15 16:13:26 2015
++++ Qt4Qt5/qscintilla.pro	Thu Oct 15 16:14:55 2015
+@@ -29,8 +29,14 @@
+ 
+ TEMPLATE = lib
+ TARGET = qscintilla2
+-CONFIG += qt warn_off release thread exceptions
++CONFIG += qt warn_off debug_and_release build_all thread exceptions
+ INCLUDEPATH += . ../include ../lexlib ../src
++
++win32: OBJECTS_DIR = obj
++CONFIG(debug, debug|release) {
++  win32: TARGET = $$join(TARGET,,,d)
++  win32: OBJECTS_DIR = objd
++}
+ 
+ DEFINES += QSCINTILLA_MAKE_DLL SCINTILLA_QT SCI_LEXER
+ greaterThan(QT_MAJOR_VERSION, 3) {
