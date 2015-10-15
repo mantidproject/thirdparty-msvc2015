@@ -48,7 +48,7 @@ set QWT_INSTALLBASE=C:\%SRC_PKG:~0,-4%
 if not exist %INSTALL_PREFIX%\include\qwt-qt4 mkdir %INSTALL_PREFIX%\include\qwt-qt4
 xcopy %QWT_INSTALLBASE%\include\*.h %INSTALL_PREFIX%\include\qwt-qt4 /Y /I
 xcopy %QWT_INSTALLBASE%\lib\*.dll %INSTALL_PREFIX%\bin /Y /I
-xcopy %QWT_INSTALLBASE%\lib\*.pdb %INSTALL_PREFIX%\bin /Y /I
+xcopy %QWT_INSTALLBASE%\lib\*.pdb %INSTALL_PREFIX%\lib /Y /I
 xcopy %QWT_INSTALLBASE%\lib\*.lib %INSTALL_PREFIX%\lib /Y /I
 
 rmdir /S /Q %QWT_INSTALLBASE%\
