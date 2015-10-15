@@ -1,56 +1,50 @@
 @setlocal enableextensions
 ::
-:: Build script for Qwt5 with Qt4
-@echo Building Qwt5
+:: Build script for QwtPlot3D with Qt4
+@echo Building QwtPlot3D
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Setup environment. Important to ensure correct detection of environment
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call %~dp0cmds\common-setup.cmd
-@set QWT5_EXTRAS_DIR=%~dp0extras\qwt5
+@set QWTPLOT3D_EXTRAS_DIR=%~dp0extras\qwtplot3d
+@set INCLUDE=%INSTALL_ROOT%\include;%INCLUDE%
+@echo %INLCUDE%
+@set LIB=%INSTALL_ROOT%\lib;%LIB%
 @set PATH=%INSTALL_ROOT%\bin;%INSTALL_ROOT%\lib\qt4\bin;%BUILD_ROOT%\jom;%PATH%
 @set NJOBS=8
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Download and unpack source.
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set SRC_PKG_URL="https://downloads.sourceforge.net/project/qwt/qwt/5.2.3/qwt-5.2.3.zip"
-@set BUILD_DIR=%BUILD_ROOT%\qwt5
-@set SRC_PKG=qwt-5.2.3.zip
-@set SRC_ROOT=%BUILD_DIR%\%SRC_PKG:~0,-4%
-@call download-and-extract.cmd %BUILD_DIR%\%SRC_PKG% %SRC_PKG_URL%
+@set SRC_PKG_URL="http://downloads.sourceforge.net/project/qwtplot3d/qwtplot3d/0.2.7/qwtplot3d-0.2.7.zip"
+@set BUILD_DIR=%BUILD_ROOT%\qwtplot3d
+@set SRC_PKG=qwtplot3d-0.2.7.zip
+@set SRC_ROOT=%BUILD_DIR%\qwtplot3d
+if not exist %SRC_ROOT% call download-and-extract.cmd %BUILD_DIR%\%SRC_PKG% %SRC_PKG_URL%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Patch
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 cd %SRC_ROOT%
+if not exist %SRC_ROOT%\include\qwt3d_openglhelper.h.orig call patch -p0 --input=%QWTPLOT3D_EXTRAS_DIR%\qwt3d_openglhelper.h.patch --backup
+if not exist %SRC_ROOT%\qwtplot3d.pro.orig call patch -p0 --input=%QWTPLOT3D_EXTRAS_DIR%\qwtplot3d.pro.patch --backup
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-if not exist %SRC_ROOT%\qwtconfig.pri.orig (
-  copy /Y %SRC_ROOT%\qwtconfig.pri %SRC_ROOT%\qwtconfig.pri.orig
-  copy /Y %QWT5_EXTRAS_DIR%\qwtconfig.pri %SRC_ROOT%\qwtconfig.pri
-)
 qmake
 nmake
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Install
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-set INSTALL_PREFIX=%INSTALL_ROOT%
-:: nmake uses this internally
-set INSTALL_ROOT=
-nmake install
-:: Change of INSTALLBASE still leaves files in the wrong place so move them manually
-set QWT_INSTALLBASE=C:\%SRC_PKG:~0,-4%
-if not exist %INSTALL_PREFIX%\include\qwt-qt4 mkdir %INSTALL_PREFIX%\include\qwt-qt4
-xcopy %QWT_INSTALLBASE%\include\*.h %INSTALL_PREFIX%\include\qwt-qt4 /Y /I
-xcopy %QWT_INSTALLBASE%\lib\*.dll %INSTALL_PREFIX%\bin /Y /I
-xcopy %QWT_INSTALLBASE%\lib\*.pdb %INSTALL_PREFIX%\lib /Y /I
-xcopy %QWT_INSTALLBASE%\lib\*.lib %INSTALL_PREFIX%\lib /Y /I
-
-rmdir /S /Q %QWT_INSTALLBASE%\
+:: No install rule generated so do it by hand
+if not exist %INSTALL_ROOT%\include\qwt-qt4 mkdir %INSTALL_ROOT%\include\qwtplot3d-qt4
+xcopy %SRC_ROOT%\include\*.h %INSTALL_ROOT%\include\qwtplot3d-qt4 /Y /I
+xcopy %SRC_ROOT%\lib\*.dll %INSTALL_ROOT%\bin /Y /I
+xcopy %SRC_ROOT%\lib\*.pdb %INSTALL_ROOT%\lib /Y /I
+xcopy %SRC_ROOT%\lib\*.lib %INSTALL_ROOT%\lib /Y /I
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize

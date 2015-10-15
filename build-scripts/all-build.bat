@@ -30,6 +30,7 @@
 :: gui
 @call build-qt4.bat
 @call build-qwt5-qt4.bat
+@call build-qwtplot3d-qt4.bat
 
 :: TODO
-::@call build-qwtplot3d.bat
+::@call build-qscintilla-qt4.bat
