@@ -42,6 +42,8 @@ set PROJECTS=TKBO\TKBO.vcxproj TKBRep\TKBRep.vcxproj TKernel\TKernel.vcxproj ^
 set PROJECTS=TKGeomAlgo\TKGeomAlgo.vcxproj TKGeomBase\TKGeomBase.vcxproj ^
  TKMath\TKMath.vcxproj TKMesh\TKMesh.vcxproj TKPrim\TKPrim.vcxproj TKTopAlgo\TKTopAlgo.vcxproj
 @call build-and-install %PROJECTS%
+cd %SRC_ROOT%\build
+@call build-release-and-debug INSTALL.vcxproj
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Post-install
