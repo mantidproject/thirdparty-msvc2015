@@ -77,7 +77,9 @@ if not exist %INSTALL_ROOT%\include\nexus mkdir %INSTALL_ROOT%\include\nexus
 @xcopy %LOCAL_INSTALL_PREFIX%\include\napi.h %INSTALL_ROOT%\include /Y /I
 @xcopy %LOCAL_INSTALL_PREFIX%\include\napiu.h %INSTALL_ROOT%\include /Y /I
 @xcopy %LOCAL_INSTALL_PREFIX%\bin\libNeXus-0*.dll %INSTALL_ROOT%\bin /Y
+@xcopy %LOCAL_INSTALL_PREFIX%\bin\libNeXusCPP-0*.dll %INSTALL_ROOT%\bin /Y
 @xcopy %LOCAL_INSTALL_PREFIX%\lib\nexus\libNeXus-0*.lib %INSTALL_ROOT%\lib /Y
+@xcopy %LOCAL_INSTALL_PREFIX%\lib\nexus\libNeXusCPP-0*.lib %INSTALL_ROOT%\lib /Y
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize
