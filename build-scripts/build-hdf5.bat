@@ -33,10 +33,9 @@ cd %SRC_ROOT%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@call cmake-configure %SRC_ROOT% -C "%SRC_ROOT%\config\cmake\cacheinit.cmake" -C "%HDF5_EXTRAS_DIR%\hdf5.cmake" ^
- "-DCMAKE_PREFIX_PATH:PATH=%INSTALL_ROOT:\\=/%" "-DCMAKE_INSTALL_PREFIX=%INSTALL_ROOT%"
-cd %BUILD_DIR%\hdf5-1.8.15-patch1\build
-@call build-and-install src\hdf5.vcxproj c++\src\hdf5_cpp.vcxproj hl\src\hdf5_hl.vcxproj hl\c++\src\hdf5_hl_cpp.vcxproj
+@call cmake-configure %SRC_ROOT%\ -C "%SRC_ROOT%\config\cmake\cacheinit.cmake" -C "%HDF5_EXTRAS_DIR%\hdf5.cmake" ^
+ "-DCMAKE_PREFIX_PATH:PATH=%INSTALL_ROOT%" "-DCMAKE_INSTALL_PREFIX=%INSTALL_ROOT%"
+@call build-and-install.cmd %SRC_ROOT%\build ALL_BUILD.vcxproj
 :: remove unwanted files
 for %%F in (COPYING USING_HDF5_CMake.txt USING_HDF5_VS.txt Release.txt) do ( del %INSTALL_ROOT%\%%F )
 

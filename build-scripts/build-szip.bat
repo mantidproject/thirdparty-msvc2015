@@ -29,7 +29,7 @@ cd %SRC_ROOT%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@call cmake-build-and-install %BUILD_DIR%\SZip\ %SZIP_EXTRAS_DIR%\szip.cmake %INSTALL_ROOT% src\szip.vcxproj
+@call cmake-build-and-install %BUILD_DIR%\SZip\ %SZIP_EXTRAS_DIR%\szip.cmake %INSTALL_ROOT% ALL_BUILD.vcxproj
 :: remove unwanted files
 for %%F in (COPYING README INSTALL RELEASE.txt) do ( del %INSTALL_ROOT%\%%F )
 
