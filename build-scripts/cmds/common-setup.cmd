@@ -7,6 +7,8 @@
 @call "%VS140COMNTOOLS%\..\..\VC\vcvarsall.bat" amd64
 @set CMAKE_GENERATOR="Visual Studio 14 2015 Win64"
 @set QMAKESPEC=win32-msvc2015
+:: Number of jobs to run in parallel when using jom
+@set NJOBS=8
 
 :: Assume perl, cmake, git, 7-zip is in standard windows location. Perl needs to be before Git to pick up the activestate version
 @set PATH=C:\Perl64\bin;C:\Program Files (x86)\CMake\bin;C:\Program Files (x86)\Git\bin;C:\Program Files\7-Zip;%~dp0;%PATH%
