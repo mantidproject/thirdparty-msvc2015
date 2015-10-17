@@ -21,7 +21,6 @@ if not exist %SRC_ROOT% (
   cd %SRC_ROOT%
 ) else (
   cd %SRC_ROOT%
-  @call git pull --rebase
 )
 @call git checkout %SHA1%
 
@@ -34,9 +33,11 @@ set TCMALLOC_MINIMAL_DIR=vsprojects\libtcmalloc_minimal
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Install
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: These are runtime only libraries so only install dlls
+:: Headers aren't required
 copy /Y %SRC_ROOT%\%TCMALLOC_MINIMAL_DIR%\x64\Release\libtcmalloc_minimal.dll %INSTALL_ROOT%\bin
 copy /Y %SRC_ROOT%\%TCMALLOC_MINIMAL_DIR%\x64\Debug\libtcmalloc_minimal-debug.dll %INSTALL_ROOT%\bin
+copy /Y %SRC_ROOT%\%TCMALLOC_MINIMAL_DIR%\x64\Release\libtcmalloc_minimal.lib %INSTALL_ROOT%\lib
+copy /Y %SRC_ROOT%\%TCMALLOC_MINIMAL_DIR%\x64\Debug\libtcmalloc_minimal-debug.lib %INSTALL_ROOT%\lib
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize
