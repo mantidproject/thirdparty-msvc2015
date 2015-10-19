@@ -59,9 +59,7 @@ if not exist %PYTHON_INSTALL_ROOT%\Lib\site-packages\pip (
 
 :: site-packages
 @echo Installing site-packages
-for %%f in (%~dp0python-site-packages\*.cmd) do (
-  @call %%f
-)
+@call python-site-packages\fetch-all.cmd
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize
