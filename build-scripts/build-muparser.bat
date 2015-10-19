@@ -25,20 +25,17 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Set configure options for shared, release and debug builds
+:: Set configure options for static, release and debug builds
 cd %SRC_ROOT%
-sed -e's/SHARED = 0/SHARED = 1/' build\makefile.vc > build\makefile.vc.shared.release
-sed -e's/DEBUG = 0/DEBUG = 1/' build\makefile.vc.shared.release > build\makefile.vc.shared.debug
+sed -e's/DEBUG = 0/DEBUG = 1/' build\makefile.vc > build\makefile.vc.debug
 cd build
-nmake -f makefile.vc.shared.release
-nmake -f makefile.vc.shared.debug
+nmake -f makefile.vc
+nmake -f makefile.vc.debug
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Install
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 xcopy %SRC_ROOT%\include\*.h %INSTALL_ROOT%\include /Y /I
-xcopy %SRC_ROOT%\lib\*.dll %INSTALL_ROOT%\bin /Y /I
-xcopy %SRC_ROOT%\lib\*.pdb %INSTALL_ROOT%\lib /Y /I
 xcopy %SRC_ROOT%\lib\*.lib %INSTALL_ROOT%\lib /Y /I
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
