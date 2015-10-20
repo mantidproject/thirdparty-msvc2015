@@ -21,8 +21,6 @@
 
 :: This will be used by a lot of scripts
 @set PYTHON_INSTALL_ROOT=%INSTALL_ROOT%\lib\python2.7
-:: Don't write .exe files for setuptools
-@set SETUPTOOLS_LAUNCHER=natural
 goto:eof
 
 :set-install-root

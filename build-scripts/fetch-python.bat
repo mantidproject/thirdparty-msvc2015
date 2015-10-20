@@ -31,31 +31,27 @@ if not exist %PYTHON_INSTALL_ROOT% (
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Patches
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-set EXTRAS_DIR=%~dp0\extras\python
+set PYTHON_EXTRAS_DIR=%~dp0\extras\python
 @echo Patching uuid.py
-@call:try-patch %PYTHON_INSTALL_ROOT%\Lib %PYTHON_INSTALL_ROOT%\Lib\uuid.py %EXTRAS_DIR%\uuid-nt.patch
+@call:try-patch %PYTHON_INSTALL_ROOT%\Lib %PYTHON_INSTALL_ROOT%\Lib\uuid.py %PYTHON_EXTRAS_DIR%\uuid-nt.patch
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: setuptools + site packages
-:: Force use of "natural" installers rather than executables as the executables
-:: are not relocatable
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-set SETUPTOOLS_LAUNCHER=natural
 set PYTHON_SCRIPTS_DIR=%PYTHON_INSTALL_ROOT%\Scripts
+set PYTHON_EXE=%PYTHON_INSTALL_ROOT%\python.exe
 @echo Installing pip
 if not exist %PYTHON_INSTALL_ROOT%\Lib\site-packages\pip (
-@ call download-file.cmd %BUILD_DIR%\get-pip.py https://bootstrap.pypa.io/get-pip.py
-  %PYTHON_INSTALL_ROOT%\python.exe %BUILD_DIR%\get-pip.py
-  rem remove all Scripts\*.exe files as they will only work on the machine they
-  rem were built on
-  del /Q %PYTHON_SCRIPTS_DIR%\*.exe
-  rem install our hand-written launcher python scripts and create .cmd files to start them
-  for %%f in (%EXTRAS_DIR%\*.pya) do (
-    copy %%f %PYTHON_SCRIPTS_DIR%
-    rem create command
-    call:write-python-launcher %PYTHON_SCRIPTS_DIR%\%%~nxf %PYTHON_SCRIPTS_DIR%\%%~nf.cmd
-  )
+  call download-file.cmd %BUILD_DIR%\get-pip.py https://bootstrap.pypa.io/get-pip.py
+  %PYTHON_EXE% %BUILD_DIR%\get-pip.py
 )
+
+:: replace the .exe launchers with relocatable files
+set WRITE_LAUNCHER=%PYTHON_EXTRAS_DIR%\write-launcher-script.py
+%PYTHON_EXE% %WRITE_LAUNCHER% --rm_exe pip==7.1.2 console_scripts pip
+%PYTHON_EXE% %WRITE_LAUNCHER% --rm_exe pip==7.1.2 console_scripts pip2
+%PYTHON_EXE% %WRITE_LAUNCHER% --rm_exe wheel==0.26.0 console_scripts wheel
+%PYTHON_EXE% %WRITE_LAUNCHER% --rm_exe setuptools==18.3.2 console_scripts easy_install
 
 :: site-packages
 @echo Installing site-packages
