@@ -48,14 +48,17 @@ if not exist %PYTHON_INSTALL_ROOT%\Lib\site-packages\pip (
 
 :: replace the .exe launchers with relocatable files
 set WRITE_LAUNCHER=%PYTHON_EXTRAS_DIR%\write-launcher-script.py
-%PYTHON_EXE% %WRITE_LAUNCHER% --rm_exe pip==7.1.2 console_scripts pip
-%PYTHON_EXE% %WRITE_LAUNCHER% --rm_exe pip==7.1.2 console_scripts pip2
-%PYTHON_EXE% %WRITE_LAUNCHER% --rm_exe wheel==0.26.0 console_scripts wheel
-%PYTHON_EXE% %WRITE_LAUNCHER% --rm_exe setuptools==18.3.2 console_scripts easy_install
+set PYTHON_SITE_PACKAGES=%PYTHON_INSTALL_ROOT%\Lib\site-packages
+%PYTHON_EXE% %WRITE_LAUNCHER% --rm_exe %PYTHON_SITE_PACKAGES%\pip-7.1.2.dist-info\entry_points.txt
+:: We don't want some of the entry points for Python 3
+%PYTHON_EXE% %WRITE_LAUNCHER% --rm_exe %PYTHON_SITE_PACKAGES%\setuptools-18.4.dist-info\entry_points.txt
+%PYTHON_EXE% %WRITE_LAUNCHER% --rm_exe %PYTHON_SITE_PACKAGES%\wheel-0.26.0.dist-info\entry_points.txt
+echo Removing unneeded entry points
+del %PYTHON_SCRIPTS_DIR%\pip3 %PYTHON_SCRIPTS_DIR%\pip3.cmd %PYTHON_SCRIPTS_DIR%\pip3.4 %PYTHON_SCRIPTS_DIR%\easy_install-3.5 %PYTHON_SCRIPTS_DIR%\easy_install-3.cmd
 
 :: site-packages
 @echo Installing site-packages
-@call python-site-packages\fetch-all.cmd
+::@call %~dp0\python-site-packages\fetch-all.cmd
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize
