@@ -82,6 +82,14 @@ if not exist %INSTALL_ROOT%\include\nexus mkdir %INSTALL_ROOT%\include\nexus
 @xcopy %LOCAL_INSTALL_PREFIX%\lib\nexus\libNeXusCPP-0*.lib %INSTALL_ROOT%\lib /Y
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: Install Python bindings
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+@set PYTHON_SITE_PACKAGES=%INSTALL_ROOT%\lib\python2.7\Lib\site-packages
+@set NXS_INSTALL_DIR=%PYTHON_SITE_PACKAGES%\nxs
+@if not exist %NXS_INSTALL_DIR% mkdir %NXS_INSTALL_DIR%
+@xcopy %NXS_SRC_ROOT%\bindings\python\nxs\* %NXS_INSTALL_DIR%
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call try-pause.cmd
