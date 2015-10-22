@@ -58,7 +58,7 @@ del %PYTHON_SCRIPTS_DIR%\pip3 %PYTHON_SCRIPTS_DIR%\pip3.cmd %PYTHON_SCRIPTS_DIR%
 
 :: site-packages
 @echo Installing site-packages
-::@call %~dp0\python-site-packages\fetch-all.cmd
+@call %~dp0\python-site-packages\fetch-all.cmd
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize
