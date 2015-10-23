@@ -11,6 +11,8 @@
 :: Setup environment. Important to ensure correct detection of environment
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call %~dp0cmds\common-setup.cmd
+:: Boost needs to find Python
+@set PATH=%PYTHON_INSTALL_ROOT%;%PATH%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Download and unpack source
