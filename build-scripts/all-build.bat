@@ -11,6 +11,7 @@
 :: Marker for other scripts to know they are children and not to pause
 @set ALL_BUILD_RUNNING=1
 
+cd /D %~dp0
 :: dependents
 @call fetch-python.bat
 @call build-openssl.bat
