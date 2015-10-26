@@ -1,0 +1,207 @@
+#----------------------------------------------------------------
+# Generated CMake target import file for configuration "Release".
+#----------------------------------------------------------------
+
+# Commands may need to know the format version.
+set(CMAKE_IMPORT_FILE_VERSION 1)
+
+# Import target "TKernel" for configuration "Release"
+set_property(TARGET TKernel APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKernel PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKernel.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "ws2_32;advapi32;gdi32;user32;kernel32;psapi"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKernel.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKernel )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKernel "${_IMPORT_PREFIX}/Win64/lib/TKernel.lib" "${_IMPORT_PREFIX}/Win64/bin/TKernel.dll" )
+
+# Import target "TKMath" for configuration "Release"
+set_property(TARGET TKMath APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKMath PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKMath.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "TKernel"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKMath.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKMath )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKMath "${_IMPORT_PREFIX}/Win64/lib/TKMath.lib" "${_IMPORT_PREFIX}/Win64/bin/TKMath.dll" )
+
+# Import target "TKG2d" for configuration "Release"
+set_property(TARGET TKG2d APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKG2d PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKG2d.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "TKernel;TKMath"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKG2d.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKG2d )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKG2d "${_IMPORT_PREFIX}/Win64/lib/TKG2d.lib" "${_IMPORT_PREFIX}/Win64/bin/TKG2d.dll" )
+
+# Import target "TKG3d" for configuration "Release"
+set_property(TARGET TKG3d APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKG3d PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKG3d.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "TKMath;TKernel;TKG2d"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKG3d.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKG3d )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKG3d "${_IMPORT_PREFIX}/Win64/lib/TKG3d.lib" "${_IMPORT_PREFIX}/Win64/bin/TKG3d.dll" )
+
+# Import target "TKGeomBase" for configuration "Release"
+set_property(TARGET TKGeomBase APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKGeomBase PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKGeomBase.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "TKernel;TKMath;TKG2d;TKG3d"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKGeomBase.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKGeomBase )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKGeomBase "${_IMPORT_PREFIX}/Win64/lib/TKGeomBase.lib" "${_IMPORT_PREFIX}/Win64/bin/TKGeomBase.dll" )
+
+# Import target "TKBRep" for configuration "Release"
+set_property(TARGET TKBRep APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKBRep PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKBRep.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "TKMath;TKernel;TKG2d;TKG3d;TKGeomBase"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKBRep.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKBRep )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKBRep "${_IMPORT_PREFIX}/Win64/lib/TKBRep.lib" "${_IMPORT_PREFIX}/Win64/bin/TKBRep.dll" )
+
+# Import target "TKGeomAlgo" for configuration "Release"
+set_property(TARGET TKGeomAlgo APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKGeomAlgo PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKGeomAlgo.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "TKernel;TKMath;TKG3d;TKG2d;TKGeomBase;TKBRep"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKGeomAlgo.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKGeomAlgo )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKGeomAlgo "${_IMPORT_PREFIX}/Win64/lib/TKGeomAlgo.lib" "${_IMPORT_PREFIX}/Win64/bin/TKGeomAlgo.dll" )
+
+# Import target "TKTopAlgo" for configuration "Release"
+set_property(TARGET TKTopAlgo APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKTopAlgo PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKTopAlgo.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "TKMath;TKernel;TKG2d;TKG3d;TKGeomBase;TKBRep;TKGeomAlgo"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKTopAlgo.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKTopAlgo )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKTopAlgo "${_IMPORT_PREFIX}/Win64/lib/TKTopAlgo.lib" "${_IMPORT_PREFIX}/Win64/bin/TKTopAlgo.dll" )
+
+# Import target "TKPrim" for configuration "Release"
+set_property(TARGET TKPrim APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKPrim PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKPrim.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "TKBRep;TKernel;TKMath;TKG2d;TKGeomBase;TKG3d;TKTopAlgo"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKPrim.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKPrim )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKPrim "${_IMPORT_PREFIX}/Win64/lib/TKPrim.lib" "${_IMPORT_PREFIX}/Win64/bin/TKPrim.dll" )
+
+# Import target "TKBO" for configuration "Release"
+set_property(TARGET TKBO APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKBO PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKBO.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "TKBRep;TKTopAlgo;TKMath;TKernel;TKG2d;TKG3d;TKGeomAlgo;TKGeomBase;TKPrim"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKBO.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKBO )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKBO "${_IMPORT_PREFIX}/Win64/lib/TKBO.lib" "${_IMPORT_PREFIX}/Win64/bin/TKBO.dll" )
+
+# Import target "TKHLR" for configuration "Release"
+set_property(TARGET TKHLR APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKHLR PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKHLR.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "TKBRep;TKernel;TKMath;TKGeomBase;TKG2d;TKG3d;TKGeomAlgo;TKTopAlgo"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKHLR.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKHLR )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKHLR "${_IMPORT_PREFIX}/Win64/lib/TKHLR.lib" "${_IMPORT_PREFIX}/Win64/bin/TKHLR.dll" )
+
+# Import target "TKMesh" for configuration "Release"
+set_property(TARGET TKMesh APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKMesh PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKMesh.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "TKBRep;TKMath;TKernel;TKG2d;TKG3d;TKGeomBase;TKTopAlgo;TKGeomAlgo"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKMesh.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKMesh )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKMesh "${_IMPORT_PREFIX}/Win64/lib/TKMesh.lib" "${_IMPORT_PREFIX}/Win64/bin/TKMesh.dll" )
+
+# Import target "TKShHealing" for configuration "Release"
+set_property(TARGET TKShHealing APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKShHealing PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKShHealing.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "TKBRep;TKernel;TKMath;TKG2d;TKTopAlgo;TKG3d;TKGeomBase;TKGeomAlgo;ws2_32"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKShHealing.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKShHealing )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKShHealing "${_IMPORT_PREFIX}/Win64/lib/TKShHealing.lib" "${_IMPORT_PREFIX}/Win64/bin/TKShHealing.dll" )
+
+# Import target "TKXMesh" for configuration "Release"
+set_property(TARGET TKXMesh APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKXMesh PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKXMesh.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "TKBRep;TKMath;TKernel;TKG2d;TKMesh"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKXMesh.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKXMesh )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKXMesh "${_IMPORT_PREFIX}/Win64/lib/TKXMesh.lib" "${_IMPORT_PREFIX}/Win64/bin/TKXMesh.dll" )
+
+# Import target "TKBool" for configuration "Release"
+set_property(TARGET TKBool APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKBool PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKBool.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "TKBRep;TKTopAlgo;TKMath;TKernel;TKPrim;TKG2d;TKG3d;TKShHealing;TKGeomBase;TKGeomAlgo;TKBO"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKBool.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKBool )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKBool "${_IMPORT_PREFIX}/Win64/lib/TKBool.lib" "${_IMPORT_PREFIX}/Win64/bin/TKBool.dll" )
+
+# Import target "TKFillet" for configuration "Release"
+set_property(TARGET TKFillet APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKFillet PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKFillet.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "TKBRep;TKernel;TKMath;TKGeomBase;TKGeomAlgo;TKG2d;TKTopAlgo;TKG3d;TKBool;TKShHealing"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKFillet.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKFillet )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKFillet "${_IMPORT_PREFIX}/Win64/lib/TKFillet.lib" "${_IMPORT_PREFIX}/Win64/bin/TKFillet.dll" )
+
+# Import target "TKFeat" for configuration "Release"
+set_property(TARGET TKFeat APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKFeat PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKFeat.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "TKBRep;TKTopAlgo;TKGeomAlgo;TKMath;TKernel;TKGeomBase;TKPrim;TKG2d;TKBO;TKG3d;TKBool"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKFeat.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKFeat )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKFeat "${_IMPORT_PREFIX}/Win64/lib/TKFeat.lib" "${_IMPORT_PREFIX}/Win64/bin/TKFeat.dll" )
+
+# Import target "TKOffset" for configuration "Release"
+set_property(TARGET TKOffset APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(TKOffset PROPERTIES
+  IMPORTED_IMPLIB_RELEASE "${_IMPORT_PREFIX}/Win64/lib/TKOffset.lib"
+  IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "TKFillet;TKBRep;TKTopAlgo;TKMath;TKernel;TKGeomBase;TKG2d;TKG3d;TKGeomAlgo;TKShHealing;TKBO;TKPrim;TKBool"
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/Win64/bin/TKOffset.dll"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS TKOffset )
+list(APPEND _IMPORT_CHECK_FILES_FOR_TKOffset "${_IMPORT_PREFIX}/Win64/lib/TKOffset.lib" "${_IMPORT_PREFIX}/Win64/bin/TKOffset.dll" )
+
+# Commands beyond this point should not need to know the version.
+set(CMAKE_IMPORT_FILE_VERSION)
