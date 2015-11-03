@@ -1,0 +1,13 @@
+--- configure.py.orig	Tue Nov  3 17:55:21 2015
++++ configure.py	Tue Nov  3 17:55:29 2015
+@@ -367,8 +367,8 @@
+         check_module("QtTest", "QtTest", "QTest::qSleep(0)")
+         check_module("QtWebKit", "qwebpage.h", "new QWebPage()")
+         check_module("QtXmlPatterns", "qxmlname.h", "new QXmlName()")
+-        check_module("phonon", "phonon/videowidget.h",
+-                "new Phonon::VideoWidget()")
++        # check_module("phonon", "phonon/videowidget.h",
++                # "new Phonon::VideoWidget()")
+         check_module("QtAssistant", "qassistantclient.h",
+                 "new QAssistantClient(\"foo\")", extra_lib_dirs=ass_lib_dirs,
+                 extra_libs=ass_libs)
