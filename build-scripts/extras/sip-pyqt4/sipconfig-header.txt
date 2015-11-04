@@ -20,8 +20,7 @@ import re
 
 
 # Use relative paths to current installation
-_python_home = os.path.join(os.path.dirname(__file__), "..\\..")
-_python_home = os.path.normpath(_python_home)
+_python_home = sys.prefix
 _pkg_config = {
     'arch':               '',
     'default_bin_dir':    _python_home,

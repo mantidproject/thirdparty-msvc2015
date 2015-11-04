@@ -18,13 +18,12 @@
 # This module is intended to be used by the configuration scripts of extension
 # modules that %Import PyQt4 modules.
 
-
+import os
 import sipconfig
-
+import sys
 
 # Use relative paths to current installation
-_python_home = os.path.join(os.path.dirname(__file__), "..\\..")
-_python_home = os.path.normpath(_python_home)
+_python_home = sys.prefix
 # Assume Qt4 is in default third party location
 _qt_root = os.path.join(_python_home, '..\\qt4')
 _qt_root = os.path.normpath(_qt_root)
