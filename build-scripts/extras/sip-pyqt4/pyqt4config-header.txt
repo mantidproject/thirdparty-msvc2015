@@ -29,7 +29,7 @@ _qt_root = os.path.join(_python_home, '..\\qt4')
 _qt_root = os.path.normpath(_qt_root)
 _pkg_config = {
     'pyqt_bin_dir':      _python_home,
-    'pyqt_config_args':  '--confirm-license --qsci-api -w -g --no-designer-plugin',
+    'pyqt_config_args':  '--confirm-license --qsci-api --no-designer-plugin',
     'pyqt_mod_dir':      os.path.join(_python_home, 'Lib\\site-packages\\PyQt4'),
     'pyqt_modules':      'QtCore QtGui QtMultimedia QtNetwork QtScriptTools QtXml QtOpenGL QtSql QtSvg QtTest QtXmlPatterns QAxContainer',
     'pyqt_sip_dir':      os.path.join(_python_home, 'sip\\PyQt4'),
