@@ -80,10 +80,12 @@ set INSTALL_PREFIX=%INSTALL_ROOT%
 set INSTALL_ROOT=
 nmake install
 
-:: Qt builds are by default tied to their build location. A qt.conf file is required to portable
+:: Qt builds are by default tied to their build location. A qt.conf file is required to be portable
 @set QT_CONF_FILE=%QT_INSTALL_PREFIX%\bin\qt.conf
 echo [Paths] > %QT_CONF_FILE%
 echo Prefix = .. >> %QT_CONF_FILE%
+:: A copy is required in the lib folder too
+copy %QT_CONF_FILE% %QT_INSTALL_PREFIX%\lib\qt.conf
 
 :: remove stuff we don't want to keep
 for %%D in (demos doc examples tests) do rmdir /S /Q %QT_INSTALL_PREFIX%\%%D
