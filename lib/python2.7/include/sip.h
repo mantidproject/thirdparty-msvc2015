@@ -28,8 +28,11 @@
  */
 #undef slots
 
-
-#include <Python.h>
+/*
+ * Use a wrapped Python header to disable MSVC auto-linking
+ * 
+ */
+#include <wrappython.h>
 
 /*
  * There is a mis-feature somewhere with the Borland compiler.  This works
