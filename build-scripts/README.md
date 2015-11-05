@@ -19,13 +19,15 @@ For installing certain Python packages you will require:
 In order to use this through `distutils` some setup steps are required before being able to call `python setup.py`:
 
 ```
+call "%LOCALAPPDATA%\Programs\Common\Microsoft\Visual C++ for Python\9.0\vcvarsall.bat" amd64
 set DISTUTILS_USE_SDK=1
-set MSSDK=%LOCALAPPDATA%\Programs\Common\Microsoft\Visual C++ for Python\9.0\WinSDK
-call %LOCALAPPDATA%\Programs\Common\Microsoft\Visual C++ for Python\9.0\vcvarsall.bat amd64
+set MSSdk=%LOCALAPPDATA%\Programs\Common\Microsoft\Visual C++ for Python\9.0\WinSDK
 ```
 
+Inelastic Fortran Modules
+-------------------------
 
+The Inelastic fortran modules can be built by the `build-inelastic-fortran.cmd` script. It requires that
+the Intel Visual Composer XE Fortran compiler along with the VC++ for Python is installed.
 
-Notes
------
-We should probably have bootstrap script for all this stuff
+It is **not** included in the main buld script at this time.
