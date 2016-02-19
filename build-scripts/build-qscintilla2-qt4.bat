@@ -28,6 +28,7 @@ if not exist %SRC_ROOT% call download-and-extract.cmd %BUILD_DIR%\%SRC_PKG% %SRC
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 cd %SRC_ROOT%
 if not exist Qt4Qt5\qscintilla.pro.orig call patch -p0 --input=%QSCI2_EXTRAS_DIR%\qscintilla.pro.patch --backup
+if not exist Qt4Qt5\InputEditor.cpp.orig call patch -p0 --input=%QSCI2_EXTRAS_DIR%\InputEditor.cpp.patch --backup
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build
