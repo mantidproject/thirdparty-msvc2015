@@ -4,13 +4,14 @@
 :: are built in both release and debug mode:
 ::   * date_time
 ::   * regex
-::
+::   * python
 @echo Building boost
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Setup environment. Important to ensure correct detection of environment
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call %~dp0cmds\common-setup.cmd
+@set BOOST_EXTRAS_DIR=%~dp0extras\boost
 :: Boost needs to find Python
 @set PATH=%PYTHON_INSTALL_ROOT%;%PATH%
 
@@ -29,11 +30,24 @@ set BOOST_ROOT=%BUILD_DIR%\boost_1_59_0
 @call extract-zip-file.cmd %SRC_PKG% %CD%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: Patch
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+cd %BOOST_ROOT%
+if not exist include\boost\type_traits\intrinsics.hpp.orig call patch -p0 --input=%BOOST_EXTRAS_DIR%\type-traits-160.patch --backup
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build & Install
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @cd %BOOST_ROOT%
 :: Bootstrap b2 executable
 if not exist b2.exe @call bootstrap.bat
+
+:: Remove old includes, dlls & libs in INSTALL_ROOT as `install` command only copies what is not currently there
+if exist "%INSTALL_ROOT%\include\boost" (
+  rmdir /S /Q "%INSTALL_ROOT%\include\boost"
+  del "%INSTALL_ROOT%\lib\boost*.lib"
+  del "%INSTALL_ROOT%\lib\boost*.dll"
+)
 
 :: Build libraries with no external dependencies
 :: --layout=tagged ensures the the include directory is %prefix%/include/boost and not %prefix%/include/boost_X_XX_X/boost
