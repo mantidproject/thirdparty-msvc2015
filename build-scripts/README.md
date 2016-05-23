@@ -21,7 +21,7 @@ In order to use this through `distutils` some setup steps are required before be
 ```
 call "%LOCALAPPDATA%\Programs\Common\Microsoft\Visual C++ for Python\9.0\vcvarsall.bat" amd64
 set DISTUTILS_USE_SDK=1
-set MSSdk=%LOCALAPPDATA%\Programs\Common\Microsoft\Visual C++ for Python\9.0\WinSDK
+set MSSdk=1
 ```
 
 Inelastic Fortran Modules
