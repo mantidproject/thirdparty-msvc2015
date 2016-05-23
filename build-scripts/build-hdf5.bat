@@ -1,4 +1,4 @@
-@setlocal enableextensions
+@setlocal enableextensions enabledelayedexpansion
 ::
 :: Build script for HDF5, ZLib and SZip. It requires ZLib and SZip
 :: to have been installed into INSTALL_ROOT first
@@ -14,6 +14,7 @@
 :: Download and unpack source. We use the HDF5 patched source that has been
 :: patched to build with CMake
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: When the version is updated, update the --hdf5-version= version for h5py below
 @set SRC_PKG_URL="http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.15-patch1.zip"
 @set BUILD_DIR=%BUILD_ROOT%\hdf5
 @set SRC_PKG=hdf5-1.8.15-patch1.zip
@@ -38,6 +39,26 @@ cd %SRC_ROOT%
 @call build-and-install.cmd %SRC_ROOT%\build ALL_BUILD.vcxproj
 :: remove unwanted files
 for %%F in (COPYING USING_HDF5_CMake.txt USING_HDF5_VS.txt Release.txt) do ( del %INSTALL_ROOT%\%%F )
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: Build h5py against this version
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+@set SRC_PKG_URL=https://github.com/h5py/h5py/archive/2.5.0.zip
+@set SRC_PKG=h5py-2.5.0.zip
+cd %BUILD_DIR%
+@call download-and-extract.cmd %BUILD_DIR%\!SRC_PKG! !SRC_PKG_URL!
+
+echo Patching cmake files for Visual Studio 2015
+@set SRC_ROOT=h5py-2.5.0
+cd !SRC_ROOT!
+@if not exist setup_build.py.orig patch -p0 --input=%HDF5_EXTRAS_DIR%\h5py-setup_build.py.patch --backup
+
+:: use compiler already initialized
+@set DISTUTILS_USE_SDK=1
+@set MSSdk=1
+cd %BUILD_DIR%\h5py-2.5.0
+%PYTHON_INSTALL_ROOT%\python setup.py configure --hdf5=%INSTALL_ROOT% --hdf5-version=1.8.15
+%PYTHON_INSTALL_ROOT%\python setup.py install
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize
