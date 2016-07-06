@@ -1,3 +1,9 @@
 *.pyc
 *.pyo
 *.pickle
+__pycache__
+/lib/python3.5/Lib/__pycache__
+/lib/python3.5/Lib/site-packages/adodbapi/__pycache__
+/lib/python3.5/Lib/site-packages/isapi/__pycache__
+/lib/python3.5/Lib/site-packages/adodbapi/test/__pycache__
+/lib/python3.5/Lib/site-packages/adodbapi/examples/__pycache__
