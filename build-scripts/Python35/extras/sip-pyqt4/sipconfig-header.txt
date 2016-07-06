@@ -1,0 +1,43 @@
+#
+# This file is part of SIP.
+#
+# This copy of SIP is licensed for use under the terms of the SIP License
+# Agreement.  See the file LICENSE for more details.
+#
+# This copy of SIP may also used under the terms of the GNU General Public
+# License v2 or v3 as published by the Free Software Foundation which can be
+# found in the files LICENSE-GPL2 and LICENSE-GPL3 included in this package.
+#
+# SIP is supplied WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+
+import sys
+import os
+import stat
+import string
+import re
+
+
+# Use relative paths to current installation
+_python_home = sys.prefix
+_pkg_config = {
+    'arch':               '',
+    'default_bin_dir':    _python_home,
+    'default_mod_dir':    os.path.join(_python_home, 'Lib\\site-packages'),
+    'default_sip_dir':    os.path.join(_python_home, 'sip'),
+    'deployment_target':  '',
+    'platform':           'win32-msvc2015',
+    'py_conf_inc_dir':    os.path.join(_python_home, 'Include'),
+    'py_inc_dir':         os.path.join(_python_home, 'Include'),
+    'py_lib_dir':         os.path.join(_python_home, 'libs'),
+    'py_version':         0x02070a,
+    'qt_framework':       0,
+    'sip_bin':            os.path.join(_python_home, 'sip'),
+    'sip_config_args':    '--platform=win32-msvc2015',
+    'sip_inc_dir':        os.path.join(_python_home, 'Include'),
+    'sip_mod_dir':        os.path.join(_python_home, 'Lib\\site-packages'),
+    'sip_version':        0x041009,
+    'sip_version_str':    '4.16.9',
+    'universal':          ''
+}

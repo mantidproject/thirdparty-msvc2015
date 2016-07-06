@@ -1,0 +1,11 @@
+--- config/cmake/JPEG-config.cmake.install.in.orig	Wed Oct 14 12:06:03 2015
++++ config/cmake/JPEG-config.cmake.install.in	Wed Oct 14 12:03:21 2015
+@@ -9,7 +9,7 @@
+   GET_FILENAME_COMPONENT(_IMPORT_PREFIX "${_IMPORT_PREFIX}" PATH)
+ endif (NOT WIN32)
+ 
+-GET_FILENAME_COMPONENT (JPEG_INCLUDE_DIRS "${_IMPORT_PREFIX}/include")
++SET (JPEG_INCLUDE_DIRS "${_IMPORT_PREFIX}/include")
+ 
+ #-----------------------------------------------------------------------------
+ # Version Strings

@@ -1,0 +1,11 @@
+--- Qt4Qt5/InputMethod.cpp.orig	2014-09-11 18:15:12.000000000 +0100
++++ Qt4Qt5/InputMethod.cpp	2016-02-19 13:35:08.505973600 +0000
+@@ -137,7 +137,7 @@
+         {
+             char fontName[64];
+             int style = SendScintilla(SCI_GETSTYLEAT, pos);
+-            int len = SendScintilla(SCI_STYLEGETFONT, style, (sptr_t)fontName);
++            int len = SendScintilla(SCI_STYLEGETFONT, style, (void*)fontName);
+             int size = SendScintilla(SCI_STYLEGETSIZE, style);
+             bool italic = SendScintilla(SCI_STYLEGETITALIC, style);
+             int weight = SendScintilla(SCI_STYLEGETBOLD, style) ? QFont::Bold : -1;

@@ -1,0 +1,8 @@
+--- config/cmake/szip-config.cmake.in.orig	Mon Oct 12 13:55:42 2015
++++ config/cmake/szip-config.cmake.in	Mon Oct 12 13:55:46 2015
+@@ -37,4 +37,4 @@
+ 
+ check_required_components (${SZIP_PACKAGE_NAME})
+ 
+-set (${SZIP_PACKAGE_NAME}_LIBRARIES ${SZIP_PACKAGE_NAME}_EXPORT_LIBRARIES)
++set (${SZIP_PACKAGE_NAME}_LIBRARIES ${${SZIP_PACKAGE_NAME}_EXPORT_LIBRARIES})
