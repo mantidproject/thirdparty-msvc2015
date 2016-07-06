@@ -20,7 +20,8 @@
 @call:set-install-root %~dp0..\..
 
 :: This will be used by a lot of scripts
-@set PYTHON_INSTALL_ROOT=%INSTALL_ROOT%\lib\python2.7
+@set PYTHON27_INSTALL_ROOT=%INSTALL_ROOT%\lib\python2.7
+@set PYTHON35_INSTALL_ROOT=%INSTALL_ROOT%\lib\python3.5
 goto:eof
 
 :set-install-root

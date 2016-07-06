@@ -13,7 +13,8 @@
 
 cd /D %~dp0
 :: dependents
-@call fetch-python.bat
+@call %~dp0Python27/fetch-python.bat
+@call %~dp0Python35/fetch-python.bat
 @call build-openssl.bat
 @call build-szip.bat
 @call build-zlib.bat

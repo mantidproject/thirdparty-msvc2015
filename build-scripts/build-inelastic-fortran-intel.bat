@@ -21,8 +21,8 @@ set MSSdk=%LOCALAPPDATA%\Programs\Common\Microsoft\Visual C++ for Python\9.0\Win
 
 :: Install root for dependencies (goes via a 'function' to make it absolute)
 @call:set-python-root %~dp0..\
-@set PYTHON_EXE=%PYTHON_INSTALL_ROOT%\python.exe
-@set F2PY_SCRIPT=%PYTHON_INSTALL_ROOT%\Scripts\f2py.py
+@set PYTHON_EXE=%PYTHON27_INSTALL_ROOT%\python.exe
+@set F2PY_SCRIPT=%PYTHON27_INSTALL_ROOT%\Scripts\f2py.py
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Source

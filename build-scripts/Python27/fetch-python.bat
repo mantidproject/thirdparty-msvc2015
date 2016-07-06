@@ -33,7 +33,7 @@ if not exist %PYTHON27_INSTALL_ROOT% (
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 set PYTHON_EXTRAS_DIR=%~dp0\extras\python
 @echo Patching uuid.py
-@call:try-patch %PYTHON27_INSTALL_ROOT%\Lib %PYTHON27_INSTALL_ROOT%\Lib\uuid.py %PYTHON27_EXTRAS_DIR%\uuid-nt.patch
+@call:try-patch %PYTHON27_INSTALL_ROOT%\Lib %PYTHON27_INSTALL_ROOT%\Lib\uuid.py %PYTHON_EXTRAS_DIR%\uuid-nt.patch
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: setuptools + site packages

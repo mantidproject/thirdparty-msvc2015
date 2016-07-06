@@ -13,7 +13,7 @@
 @call %~dp0cmds\common-setup.cmd
 @set BOOST_EXTRAS_DIR=%~dp0extras\boost
 :: Boost needs to find Python
-@set PATH=%PYTHON_INSTALL_ROOT%;%PATH%
+@set PATH=%PYTHON27_INSTALL_ROOT%;%PATH%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Download and unpack source

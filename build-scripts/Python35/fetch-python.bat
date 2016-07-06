@@ -23,7 +23,6 @@
 
 if not exist %PYTHON35_INSTALL_ROOT% (
   @echo Extracting Python bundle to %PYTHON35_INSTALL_ROOT%
-  mkdir %PYTHON35_INSTALL_ROOT%
   msiexec /a %BUILD_DIR%\%SRC_PKG% /q TARGETDIR=%PYTHON35_INSTALL_ROOT%
   :: delete the msi that is also extracted
   del /Q %PYTHON35_INSTALL_ROOT%\%SRC_PKG%

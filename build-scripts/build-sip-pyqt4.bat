@@ -92,8 +92,8 @@ popd
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Fix the sipconfig/pyqtconfig files
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set SIPCONFIG=%PYTHON_INSTALL_ROOT%\Lib\site-packages\sipconfig.py
-@set PYQTCONFIG=%PYTHON_INSTALL_ROOT%\Lib\site-packages\PyQt4\pyqtconfig.py
+@set SIPCONFIG=%PYTHON27_INSTALL_ROOT%\Lib\site-packages\sipconfig.py
+@set PYQTCONFIG=%PYTHON27_INSTALL_ROOT%\Lib\site-packages\PyQt4\pyqtconfig.py
 @call python %SIP_EXTRAS_DIR%\fix-configs.py %SIPCONFIG% %PYQTCONFIG%
 :: Overwrite the installed files
 move /Y %SIPCONFIG%.fixed %SIPCONFIG%

@@ -57,8 +57,8 @@ cd !SRC_ROOT!
 @set DISTUTILS_USE_SDK=1
 @set MSSdk=1
 cd %BUILD_DIR%\h5py-2.5.0
-%PYTHON_INSTALL_ROOT%\python setup.py configure --hdf5=%INSTALL_ROOT% --hdf5-version=1.8.15
-%PYTHON_INSTALL_ROOT%\python setup.py install
+%PYTHON27_INSTALL_ROOT%\python setup.py configure --hdf5=%INSTALL_ROOT% --hdf5-version=1.8.15
+%PYTHON27_INSTALL_ROOT%\python setup.py install
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize
