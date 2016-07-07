@@ -1,28 +1,14 @@
 # encoding: utf-8
-"""
-Tests for IPython.config.loader
+"""Tests for IPython.config.loader"""
 
-Authors:
+# Copyright (c) IPython Development Team.
+# Distributed under the terms of the Modified BSD License.
 
-* Brian Granger
-* Fernando Perez (design help)
-"""
-
-#-----------------------------------------------------------------------------
-#  Copyright (C) 2008 The IPython Development Team
-#
-#  Distributed under the terms of the BSD License.  The full license is in
-#  the file COPYING, distributed as part of this software.
-#-----------------------------------------------------------------------------
-
-#-----------------------------------------------------------------------------
-# Imports
-#-----------------------------------------------------------------------------
-
+import copy
+import logging
 import os
 import pickle
 import sys
-import json
 
 from tempfile import mkstemp
 from unittest import TestCase
@@ -43,17 +29,13 @@ from IPython.config.loader import (
     ConfigError,
 )
 
-#-----------------------------------------------------------------------------
-# Actual tests
-#-----------------------------------------------------------------------------
-
 
 pyfile = """
 c = get_config()
 c.a=10
 c.b=20
 c.Foo.Bar.value=10
-c.Foo.Bam.value=list(range(10))  # list() is just so it's the same on Python 3
+c.Foo.Bam.value=list(range(10))
 c.D.C.value='hi there'
 """
 
@@ -117,6 +99,34 @@ class TestFileCL(TestCase):
         cl = JSONFileConfigLoader(fname, log=log)
         config = cl.load_config()
         self._check_conf(config)
+    
+    def test_collision(self):
+        a = Config()
+        b = Config()
+        self.assertEqual(a.collisions(b), {})
+        a.A.trait1 = 1
+        b.A.trait2 = 2
+        self.assertEqual(a.collisions(b), {})
+        b.A.trait1 = 1
+        self.assertEqual(a.collisions(b), {})
+        b.A.trait1 = 0
+        self.assertEqual(a.collisions(b), {
+            'A': {
+                'trait1': "1 ignored, using 0",
+            }
+        })
+        self.assertEqual(b.collisions(a), {
+            'A': {
+                'trait1': "0 ignored, using 1",
+            }
+        })
+        a.A.trait2 = 3
+        self.assertEqual(b.collisions(a), {
+            'A': {
+                'trait1': "0 ignored, using 1",
+                'trait2': "2 ignored, using 3",
+            }
+        })
 
     def test_v2raise(self):
         fd, fname = mkstemp('.json')
@@ -180,14 +190,23 @@ class TestArgParseCL(TestCase):
 class TestKeyValueCL(TestCase):
     klass = KeyValueConfigLoader
 
+    def test_eval(self):
+        cl = self.klass(log=log)
+        config = cl.load_config('--Class.str_trait=all --Class.int_trait=5 --Class.list_trait=["hello",5]'.split())
+        self.assertEqual(config.Class.str_trait, 'all')
+        self.assertEqual(config.Class.int_trait, 5)
+        self.assertEqual(config.Class.list_trait, ["hello", 5])
+
     def test_basic(self):
         cl = self.klass(log=log)
-        argv = ['--'+s.strip('c.') for s in pyfile.split('\n')[2:-1]]
+        argv = [ '--' + s[2:] for s in pyfile.split('\n') if s.startswith('c.') ]
+        print(argv)
         config = cl.load_config(argv)
         self.assertEqual(config.a, 10)
         self.assertEqual(config.b, 20)
         self.assertEqual(config.Foo.Bar.value, 10)
-        self.assertEqual(config.Foo.Bam.value, list(range(10)))
+        # non-literal expressions are not evaluated
+        self.assertEqual(config.Foo.Bam.value, 'list(range(10))')
         self.assertEqual(config.D.C.value, 'hi there')
     
     def test_expanduser(self):
@@ -302,11 +321,15 @@ class TestConfig(TestCase):
         c1.Foo.bam = 30
         c1.a = 'asdf'
         c1.b = range(10)
-        import copy
+        c1.Test.logger = logging.Logger('test')
+        c1.Test.get_logger = logging.getLogger('test')
         c2 = copy.deepcopy(c1)
         self.assertEqual(c1, c2)
         self.assertTrue(c1 is not c2)
         self.assertTrue(c1.Foo is not c2.Foo)
+        self.assertTrue(c1.Test is not c2.Test)
+        self.assertTrue(c1.Test.logger is c2.Test.logger)
+        self.assertTrue(c1.Test.get_logger is c2.Test.get_logger)
 
     def test_builtin(self):
         c1 = Config()

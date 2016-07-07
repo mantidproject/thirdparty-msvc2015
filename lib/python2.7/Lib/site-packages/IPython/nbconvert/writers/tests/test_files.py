@@ -59,7 +59,7 @@ class Testfiles(TestsBase):
         with self.create_temp_cwd():
 
             # Create the resoruces dictionary
-            res = {'output_extension': 'txt'}
+            res = {'output_extension': '.txt'}
 
             # Create files writer, test output
             writer = FilesWriter()
@@ -158,6 +158,149 @@ class Testfiles(TestsBase):
             path = os.path.join(writer.build_directory, 'sub')
             assert os.path.isdir(path)
             dest = os.path.join(path, 'c')
+            assert os.path.isfile(dest)
+            with open(dest, 'r') as f:
+                output = f.read()
+                self.assertEqual(output, 'd')
+
+    def test_glob(self):
+        """Can the FilesWriter handle globbed files correctly?"""
+
+        # Work in a temporary directory.
+        with self.create_temp_cwd():
+
+            # Create test files
+            os.mkdir('sub')
+            with open(os.path.join('sub', 'c'), 'w') as f:
+                f.write('e')
+            with open(os.path.join('sub', 'd'), 'w') as f:
+                f.write('e')
+
+            # Create the resoruces dictionary
+            res = {}
+
+            # Create files writer, test output
+            writer = FilesWriter()
+            writer.files = ['sub/*']
+            writer.build_directory = u'build'
+            writer.write(u'y', res, notebook_name="z")
+
+            # Check the output of the file
+            assert os.path.isdir(writer.build_directory)
+            dest = os.path.join(writer.build_directory, 'z')
+            with open(dest, 'r') as f:
+                output = f.read()
+                self.assertEqual(output, u'y')
+
+            # Check to make sure the globbed files were copied
+            path = os.path.join(writer.build_directory, 'sub')
+            assert os.path.isdir(path)
+            for filename in ['c', 'd']:
+                dest = os.path.join(path, filename)
+                assert os.path.isfile(dest)
+                with open(dest, 'r') as f:
+                    output = f.read()
+                    self.assertEqual(output, 'e')
+
+    def test_relpath(self):
+        """Can the FilesWriter handle relative paths for linked files correctly?"""
+
+        # Work in a temporary directory.
+        with self.create_temp_cwd():
+
+            # Create test file
+            os.mkdir('sub')
+            with open(os.path.join('sub', 'c'), 'w') as f:
+                f.write('d')
+
+            # Create the resoruces dictionary
+            res = {}
+
+            # Create files writer, test output
+            writer = FilesWriter()
+            writer.files = [os.path.join('sub', 'c')]
+            writer.build_directory = u'build'
+            writer.relpath = 'sub'
+            writer.write(u'y', res, notebook_name="z")
+
+            # Check the output of the file
+            assert os.path.isdir(writer.build_directory)
+            dest = os.path.join(writer.build_directory, 'z')
+            with open(dest, 'r') as f:
+                output = f.read()
+                self.assertEqual(output, u'y')
+
+            # Check to make sure the linked file was copied
+            dest = os.path.join(writer.build_directory, 'c')
+            assert os.path.isfile(dest)
+            with open(dest, 'r') as f:
+                output = f.read()
+                self.assertEqual(output, 'd')
+
+    def test_relpath_default(self):
+        """Is the FilesWriter default relative path correct?"""
+
+        # Work in a temporary directory.
+        with self.create_temp_cwd():
+
+            # Create test file
+            os.mkdir('sub')
+            with open(os.path.join('sub', 'c'), 'w') as f:
+                f.write('d')
+
+            # Create the resoruces dictionary
+            res = dict(metadata=dict(path="sub"))
+
+            # Create files writer, test output
+            writer = FilesWriter()
+            writer.files = [os.path.join('sub', 'c')]
+            writer.build_directory = u'build'
+            writer.write(u'y', res, notebook_name="z")
+
+            # Check the output of the file
+            assert os.path.isdir(writer.build_directory)
+            dest = os.path.join(writer.build_directory, 'z')
+            with open(dest, 'r') as f:
+                output = f.read()
+                self.assertEqual(output, u'y')
+
+            # Check to make sure the linked file was copied
+            dest = os.path.join(writer.build_directory, 'c')
+            assert os.path.isfile(dest)
+            with open(dest, 'r') as f:
+                output = f.read()
+                self.assertEqual(output, 'd')
+
+    def test_relpath_default(self):
+        """Does the FilesWriter relpath option take precedence over the path?"""
+
+        # Work in a temporary directory.
+        with self.create_temp_cwd():
+
+            # Create test file
+            os.mkdir('sub')
+            with open(os.path.join('sub', 'c'), 'w') as f:
+                f.write('d')
+
+            # Create the resoruces dictionary
+            res = dict(metadata=dict(path="other_sub"))
+
+            # Create files writer, test output
+            writer = FilesWriter()
+            writer.files = [os.path.join('sub', 'c')]
+            writer.build_directory = u'build'
+            writer.relpath = 'sub'
+            writer.write(u'y', res, notebook_name="z")
+
+            # Check the output of the file
+            assert os.path.isdir(writer.build_directory)
+            dest = os.path.join(writer.build_directory, 'z')
+            with open(dest, 'r') as f:
+                output = f.read()
+                self.assertEqual(output, u'y')
+
+            # Check to make sure the linked file was copied
+            dest = os.path.join(writer.build_directory, 'c')
             assert os.path.isfile(dest)
             with open(dest, 'r') as f:
                 output = f.read()
