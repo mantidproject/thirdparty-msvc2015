@@ -27,6 +27,7 @@ cd /D %~dp0
 @call build-nexus.bat
 @call build-oce.bat
 @call build-poco.bat
+@call fetch-tbb.bat
 
 :: gui
 @call build-qt4.bat
