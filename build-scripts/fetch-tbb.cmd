@@ -8,6 +8,7 @@
 :: Setup environment. Important to ensure correct detection of environment
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call %~dp0cmds\common-setup.cmd
+@set TBB_EXTRAS_DIR=%dp0extras\tbb
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Download
@@ -43,6 +44,13 @@ xcopy lib\%VC_DIR% %INSTALL_ROOT%\lib /Y /I
 
 :: Runtime DLLs
 xcopy bin\%VC_DIR% %INSTALL_ROOT%\bin /Y /I
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: Patch
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+@echo Patching Intel TBB
+cd %BUILD_DIR%
+call patch -p0 --input=%TBB_EXTRAS_DIR%\tbb_config-debug.patch
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Post-process
