@@ -298,7 +298,8 @@
 
 #ifndef TBB_USE_DEBUG
 #ifdef _DEBUG
-#define TBB_USE_DEBUG _DEBUG
+// Explicitly set TBB_USE_DEBUG to 1 instead of using value in _DEBUG
+#define TBB_USE_DEBUG 1
 #else
 #define TBB_USE_DEBUG 0
 #endif
