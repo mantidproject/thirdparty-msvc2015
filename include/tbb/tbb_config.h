@@ -298,7 +298,7 @@
 
 #ifndef TBB_USE_DEBUG
 #ifdef _DEBUG
-#define TBB_USE_DEBUG _DEBUG
+#define TBB_USE_DEBUG 1
 #else
 #define TBB_USE_DEBUG 0
 #endif
