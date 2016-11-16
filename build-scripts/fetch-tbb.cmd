@@ -13,8 +13,8 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Download
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set SRC_PKG_URL="https://www.threadingbuildingblocks.org/sites/default/files/software_releases/windows/tbb44_20160526oss_win_0.zip"
-@set SRC_PKG=tbb44_20160526oss_win_0.zip
+@set SRC_PKG_URL="https://www.threadingbuildingblocks.org/sites/default/files/software_releases/windows/tbb2017_20161004oss_win.zip"
+@set SRC_PKG=tbb2017_20161004oss_win.zip
 @set BUILD_DIR=%BUILD_ROOT%\tbb
 @call try-mkdir.cmd %BUILD_DIR%
 @cd %BUILD_DIR%
@@ -25,8 +25,8 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @if not exist %SRC_ROOT% call 7z x %SRC_PKG% -o%BUILD_DIR% -y
 
-:: chop off the _win_0.zip
-@set SRC_ROOT=%BUILD_DIR%\%SRC_PKG:~0,-10%
+:: chop off the _win.zip
+@set SRC_ROOT=%BUILD_DIR%\%SRC_PKG:~0,-8%
 @cd %SRC_ROOT%
 
 :: Copy required files
@@ -48,9 +48,6 @@ xcopy bin\%VC_DIR% %INSTALL_ROOT%\bin /Y /I
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Patch
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@echo Patching Intel TBB
-cd %BUILD_DIR%
-call patch -p0 --input=%TBB_EXTRAS_DIR%\tbb_config-debug.patch
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Post-process
