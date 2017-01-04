@@ -48,6 +48,7 @@ nuget install packages.config -outputdirector %VS_BUILD_DIR%\packages
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 if not exist %INSTALL_ROOT%\include\librdkafka mkdir %INSTALL_ROOT%\include\librdkafka
 xcopy %LIBRDKAFKA_ROOT%\src-cpp\*.h %INSTALL_ROOT%\include\librdkafka /Y
+xcopy %LIBRDKAFKA_ROOT%\src\*.h %INSTALL_ROOT%\include\librdkafka /Y
 
 @call:install-libs-Release
 @call:install-libs-Debug
@@ -64,10 +65,16 @@ goto:eof
 xcopy %VS_BUILD_DIR%\x64\Release\librdkafkacpp.lib %INSTALL_ROOT%\lib /Y /I
 xcopy %VS_BUILD_DIR%\x64\Release\librdkafkacpp.pdb %INSTALL_ROOT%\bin /Y /I
 xcopy %VS_BUILD_DIR%\x64\Release\librdkafkacpp.dll %INSTALL_ROOT%\bin /Y /I
+xcopy %VS_BUILD_DIR%\x64\Release\librdkafka.lib %INSTALL_ROOT%\lib /Y /I
+xcopy %VS_BUILD_DIR%\x64\Release\librdkafka.pdb %INSTALL_ROOT%\bin /Y /I
+xcopy %VS_BUILD_DIR%\x64\Release\librdkafka.dll %INSTALL_ROOT%\bin /Y /I
 goto:eof
 
 :install-libs-Debug
 copy %VS_BUILD_DIR%\x64\Debug\librdkafkacpp.lib %INSTALL_ROOT%\lib\librdkafkacppd.lib /Y 
 copy %VS_BUILD_DIR%\x64\Debug\librdkafkacpp.pdb %INSTALL_ROOT%\bin\librdkafkacppd.pdb /Y 
 copy %VS_BUILD_DIR%\x64\Debug\librdkafkacpp.dll %INSTALL_ROOT%\bin\librdkafkacppd.dll /Y 
+copy %VS_BUILD_DIR%\x64\Debug\librdkafka.lib %INSTALL_ROOT%\lib\librdkafkad.lib /Y 
+copy %VS_BUILD_DIR%\x64\Debug\librdkafka.pdb %INSTALL_ROOT%\bin\librdkafkad.pdb /Y 
+copy %VS_BUILD_DIR%\x64\Debug\librdkafka.dll %INSTALL_ROOT%\bin\librdkafkad.dll /Y 
 goto:eof
