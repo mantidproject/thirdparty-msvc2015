@@ -1,0 +1,9 @@
+--- boost/math/common_factor_rt.hpp.orig	Thu Dec 22 13:33:14 2016
++++ boost/math/common_factor_rt.hpp	Thu Mar 30 12:38:32 2017
+@@ -161,4 +161,4 @@
+       { BOOST_FORCEINLINE static unsigned make_odd(char& val){ unsigned result = gcd_traits<unsigned long>::find_lsb(val); val >>= result; return result; } };
+-      template <> struct gcd_traits<wchar_t> : public gcd_traits_defaults<wchar_t> 
+-      { BOOST_FORCEINLINE static unsigned make_odd(wchar_t& val){ unsigned result = gcd_traits<unsigned long>::find_lsb(val); val >>= result; return result; } };
++      //template <> struct gcd_traits<wchar_t> : public gcd_traits_defaults<wchar_t> 
++      //{ BOOST_FORCEINLINE static unsigned make_odd(wchar_t& val){ unsigned result = gcd_traits<unsigned long>::find_lsb(val); val >>= result; return result; } };
+ #ifdef _M_X64
