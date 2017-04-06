@@ -1,0 +1,63 @@
+--- librdkafkacpp/librdkafkacpp.vcxproj.orig	Fri Feb 24 22:09:26 2017
++++ librdkafkacpp/librdkafkacpp.vcxproj	Tue Mar 21 09:35:54 2017
+@@ -12,27 +12,4 @@
+   </PropertyGroup>
+-  <Import Project="$(SolutionDir)common.vcxproj"/>
++  <Import Project="$(SolutionDir)common.vcxproj" />
+   <PropertyGroup Label="UserMacros" />
+-
+-  <ItemDefinitionGroup>
+-    <Link>
+-      <SubSystem>Windows</SubSystem>
+-      <GenerateDebugInformation>true</GenerateDebugInformation>
+-     <AdditionalDependencies>librdkafka.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+-      <AdditionalLibraryDirectories>$(BuildOutputDir)</AdditionalLibraryDirectories>
+-    </Link>
+-  </ItemDefinitionGroup>
+-
+-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+-    <ClCompile>
+-      <PrecompiledHeader>
+-      </PrecompiledHeader>
+-      <WarningLevel>Level3</WarningLevel>
+-      <Optimization>Disabled</Optimization>
+-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBRDKAFKACPP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+-      <SDLCheck>true</SDLCheck>
+-      <AdditionalOptions>/J %(AdditionalOptions)</AdditionalOptions>
+-      <AdditionalIncludeDirectories>
+-      </AdditionalIncludeDirectories>
+-    </ClCompile>
+-  </ItemDefinitionGroup>
+   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+@@ -49,17 +26,10 @@
+     </ClCompile>
+-  </ItemDefinitionGroup>
+-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+-    <ClCompile>
+-      <WarningLevel>Level3</WarningLevel>
+-      <PrecompiledHeader>
+-      </PrecompiledHeader>
+-      <Optimization>MaxSpeed</Optimization>
+-      <FunctionLevelLinking>true</FunctionLevelLinking>
+-      <IntrinsicFunctions>true</IntrinsicFunctions>
+-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBRDKAFKACPP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+-      <SDLCheck>true</SDLCheck>
+-    </ClCompile>
+     <Link>
+-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+-      <OptimizeReferences>true</OptimizeReferences>
++      <OutputFile>$(OutDir)$(TargetName)_D$(TargetExt)</OutputFile>
++      <ProgramDatabaseFile>$(OutDir)$(TargetName)_D.pdb</ProgramDatabaseFile>
++      <ImportLibrary>$(OutDir)$(TargetName)_D.lib</ImportLibrary>
++      <SubSystem>Windows</SubSystem>
++      <GenerateDebugInformation>true</GenerateDebugInformation>
++      <AdditionalDependencies>librdkafka_D.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
++      <AdditionalLibraryDirectories>$(BuildOutputDir)</AdditionalLibraryDirectories>
+     </Link>
+@@ -80,2 +50,6 @@
+       <OptimizeReferences>true</OptimizeReferences>
++      <SubSystem>Windows</SubSystem>
++      <GenerateDebugInformation>true</GenerateDebugInformation>
++      <AdditionalDependencies>librdkafka.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
++      <AdditionalLibraryDirectories>$(BuildOutputDir)</AdditionalLibraryDirectories>
+     </Link>
