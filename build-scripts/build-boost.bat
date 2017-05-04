@@ -33,7 +33,8 @@ set BOOST_ROOT=%BUILD_DIR%\boost_1_59_0
 :: Patch
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 cd %BOOST_ROOT%
-if not exist include\boost\type_traits\intrinsics.hpp.orig call patch -p0 --input=%BOOST_EXTRAS_DIR%\type-traits-160.patch --backup
+if not exist boost\type_traits\intrinsics.hpp.orig call patch -p0 --input=%BOOST_EXTRAS_DIR%\type-traits-160.patch --backup
+
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build & Install
@@ -52,7 +53,7 @@ if exist "%INSTALL_ROOT%\include\boost" (
 :: Build libraries with no external dependencies
 :: --layout=tagged ensures the the include directory is %prefix%/include/boost and not %prefix%/include/boost_X_XX_X/boost
 set COMMON_BUILD_OPTS=link=shared threading=multi address-model=64 runtime-link=shared
-@call b2.exe %COMMON_BUILD_OPTS% --with-date_time --with-regex --with-python variant=release variant=debug install --prefix=%INSTALL_ROOT% --layout=tagged
+@call b2.exe %COMMON_BUILD_OPTS% --with-date_time --with-regex --with-python --with-serialization variant=release variant=debug install --prefix=%INSTALL_ROOT% --layout=tagged
 
 :: We want the dlls in bin but b2 won't allow that
 echo Moving dlls to %INSTALL_ROOT%\bin
