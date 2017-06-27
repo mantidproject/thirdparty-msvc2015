@@ -1,11 +1,11 @@
-prefix=d:/GitHub/thirdparty-msvc2015
+prefix=C:/thirdparty_msvc2015
 exec_prefix=${prefix}
-libdir=D:/GitHub/thirdparty-msvc2015/lib
-includedir=D:/GitHub/thirdparty-msvc2015/include
+libdir=lib
+includedir=include
 
 Name: jsoncpp
 Description: A C++ library for interacting with JSON
-Version: 0.10.5
+Version: 1.7.3
 URL: https://github.com/open-source-parsers/jsoncpp
 Libs: -L${libdir} -ljsoncpp
 Cflags: -I${includedir}

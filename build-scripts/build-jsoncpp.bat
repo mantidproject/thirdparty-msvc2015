@@ -12,10 +12,10 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Download and unpack source.
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set SRC_PKG_URL="https://github.com/open-source-parsers/jsoncpp/archive/0.10.5.zip"
+@set SRC_PKG_URL="https://codeload.github.com/open-source-parsers/jsoncpp/zip/1.7.3"
 @set BUILD_DIR=%BUILD_ROOT%\jsoncpp
-@set SRC_PKG=0.10.5.zip
-@set SRC_ROOT=%BUILD_DIR%\jsoncpp-0.10.5
+@set SRC_PKG=1.7.3.zip
+@set SRC_ROOT=%BUILD_DIR%\jsoncpp-1.7.3
 @if not exist %SRC_ROOT% call download-and-extract.cmd %BUILD_DIR%\%SRC_PKG% %SRC_PKG_URL%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
