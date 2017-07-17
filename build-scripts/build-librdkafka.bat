@@ -39,7 +39,7 @@ cd %LIBRDKAFKA_ROOT%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Patch build files
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set MANTIDTHIRDPARTY=%INSTALL_ROOT%
+@set MANTIDTHIRDPARTY=%INSTALL_PREFIX%
 @call patch -p0 --input=%LIBRDKAFKA_EXTRAS_DIR%\librdkafka.sln.patch --backup
 @call patch -p0 --input=%LIBRDKAFKA_EXTRAS_DIR%\librdkafka.vcxproj.patch --backup
 @call patch -p0 --input=%LIBRDKAFKA_EXTRAS_DIR%\librdkafkacpp.vcxproj.patch --backup
@@ -50,9 +50,9 @@ cd %LIBRDKAFKA_ROOT%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Install
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-if not exist %INSTALL_ROOT%\include\librdkafka mkdir %INSTALL_ROOT%\include\librdkafka
-xcopy %LIBRDKAFKA_ROOT%\src-cpp\*.h %INSTALL_ROOT%\include\librdkafka /Y
-xcopy %LIBRDKAFKA_ROOT%\src\*.h %INSTALL_ROOT%\include\librdkafka /Y
+if not exist %INSTALL_PREFIX%\include\librdkafka mkdir %INSTALL_PREFIX%\include\librdkafka
+xcopy %LIBRDKAFKA_ROOT%\src-cpp\*.h %INSTALL_PREFIX%\include\librdkafka /Y
+xcopy %LIBRDKAFKA_ROOT%\src\*.h %INSTALL_PREFIX%\include\librdkafka /Y
 
 @call:install-libs Release
 @call:install-libs Debug
@@ -73,7 +73,7 @@ goto:eof
 
 :: %1 Configuration to build: Release/Debug
 :install-libs
-xcopy %VS_BUILD_DIR%\outdir\v140\x64\%1\librdkafka*.lib %INSTALL_ROOT%\lib /Y /I
-xcopy %VS_BUILD_DIR%\outdir\v140\x64\%1\librdkafka*.pdb %INSTALL_ROOT%\bin /Y /I
-xcopy %VS_BUILD_DIR%\outdir\v140\x64\%1\librdkafka*.dll %INSTALL_ROOT%\bin /Y /I
+xcopy %VS_BUILD_DIR%\outdir\v140\x64\%1\librdkafka*.lib %INSTALL_PREFIX%\lib /Y /I
+xcopy %VS_BUILD_DIR%\outdir\v140\x64\%1\librdkafka*.pdb %INSTALL_PREFIX%\bin /Y /I
+xcopy %VS_BUILD_DIR%\outdir\v140\x64\%1\librdkafka*.dll %INSTALL_PREFIX%\bin /Y /I
 goto:eof

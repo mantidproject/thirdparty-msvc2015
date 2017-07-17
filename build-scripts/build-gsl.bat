@@ -42,8 +42,8 @@ if not exist %GSL_SRC_DIR%\gsl\gsl_version.h @msbuild /nologo /p:Configuration=R
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Install
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-if not exist %INSTALL_ROOT%\include\gsl mkdir %INSTALL_ROOT%\include\gsl
-xcopy /Y %GSL_SRC_DIR%\gsl\*.h %INSTALL_ROOT%\include\gsl
+if not exist %INSTALL_PREFIX%\include\gsl mkdir %INSTALL_PREFIX%\include\gsl
+xcopy /Y %GSL_SRC_DIR%\gsl\*.h %INSTALL_PREFIX%\include\gsl
 @call:install-libs Release
 @call:install-libs Debug
 
@@ -64,7 +64,7 @@ goto:eof
 
 :: %1 Configuration to install
 :install-libs
-xcopy %VS_BUILD_DIR%\dll\x64\%1\*.lib %INSTALL_ROOT%\lib /Y /I
-xcopy %VS_BUILD_DIR%\dll\x64\%1\*.pdb %INSTALL_ROOT%\bin /Y /I
-xcopy %VS_BUILD_DIR%\dll\x64\%1\*.dll %INSTALL_ROOT%\bin /Y /I
+xcopy %VS_BUILD_DIR%\dll\x64\%1\*.lib %INSTALL_PREFIX%\lib /Y /I
+xcopy %VS_BUILD_DIR%\dll\x64\%1\*.pdb %INSTALL_PREFIX%\bin /Y /I
+xcopy %VS_BUILD_DIR%\dll\x64\%1\*.dll %INSTALL_PREFIX%\bin /Y /I
 goto:eof

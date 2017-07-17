@@ -1,7 +1,7 @@
 @setlocal enableextensions enabledelayedexpansion
 ::
 :: Build script for HDF5, ZLib and SZip. It requires ZLib and SZip
-:: to have been installed into INSTALL_ROOT first
+:: to have been installed into INSTALL_PREFIX first
 @echo Building HDF5
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -35,10 +35,10 @@ cd %SRC_ROOT%
 :: Build
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call cmake-configure %SRC_ROOT%\ -C "%SRC_ROOT%\config\cmake\cacheinit.cmake" -C "%HDF5_EXTRAS_DIR%\hdf5.cmake" ^
- "-DCMAKE_PREFIX_PATH:PATH=%INSTALL_ROOT%" "-DCMAKE_INSTALL_PREFIX=%INSTALL_ROOT%"
+ "-DCMAKE_PREFIX_PATH:PATH=%INSTALL_PREFIX%" "-DCMAKE_INSTALL_PREFIX=%INSTALL_PREFIX%"
 @call build-and-install.cmd %SRC_ROOT%\build ALL_BUILD.vcxproj
 :: remove unwanted files
-for %%F in (COPYING USING_HDF5_CMake.txt USING_HDF5_VS.txt Release.txt) do ( del %INSTALL_ROOT%\%%F )
+for %%F in (COPYING USING_HDF5_CMake.txt USING_HDF5_VS.txt Release.txt) do ( del %INSTALL_PREFIX%\%%F )
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build h5py against this version
@@ -57,8 +57,8 @@ cd !SRC_ROOT!
 @set DISTUTILS_USE_SDK=1
 @set MSSdk=1
 cd %BUILD_DIR%\h5py-2.5.0
-%PYTHON_INSTALL_ROOT%\python setup.py configure --hdf5=%INSTALL_ROOT% --hdf5-version=1.8.15
-%PYTHON_INSTALL_ROOT%\python setup.py install
+%PYTHON_INSTALL_PREFIX%\python setup.py configure --hdf5=%INSTALL_PREFIX% --hdf5-version=1.8.15
+%PYTHON_INSTALL_PREFIX%\python setup.py install
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize

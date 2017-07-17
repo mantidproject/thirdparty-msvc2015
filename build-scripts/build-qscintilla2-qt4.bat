@@ -8,10 +8,10 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call %~dp0cmds\common-setup.cmd
 @set QSCI2_EXTRAS_DIR=%~dp0extras\qscintilla2
-@set INCLUDE=%INSTALL_ROOT%\include;%INCLUDE%
+@set INCLUDE=%INSTALL_PREFIX%\include;%INCLUDE%
 @echo %INLCUDE%
-@set LIB=%INSTALL_ROOT%\lib;%LIB%
-@set PATH=%INSTALL_ROOT%\bin;%INSTALL_ROOT%\lib\qt4\bin;%BUILD_ROOT%\jom;%PATH%
+@set LIB=%INSTALL_PREFIX%\lib;%LIB%
+@set PATH=%INSTALL_PREFIX%\bin;%INSTALL_PREFIX%\lib\qt4\bin;%BUILD_ROOT%\jom;%PATH%
 @set NJOBS=8
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -40,10 +40,10 @@ jom -j%NJOBS%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Install
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: qmake uses INSTALL_ROOT in the generated make file and having it set here
+:: qmake uses INSTALL_PREFIX in the generated make file and having it set here
 :: confuses things
-@set INSTALL_PREFIX=%INSTALL_ROOT%
-@set INSTALL_ROOT=
+@set INSTALL_PREFIX=%INSTALL_PREFIX%
+@set INSTALL_PREFIX=
 nmake install
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

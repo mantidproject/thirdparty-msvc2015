@@ -1,0 +1,702 @@
+diff --git a/designer/pluginloader.h b/designer/pluginloader.h
+index b93d2eb..9c4087d 100644
+--- a/designer/pluginloader.h
++++ b/designer/pluginloader.h
+@@ -23,7 +23,7 @@
+ #ifndef _PLUGINLOADER_H
+ #define _PLUGINLOADER_H
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QDesignerCustomWidgetCollectionInterface>
+ #include <QList>
+diff --git a/qpy/QtCore/qpycore_chimera.cpp b/qpy/QtCore/qpycore_chimera.cpp
+index 34735cc..2879e30 100644
+--- a/qpy/QtCore/qpycore_chimera.cpp
++++ b/qpy/QtCore/qpycore_chimera.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QByteArray>
+ #include <QMetaObject>
+diff --git a/qpy/QtCore/qpycore_chimera.h b/qpy/QtCore/qpycore_chimera.h
+index 62b16d5..5855bce 100644
+--- a/qpy/QtCore/qpycore_chimera.h
++++ b/qpy/QtCore/qpycore_chimera.h
+@@ -22,7 +22,7 @@
+ #define _QPYCORE_CHIMERA_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QByteArray>
+ #include <QHash>
+diff --git a/qpy/QtCore/qpycore_chimera_signature.cpp b/qpy/QtCore/qpycore_chimera_signature.cpp
+index 45cd5bf..cbb7029 100644
+--- a/qpy/QtCore/qpycore_chimera_signature.cpp
++++ b/qpy/QtCore/qpycore_chimera_signature.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include "qpycore_chimera.h"
+ 
+diff --git a/qpy/QtCore/qpycore_chimera_storage.cpp b/qpy/QtCore/qpycore_chimera_storage.cpp
+index 2f0d332..e1da5cd 100644
+--- a/qpy/QtCore/qpycore_chimera_storage.cpp
++++ b/qpy/QtCore/qpycore_chimera_storage.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QVariant>
+ 
+diff --git a/qpy/QtCore/qpycore_classinfo.cpp b/qpy/QtCore/qpycore_classinfo.cpp
+index 7ea9973..3439d1f 100644
+--- a/qpy/QtCore/qpycore_classinfo.cpp
++++ b/qpy/QtCore/qpycore_classinfo.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ #include <frameobject.h>
+ 
+ #include <QMultiHash>
+diff --git a/qpy/QtCore/qpycore_init.cpp b/qpy/QtCore/qpycore_init.cpp
+index 7538d6a..1cb7644 100644
+--- a/qpy/QtCore/qpycore_init.cpp
++++ b/qpy/QtCore/qpycore_init.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include "qpycore_chimera.h"
+ #include "qpycore_qobject_helpers.h"
+diff --git a/qpy/QtCore/qpycore_misc.cpp b/qpy/QtCore/qpycore_misc.cpp
+index c33b551..e469be7 100644
+--- a/qpy/QtCore/qpycore_misc.cpp
++++ b/qpy/QtCore/qpycore_misc.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include "qpycore_misc.h"
+ #include "qpycore_types.h"
+diff --git a/qpy/QtCore/qpycore_misc.h b/qpy/QtCore/qpycore_misc.h
+index 448ff90..098e0da 100644
+--- a/qpy/QtCore/qpycore_misc.h
++++ b/qpy/QtCore/qpycore_misc.h
+@@ -22,7 +22,7 @@
+ #define _QPYCORE_MISC_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include "qpycore_shared.h"
+ #include "qpycore_sip.h"
+diff --git a/qpy/QtCore/qpycore_post_init.cpp.in b/qpy/QtCore/qpycore_post_init.cpp.in
+index b0d3a23..1daf6c8 100644
+--- a/qpy/QtCore/qpycore_post_init.cpp.in
++++ b/qpy/QtCore/qpycore_post_init.cpp.in
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QMetaType>
+ #include <QMutex>
+diff --git a/qpy/QtCore/qpycore_pyqtboundsignal.cpp b/qpy/QtCore/qpycore_pyqtboundsignal.cpp
+index 6c8e37d..8a5359b 100644
+--- a/qpy/QtCore/qpycore_pyqtboundsignal.cpp
++++ b/qpy/QtCore/qpycore_pyqtboundsignal.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QtGlobal>
+ #include <QByteArray>
+diff --git a/qpy/QtCore/qpycore_pyqtboundsignal.h b/qpy/QtCore/qpycore_pyqtboundsignal.h
+index 614b32d..f828c09 100644
+--- a/qpy/QtCore/qpycore_pyqtboundsignal.h
++++ b/qpy/QtCore/qpycore_pyqtboundsignal.h
+@@ -22,7 +22,7 @@
+ #define _QPYCORE_PYQTBOUNDSIGNAL_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include "qpycore_pyqtsignal.h"
+ #include "qpycore_namespace.h"
+diff --git a/qpy/QtCore/qpycore_pyqtconfigure.cpp b/qpy/QtCore/qpycore_pyqtconfigure.cpp
+index 68dfa60..665d7bb 100644
+--- a/qpy/QtCore/qpycore_pyqtconfigure.cpp
++++ b/qpy/QtCore/qpycore_pyqtconfigure.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QByteArray>
+ #include <QMetaObject>
+diff --git a/qpy/QtCore/qpycore_pyqtmethodproxy.cpp b/qpy/QtCore/qpycore_pyqtmethodproxy.cpp
+index 1de140b..5ba5235 100644
+--- a/qpy/QtCore/qpycore_pyqtmethodproxy.cpp
++++ b/qpy/QtCore/qpycore_pyqtmethodproxy.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <sip.h>
+ 
+diff --git a/qpy/QtCore/qpycore_pyqtmethodproxy.h b/qpy/QtCore/qpycore_pyqtmethodproxy.h
+index 2dceb7b..5203670 100644
+--- a/qpy/QtCore/qpycore_pyqtmethodproxy.h
++++ b/qpy/QtCore/qpycore_pyqtmethodproxy.h
+@@ -22,7 +22,7 @@
+ #define _QPYCORE_PYQTMETHODPROXY_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QtGlobal>
+ #include <QByteArray>
+diff --git a/qpy/QtCore/qpycore_pyqtproperty.cpp b/qpy/QtCore/qpycore_pyqtproperty.cpp
+index 30cf0f3..63b57d6 100644
+--- a/qpy/QtCore/qpycore_pyqtproperty.cpp
++++ b/qpy/QtCore/qpycore_pyqtproperty.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ #include <structmember.h>
+ 
+ #include "qpycore_chimera.h"
+diff --git a/qpy/QtCore/qpycore_pyqtproperty.h b/qpy/QtCore/qpycore_pyqtproperty.h
+index 77dfbd9..ee2b988 100644
+--- a/qpy/QtCore/qpycore_pyqtproperty.h
++++ b/qpy/QtCore/qpycore_pyqtproperty.h
+@@ -22,7 +22,7 @@
+ #define _QPYCORE_PYQTPROPERTY_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ 
+ class Chimera;
+diff --git a/qpy/QtCore/qpycore_pyqtproxy.cpp b/qpy/QtCore/qpycore_pyqtproxy.cpp
+index 0693bef..e833ac3 100644
+--- a/qpy/QtCore/qpycore_pyqtproxy.cpp
++++ b/qpy/QtCore/qpycore_pyqtproxy.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QByteArray>
+ #include <QMetaObject>
+diff --git a/qpy/QtCore/qpycore_pyqtproxy.h b/qpy/QtCore/qpycore_pyqtproxy.h
+index b6bb10d..894cda6 100644
+--- a/qpy/QtCore/qpycore_pyqtproxy.h
++++ b/qpy/QtCore/qpycore_pyqtproxy.h
+@@ -22,7 +22,7 @@
+ #define _QPYCORE_PYQTPROXY_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QByteArray>
+ #include <QMultiHash>
+diff --git a/qpy/QtCore/qpycore_pyqtpyobject.cpp b/qpy/QtCore/qpycore_pyqtpyobject.cpp
+index 882b6fb..dd74dd1 100644
+--- a/qpy/QtCore/qpycore_pyqtpyobject.cpp
++++ b/qpy/QtCore/qpycore_pyqtpyobject.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include "qpycore_pyqtpyobject.h"
+ #include "qpycore_sip.h"
+diff --git a/qpy/QtCore/qpycore_pyqtpyobject.h b/qpy/QtCore/qpycore_pyqtpyobject.h
+index 3e811fa..73303c5 100644
+--- a/qpy/QtCore/qpycore_pyqtpyobject.h
++++ b/qpy/QtCore/qpycore_pyqtpyobject.h
+@@ -23,7 +23,7 @@
+ #define _QPYCORE_PYQTPYOBJECT_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QMetaType>
+ #include <QDataStream>
+diff --git a/qpy/QtCore/qpycore_pyqtsignal.cpp b/qpy/QtCore/qpycore_pyqtsignal.cpp
+index 1a98419..4336159 100644
+--- a/qpy/QtCore/qpycore_pyqtsignal.cpp
++++ b/qpy/QtCore/qpycore_pyqtsignal.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QtGlobal>
+ #include <QByteArray>
+diff --git a/qpy/QtCore/qpycore_pyqtsignal.h b/qpy/QtCore/qpycore_pyqtsignal.h
+index f012915..a544546 100644
+--- a/qpy/QtCore/qpycore_pyqtsignal.h
++++ b/qpy/QtCore/qpycore_pyqtsignal.h
+@@ -22,7 +22,7 @@
+ #define _QPYCORE_PYQTSIGNAL_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include "qpycore_chimera.h"
+ 
+diff --git a/qpy/QtCore/qpycore_pyqtslot.cpp b/qpy/QtCore/qpycore_pyqtslot.cpp
+index 900ed38..cec6012 100644
+--- a/qpy/QtCore/qpycore_pyqtslot.cpp
++++ b/qpy/QtCore/qpycore_pyqtslot.cpp
+@@ -19,7 +19,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QtGlobal>
+ #include <QByteArray>
+diff --git a/qpy/QtCore/qpycore_qabstracteventdispatcher.cpp b/qpy/QtCore/qpycore_qabstracteventdispatcher.cpp
+index 6fc7cc5..8006db6 100644
+--- a/qpy/QtCore/qpycore_qabstracteventdispatcher.cpp
++++ b/qpy/QtCore/qpycore_qabstracteventdispatcher.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QAbstractEventDispatcher>
+ 
+diff --git a/qpy/QtCore/qpycore_qmetaobject.cpp b/qpy/QtCore/qpycore_qmetaobject.cpp
+index b7e8e9c..5efb87f 100644
+--- a/qpy/QtCore/qpycore_qmetaobject.cpp
++++ b/qpy/QtCore/qpycore_qmetaobject.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QGenericArgument>
+ #include <QGenericReturnArgument>
+diff --git a/qpy/QtCore/qpycore_qmetaobject_helpers.cpp b/qpy/QtCore/qpycore_qmetaobject_helpers.cpp
+index 84249e5..02da848 100644
+--- a/qpy/QtCore/qpycore_qmetaobject_helpers.cpp
++++ b/qpy/QtCore/qpycore_qmetaobject_helpers.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QByteArray>
+ #include <QMetaMethod>
+diff --git a/qpy/QtCore/qpycore_qobject_getattr.cpp b/qpy/QtCore/qpycore_qobject_getattr.cpp
+index aec8022..b532acd 100644
+--- a/qpy/QtCore/qpycore_qobject_getattr.cpp
++++ b/qpy/QtCore/qpycore_qobject_getattr.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QByteArray>
+ #include <QHash>
+diff --git a/qpy/QtCore/qpycore_qobject_helpers.cpp b/qpy/QtCore/qpycore_qobject_helpers.cpp
+index fa85fe9..7f8b23d 100644
+--- a/qpy/QtCore/qpycore_qobject_helpers.cpp
++++ b/qpy/QtCore/qpycore_qobject_helpers.cpp
+@@ -20,7 +20,7 @@
+ 
+ #include <ctype.h>
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QMetaObject>
+ #include <QMetaType>
+diff --git a/qpy/QtCore/qpycore_qobject_helpers.h b/qpy/QtCore/qpycore_qobject_helpers.h
+index 509f6d6..390f7fb 100644
+--- a/qpy/QtCore/qpycore_qobject_helpers.h
++++ b/qpy/QtCore/qpycore_qobject_helpers.h
+@@ -22,7 +22,7 @@
+ #define _QPYCORE_QOBJECT_HELPERS_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QMetaObject>
+ 
+diff --git a/qpy/QtCore/qpycore_qpynullvariant.cpp b/qpy/QtCore/qpycore_qpynullvariant.cpp
+index ab3d416..3e768d8 100644
+--- a/qpy/QtCore/qpycore_qpynullvariant.cpp
++++ b/qpy/QtCore/qpycore_qpynullvariant.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QByteArray>
+ #include <QDate>
+diff --git a/qpy/QtCore/qpycore_qpynullvariant.h b/qpy/QtCore/qpycore_qpynullvariant.h
+index 6e9189b..391be29 100644
+--- a/qpy/QtCore/qpycore_qpynullvariant.h
++++ b/qpy/QtCore/qpycore_qpynullvariant.h
+@@ -23,7 +23,7 @@
+ #define _QPYCORE_QPYNULLVARIANT_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QVariant>
+ 
+diff --git a/qpy/QtCore/qpycore_qstring.cpp b/qpy/QtCore/qpycore_qstring.cpp
+index fbfe150..7d1e026 100644
+--- a/qpy/QtCore/qpycore_qstring.cpp
++++ b/qpy/QtCore/qpycore_qstring.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ #include <string.h>
+ 
+ #include <QString>
+diff --git a/qpy/QtCore/qpycore_qstringlist.cpp b/qpy/QtCore/qpycore_qstringlist.cpp
+index 1351c1e..ae7116b 100644
+--- a/qpy/QtCore/qpycore_qstringlist.cpp
++++ b/qpy/QtCore/qpycore_qstringlist.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QStringList>
+ 
+diff --git a/qpy/QtCore/qpycore_qvariant.cpp b/qpy/QtCore/qpycore_qvariant.cpp
+index 20190af..dbef191 100644
+--- a/qpy/QtCore/qpycore_qvariant.cpp
++++ b/qpy/QtCore/qpycore_qvariant.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QVariant>
+ 
+diff --git a/qpy/QtCore/qpycore_qvariant_value.cpp b/qpy/QtCore/qpycore_qvariant_value.cpp
+index 6aeeacb..0c65b36 100644
+--- a/qpy/QtCore/qpycore_qvariant_value.cpp
++++ b/qpy/QtCore/qpycore_qvariant_value.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QVariant>
+ 
+diff --git a/qpy/QtCore/qpycore_shared.h b/qpy/QtCore/qpycore_shared.h
+index f1eae2e..f5329d9 100644
+--- a/qpy/QtCore/qpycore_shared.h
++++ b/qpy/QtCore/qpycore_shared.h
+@@ -23,7 +23,7 @@
+ #define _QPYCORE_SHARED_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QtGlobal>
+ #include <QByteArray>
+diff --git a/qpy/QtCore/qpycore_sip.h b/qpy/QtCore/qpycore_sip.h
+index d6b03f0..6027488 100644
+--- a/qpy/QtCore/qpycore_sip.h
++++ b/qpy/QtCore/qpycore_sip.h
+@@ -22,7 +22,7 @@
+ #define _QPYCORE_SIP_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include "sipAPIQtCore.h"
+ 
+diff --git a/qpy/QtCore/qpycore_sip_helpers.cpp b/qpy/QtCore/qpycore_sip_helpers.cpp
+index aba5382..6773b25 100644
+--- a/qpy/QtCore/qpycore_sip_helpers.cpp
++++ b/qpy/QtCore/qpycore_sip_helpers.cpp
+@@ -20,7 +20,7 @@
+ 
+ #include <string.h>
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QByteArray>
+ #include <QMetaObject>
+diff --git a/qpy/QtCore/qpycore_sip_helpers.h b/qpy/QtCore/qpycore_sip_helpers.h
+index 79d7c70..436a5dd 100644
+--- a/qpy/QtCore/qpycore_sip_helpers.h
++++ b/qpy/QtCore/qpycore_sip_helpers.h
+@@ -22,7 +22,7 @@
+ #define _QPYCORE_SIP_HELPERS_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include "qpycore_chimera.h"
+ #include "qpycore_namespace.h"
+diff --git a/qpy/QtCore/qpycore_types.cpp b/qpy/QtCore/qpycore_types.cpp
+index 89fb1f3..dd6e88c 100644
+--- a/qpy/QtCore/qpycore_types.cpp
++++ b/qpy/QtCore/qpycore_types.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QByteArray>
+ #include <QList>
+diff --git a/qpy/QtCore/qpycore_types.h b/qpy/QtCore/qpycore_types.h
+index 36ac402..7d81c29 100644
+--- a/qpy/QtCore/qpycore_types.h
++++ b/qpy/QtCore/qpycore_types.h
+@@ -22,7 +22,7 @@
+ #define _QPYCORE_TYPES_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QByteArray>
+ #include <QList>
+diff --git a/qpy/QtDBus/qpydbus_chimera_helpers.h b/qpy/QtDBus/qpydbus_chimera_helpers.h
+index c4b26a4..a871a21 100644
+--- a/qpy/QtDBus/qpydbus_chimera_helpers.h
++++ b/qpy/QtDBus/qpydbus_chimera_helpers.h
+@@ -22,7 +22,7 @@
+ #define _QPYDBUSCHIMERAHELPERS_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QVariant>
+ 
+diff --git a/qpy/QtDBus/qpydbus_post_init.cpp b/qpy/QtDBus/qpydbus_post_init.cpp
+index ea306ef..99f36e8 100644
+--- a/qpy/QtDBus/qpydbus_post_init.cpp
++++ b/qpy/QtDBus/qpydbus_post_init.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include "sipAPIQtDBus.h"
+ 
+diff --git a/qpy/QtDBus/qpydbuspendingreply.cpp b/qpy/QtDBus/qpydbuspendingreply.cpp
+index 2a5d398..672c72d 100644
+--- a/qpy/QtDBus/qpydbuspendingreply.cpp
++++ b/qpy/QtDBus/qpydbuspendingreply.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include "sipAPIQtDBus.h"
+ 
+diff --git a/qpy/QtDBus/qpydbuspendingreply.h b/qpy/QtDBus/qpydbuspendingreply.h
+index 329a8a3..0ddba87 100644
+--- a/qpy/QtDBus/qpydbuspendingreply.h
++++ b/qpy/QtDBus/qpydbuspendingreply.h
+@@ -22,7 +22,7 @@
+ #define _QPYDBUSPENDINGREPLY_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QDBusPendingReply>
+ 
+diff --git a/qpy/QtDBus/qpydbusreply.cpp b/qpy/QtDBus/qpydbusreply.cpp
+index ed8ae39..6a04fc5 100644
+--- a/qpy/QtDBus/qpydbusreply.cpp
++++ b/qpy/QtDBus/qpydbusreply.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QDBusMessage>
+ #include <QDBusPendingCall>
+diff --git a/qpy/QtDBus/qpydbusreply.h b/qpy/QtDBus/qpydbusreply.h
+index c044ef1..0e079d8 100644
+--- a/qpy/QtDBus/qpydbusreply.h
++++ b/qpy/QtDBus/qpydbusreply.h
+@@ -22,7 +22,7 @@
+ #define _QPYDBUSREPLY_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QDBusError>
+ #include <QVariant>
+diff --git a/qpy/QtDeclarative/qpydeclarative_chimera_helpers.h b/qpy/QtDeclarative/qpydeclarative_chimera_helpers.h
+index 29d8165..b617849 100644
+--- a/qpy/QtDeclarative/qpydeclarative_chimera_helpers.h
++++ b/qpy/QtDeclarative/qpydeclarative_chimera_helpers.h
+@@ -22,7 +22,7 @@
+ #define _QPYDECLARATIVECHIMERAHELPERS_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QVariant>
+ 
+diff --git a/qpy/QtDeclarative/qpydeclarative_listwrapper.h b/qpy/QtDeclarative/qpydeclarative_listwrapper.h
+index a669ff5..aca3caf 100644
+--- a/qpy/QtDeclarative/qpydeclarative_listwrapper.h
++++ b/qpy/QtDeclarative/qpydeclarative_listwrapper.h
+@@ -22,7 +22,7 @@
+ #define _QPYDECLARATIVELISTWRAPPER_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <QObject>
+ #include <QList>
+diff --git a/qpy/QtDeclarative/qpydeclarative_post_init.cpp b/qpy/QtDeclarative/qpydeclarative_post_init.cpp
+index 74dce85..e80d789 100644
+--- a/qpy/QtDeclarative/qpydeclarative_post_init.cpp
++++ b/qpy/QtDeclarative/qpydeclarative_post_init.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include "sipAPIQtDeclarative.h"
+ 
+diff --git a/qpy/QtDeclarative/qpydeclarativelistproperty.h b/qpy/QtDeclarative/qpydeclarativelistproperty.h
+index b804325..93000ea 100644
+--- a/qpy/QtDeclarative/qpydeclarativelistproperty.h
++++ b/qpy/QtDeclarative/qpydeclarativelistproperty.h
+@@ -22,7 +22,7 @@
+ #define _QPYDECLARATIVELISTPROPERTY_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ 
+ extern "C" {
+diff --git a/qpy/QtOpenGL/qpyopengl_attribute_array.cpp b/qpy/QtOpenGL/qpyopengl_attribute_array.cpp
+index 930dc13..ca75ed1 100644
+--- a/qpy/QtOpenGL/qpyopengl_attribute_array.cpp
++++ b/qpy/QtOpenGL/qpyopengl_attribute_array.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ #include <sip.h>
+ 
+ #include <QtGlobal>
+diff --git a/qpy/QtOpenGL/qpyopengl_uniform_value_array.cpp b/qpy/QtOpenGL/qpyopengl_uniform_value_array.cpp
+index 5ff1775..3189383 100644
+--- a/qpy/QtOpenGL/qpyopengl_uniform_value_array.cpp
++++ b/qpy/QtOpenGL/qpyopengl_uniform_value_array.cpp
+@@ -18,7 +18,7 @@
+ // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ #include <sip.h>
+ 
+ #include <QtGlobal>

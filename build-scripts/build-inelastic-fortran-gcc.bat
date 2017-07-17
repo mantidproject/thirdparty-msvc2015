@@ -14,8 +14,8 @@
 
 :: Install root for dependencies (goes via a 'function' to make it absolute)
 @call:set-python-root %~dp0..\
-@set PYTHON_EXE=%PYTHON_INSTALL_ROOT%\python.exe
-@set F2PY_SCRIPT=%PYTHON_INSTALL_ROOT%\Scripts\f2py.py
+@set PYTHON_EXE=%PYTHON_INSTALL_PREFIX%\python.exe
+@set F2PY_SCRIPT=%PYTHON_INSTALL_PREFIX%\Scripts\f2py.py
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Source
@@ -59,7 +59,7 @@ goto:eof
 :: Functions
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :set-python-root
-set PYTHON_INSTALL_ROOT=%~f1\lib\python2.7
+set PYTHON_INSTALL_PREFIX=%~f1\lib\python2.7
 goto:eof
 
 :: %1 Remote URL
