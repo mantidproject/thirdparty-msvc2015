@@ -1,5 +1,5 @@
-libdir=C:/thirdparty_msvc2015/lib
-includedir=C:/thirdparty_msvc2015/include
+libdir=C:/Users/gigm/Code/mantidproject/mantid/external/src/ThirdParty/lib
+includedir=C:/Users/gigm/Code/mantidproject/mantid/external/src/ThirdParty/include
 
 Name: jsoncpp
 Description: A C++ library for interacting with JSON
