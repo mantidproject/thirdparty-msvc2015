@@ -1,5 +1,5 @@
---- C:/Builds/boost/boost_1_65_1/boost/config/compiler/visualc.hpp.orig	Sat Sep 02 10:56:10 2017
-+++ C:/Builds/boost/boost_1_65_1/boost/config/compiler/visualc.hpp	Wed Oct 25 11:56:58 2017
+--- boost/config/compiler/visualc.hpp	Sat Sep 02 10:56:10 2017
++++ boost/config/compiler/visualc.hpp	Wed Oct 25 11:56:58 2017
 @@ -1,336 +1,331 @@
 -//  (C) Copyright John Maddock 2001 - 2003.
 -//  (C) Copyright Darin Adler 2001 - 2002.

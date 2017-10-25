@@ -63,6 +63,7 @@ set BOOST_ROOT=%BUILD_DIR%\boost_1_65_1
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 cd %BOOST_ROOT%
 if not exist include\boost\type_traits\intrinsics.hpp.orig call patch -p0 --input=%BOOST_EXTRAS_DIR%\type-traits-160.patch --backup
+call patch -p0 --input=%BOOST_EXTRAS_DIR%\visualc.hpp.patch --backup
 
 :: use custom project configuration which includes mpi build
 xcopy %INSTALL_ROOT%\build-scripts\extras\boost\project-config.jam %BOOST_ROOT% /Y /I
