@@ -63,7 +63,7 @@ set BOOST_ROOT=%BUILD_DIR%\boost_1_65_1
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 cd %BOOST_ROOT%
 if not exist include\boost\type_traits\intrinsics.hpp.orig call patch -p0 --input=%BOOST_EXTRAS_DIR%\type-traits-160.patch --backup
-call patch -p0 --input=%BOOST_EXTRAS_DIR%\visualc.hpp.patch --backup
+if not exist include\boost\type_traits\visualc.hpp.orig call patch -p0 --input=%BOOST_EXTRAS_DIR%\visualc.hpp.patch --backup
 
 :: use custom project configuration which includes mpi build
 xcopy %INSTALL_ROOT%\build-scripts\extras\boost\project-config.jam %BOOST_ROOT% /Y /I
@@ -85,7 +85,7 @@ if exist "%INSTALL_ROOT%\include\boost" (
 :: Build libraries with no external dependencies
 :: --layout=tagged ensures the the include directory is %prefix%/include/boost and not %prefix%/include/boost_X_XX_X/boost
 set COMMON_BUILD_OPTS=link=shared threading=multi address-model=64 runtime-link=shared
-@call b2.exe %COMMON_BUILD_OPTS% --with-date_time --with-regex --with-python --with-serialization --with-mpi variant=release variant=debug install --prefix=%INSTALL_ROOT% --layout=tagged
+@call b2.exe %COMMON_BUILD_OPTS% --with-date_time --with-regex --with-python --with-serialization --with-filesystem --with-mpi variant=release variant=debug install --prefix=%INSTALL_ROOT% --layout=tagged
 
 :: We want the dlls in bin but b2 won't allow that
 echo Moving dlls to %INSTALL_ROOT%\bin
