@@ -1,0 +1,11 @@
+--- boost/config/compiler/visualc.hpp.orig	Thu Dec 22 12:33:10 2016
++++ boost/config/compiler/visualc.hpp	Tue Oct 31 14:44:39 2017
+@@ -294,7 +294,7 @@
+ 
+ //
+ // last known and checked version is 19.10.24629 (VC++ 2017 RC):
+-#if (_MSC_VER > 1910)
++#if (_MSC_VER > 1911)
+ #  if defined(BOOST_ASSERT_CONFIG)
+ #     error "Unknown compiler version - please run the configure tests and report the results"
+ #  else
