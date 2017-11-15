@@ -5,6 +5,8 @@
 ::   * date_time
 ::   * regex
 ::   * python
+::   * serialization
+::   * filesystem
 @echo Building boost
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -18,7 +20,7 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Download and unpack source
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set SRC_PKG_URL="http://downloads.sourceforge.net/project/boost/boost/1.59.0/boost_1_59_0.zip?r=http%3A%2F%2Fwww.boost.org%2Fusers%2Fhistory%2Fversion_1_59_0.html&ts=1443101740&use_mirror=kent"
+@set SRC_PKG_URL="http://downloads.sourceforge.net/project/boost/boost/1.59.0/boost_1_59_0.zip"
 @set SRC_PKG=boost_1_59_0.zip
 @set BUILD_DIR=%BUILD_ROOT%\boost
 
@@ -53,7 +55,8 @@ if exist "%INSTALL_PREFIX%\include\boost" (
 :: Build libraries with no external dependencies
 :: --layout=tagged ensures the the include directory is %prefix%/include/boost and not %prefix%/include/boost_X_XX_X/boost
 set COMMON_BUILD_OPTS=link=shared threading=multi address-model=64 runtime-link=shared
-@call b2.exe %COMMON_BUILD_OPTS% --with-date_time --with-regex --with-python --with-serialization variant=release variant=debug install --prefix=%INSTALL_PREFIX% --layout=tagged
+set WITH_LIBS=--with-date_time --with-regex --with-python --with-serialization --with-filesystem
+@call b2.exe %COMMON_BUILD_OPTS% %WITH_LIBS% variant=release variant=debug install --prefix=%INSTALL_PREFIX% --layout=tagged
 
 :: We want the dlls in bin but b2 won't allow that
 echo Moving dlls to %INSTALL_PREFIX%\bin
