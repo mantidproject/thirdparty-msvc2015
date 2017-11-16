@@ -8,9 +8,9 @@
 :: Setup environment. Important to ensure correct detection of environment
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call %~dp0cmds\common-setup.cmd
-@set INCLUDE=%INSTALL_ROOT%\include;%INCLUDE%
-@set LIB=%INSTALL_ROOT%\lib;%LIB%
-@set PATH=%INSTALL_ROOT%\bin;%INSTALL_ROOT%\lib\qt4\bin;%PATH%
+@set INCLUDE=%INSTALL_PREFIX%\include;%INCLUDE%
+@set LIB=%INSTALL_PREFIX%\lib;%LIB%
+@set PATH=%INSTALL_PREFIX%\bin;%INSTALL_PREFIX%\lib\qt4\bin;%PATH%
 
 @set QT_EXTRAS_DIR=%~dp0extras\qt
 @set NJOBS=8
@@ -61,7 +61,7 @@ if not exist src\3rdparty\javascriptcore\JavaScriptCore\wtf\TypeTraits.h.orig pa
 if not exist src\3rdparty\webkit\Source\JavaScriptCore\wtf\HashSet.h.orig patch -p0 --input=%QT_EXTRAS_DIR%\fix-webkit-msvc2015.patch --backup
 
 :: configure. Passing the prefix option requires the mkspecs to have been installed in the root already!
-set QT_INSTALL_PREFIX=%INSTALL_ROOT%\lib\qt4
+set QT_INSTALL_PREFIX=%INSTALL_PREFIX%\lib\qt4
 @xcopy %QT_ROOT%\mkspecs\* %QT_INSTALL_PREFIX%\mkspecs /Y /E /I
 configure -platform win32-msvc2015 -opensource -confirm-license -debug-and-release -no-plugin-manifests ^
  -openssl -webkit -nomake examples -nomake demos -make nmake -no-vcproj ^
@@ -74,10 +74,6 @@ jom.exe -j%NJOBS%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Install
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: the makefile install rule uses [DRIVE]:$(INSTALL_ROOT)\...
-:: remove the definition temporarily
-set INSTALL_PREFIX=%INSTALL_ROOT%
-set INSTALL_ROOT=
 nmake install
 
 :: Qt builds are by default tied to their build location. A qt.conf file is required to be portable

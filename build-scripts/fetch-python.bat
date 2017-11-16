@@ -21,11 +21,11 @@
 @cd %BUILD_DIR%
 @call download-file.cmd %BUILD_DIR%\%SRC_PKG% %SRC_PKG_URL%
 
-if not exist %PYTHON_INSTALL_ROOT% (
-  @echo Extracting Python bundle to %PYTHON_INSTALL_ROOT%
-  msiexec /a %BUILD_DIR%\%SRC_PKG% /q TARGETDIR=%PYTHON_INSTALL_ROOT%
+if not exist %PYTHON_INSTALL_PREFIX% (
+  @echo Extracting Python bundle to %PYTHON_INSTALL_PREFIX%
+  msiexec /a %BUILD_DIR%\%SRC_PKG% /q TARGETDIR=%PYTHON_INSTALL_PREFIX%
   :: delete the msi that is also extracted
-  del /Q %PYTHON_INSTALL_ROOT%\%SRC_PKG%
+  del /Q %PYTHON_INSTALL_PREFIX%\%SRC_PKG%
 )
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -33,22 +33,22 @@ if not exist %PYTHON_INSTALL_ROOT% (
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 set PYTHON_EXTRAS_DIR=%~dp0\extras\python
 @echo Patching uuid.py
-@call:try-patch %PYTHON_INSTALL_ROOT%\Lib %PYTHON_INSTALL_ROOT%\Lib\uuid.py %PYTHON_EXTRAS_DIR%\uuid-nt.patch
+@call:try-patch %PYTHON_INSTALL_PREFIX%\Lib %PYTHON_INSTALL_PREFIX%\Lib\uuid.py %PYTHON_EXTRAS_DIR%\uuid-nt.patch
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: setuptools + site packages
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-set PYTHON_SCRIPTS_DIR=%PYTHON_INSTALL_ROOT%\Scripts
-set PYTHON_EXE=%PYTHON_INSTALL_ROOT%\python.exe
+set PYTHON_SCRIPTS_DIR=%PYTHON_INSTALL_PREFIX%\Scripts
+set PYTHON_EXE=%PYTHON_INSTALL_PREFIX%\python.exe
 @echo Installing pip
-if not exist %PYTHON_INSTALL_ROOT%\Lib\site-packages\pip (
+if not exist %PYTHON_INSTALL_PREFIX%\Lib\site-packages\pip (
   call download-file.cmd %BUILD_DIR%\get-pip.py https://bootstrap.pypa.io/get-pip.py
   %PYTHON_EXE% %BUILD_DIR%\get-pip.py
 )
 
 :: replace the .exe launchers with relocatable files
 set WRITE_LAUNCHER=%PYTHON_EXTRAS_DIR%\write-launcher-script.py
-set PYTHON_SITE_PACKAGES=%PYTHON_INSTALL_ROOT%\Lib\site-packages
+set PYTHON_SITE_PACKAGES=%PYTHON_INSTALL_PREFIX%\Lib\site-packages
 %PYTHON_EXE% %WRITE_LAUNCHER% --rm_exe %PYTHON_SITE_PACKAGES%\pip-7.1.2.dist-info\entry_points.txt
 :: We don't want some of the entry points for Python 3
 %PYTHON_EXE% %WRITE_LAUNCHER% --rm_exe %PYTHON_SITE_PACKAGES%\setuptools-18.4.dist-info\entry_points.txt

@@ -15,7 +15,7 @@
 @call %~dp0cmds\common-setup.cmd
 @set BOOST_EXTRAS_DIR=%~dp0extras\boost
 :: Boost needs to find Python
-@set PATH=%PYTHON_INSTALL_ROOT%;%PATH%
+@set PATH=%PYTHON_INSTALL_PREFIX%;%PATH%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Download and unpack source
@@ -45,22 +45,22 @@ if not exist boost\type_traits\intrinsics.hpp.orig call patch -p0 --input=%BOOST
 :: Bootstrap b2 executable
 if not exist b2.exe @call bootstrap.bat
 
-:: Remove old includes, dlls & libs in INSTALL_ROOT as `install` command only copies what is not currently there
-if exist "%INSTALL_ROOT%\include\boost" (
-  rmdir /S /Q "%INSTALL_ROOT%\include\boost"
-  del "%INSTALL_ROOT%\lib\boost*.lib"
-  del "%INSTALL_ROOT%\lib\boost*.dll"
+:: Remove old includes, dlls & libs in INSTALL_PREFIX as `install` command only copies what is not currently there
+if exist "%INSTALL_PREFIX%\include\boost" (
+  rmdir /S /Q "%INSTALL_PREFIX%\include\boost"
+  del "%INSTALL_PREFIX%\lib\boost*.lib"
+  del "%INSTALL_PREFIX%\lib\boost*.dll"
 )
 
 :: Build libraries with no external dependencies
 :: --layout=tagged ensures the the include directory is %prefix%/include/boost and not %prefix%/include/boost_X_XX_X/boost
 set COMMON_BUILD_OPTS=link=shared threading=multi address-model=64 runtime-link=shared
 set WITH_LIBS=--with-date_time --with-regex --with-python --with-serialization --with-filesystem
-@call b2.exe %COMMON_BUILD_OPTS% %WITH_LIBS% variant=release variant=debug install --prefix=%INSTALL_ROOT% --layout=tagged
+@call b2.exe %COMMON_BUILD_OPTS% %WITH_LIBS% variant=release variant=debug install --prefix=%INSTALL_PREFIX% --layout=tagged
 
 :: We want the dlls in bin but b2 won't allow that
-echo Moving dlls to %INSTALL_ROOT%\bin
-@move /Y %INSTALL_ROOT%\lib\boost*.dll %INSTALL_ROOT%\bin
+echo Moving dlls to %INSTALL_PREFIX%\bin
+@move /Y %INSTALL_PREFIX%\lib\boost*.dll %INSTALL_PREFIX%\bin
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize

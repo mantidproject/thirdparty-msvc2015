@@ -13,7 +13,11 @@ Mantid does **not** automatically track this repository. Instead a [Bootstrap.cm
 Updating a Dependency
 ---------------------
 
-All builds **must** be managed by a build script so that the configuration of the build is well documented. To update a dependency:
+All builds **must** be managed by a build script so that the configuration of the build is well documented. The requirements for the
+buildscripts are listed in [build-scripts/README.md](build-scripts/README.md).
+
+
+To update a dependency:
 
 * create branch
 * find the appropriate script or add one for a new dependency in `build-scripts` and make any necessary updates to build the new/updated library. The libraries should be installed in the with the root of this repository as their install prefix.

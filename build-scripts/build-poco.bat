@@ -1,7 +1,7 @@
 @setlocal enableextensions
 ::
 :: Build script for the Poco libraries for Mantid. All libraries are built.
-:: Requires OpenSSL to have been built and installed in INSTALL_ROOT
+:: Requires OpenSSL to have been built and installed in INSTALL_PREFIX
 ::
 @echo Building poco
 
@@ -29,8 +29,8 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @cd %POCO_ROOT%
 set VS_SUFFIX_OLD=120
-set OPENSSL_INCLUDE=%INSTALL_ROOT%\include
-set OPENSSL_LIB=%INSTALL_ROOT%\lib
+set OPENSSL_INCLUDE=%INSTALL_PREFIX%\include
+set OPENSSL_LIB=%INSTALL_PREFIX%\lib
 set INCLUDE=%INCLUDE%;%OPENSSL_INCLUDE%
 set LIB=%LIB%;%OPENSSL_LIB%
 set LIBRARIES=Foundation XML Util Net Zip Crypto NetSSL_OpenSSL
@@ -43,9 +43,9 @@ for %%C in (%LIBRARIES%) do (
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Install
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-for %%C in (%LIBRARIES%) do xcopy %%C\include %INSTALL_ROOT%\include /Y /E
-xcopy %POCO_ROOT%\bin64\*.dll %INSTALL_ROOT%\bin /Y
-xcopy %POCO_ROOT%\lib64\*.lib %INSTALL_ROOT%\lib /Y
+for %%C in (%LIBRARIES%) do xcopy %%C\include %INSTALL_PREFIX%\include /Y /E
+xcopy %POCO_ROOT%\bin64\*.dll %INSTALL_PREFIX%\bin /Y
+xcopy %POCO_ROOT%\lib64\*.lib %INSTALL_PREFIX%\lib /Y
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize

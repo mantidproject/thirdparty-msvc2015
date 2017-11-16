@@ -2,7 +2,7 @@
 //
 // This file is part of the QtCore Python extension module.
 //
-// Copyright (c) 2015 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2016 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt4.
 // 
@@ -24,9 +24,9 @@
 #include <qbytearray.h>
 %End
 
-quint16 qChecksum(const char *s /Array/, uint len /ArraySize/);
+quint16 qChecksum(const char *s /Array, TypeHint="Py_v3:bytes;str"/, uint len /ArraySize/);
 
-class QByteArray
+class QByteArray /TypeHintIn="Union[QByteArray, bytes, bytearray]"/
 {
 %TypeHeaderCode
 #include <qbytearray.h>
@@ -240,7 +240,7 @@ public:
     static QByteArray number(qlonglong n, int base = 10);
     static QByteArray number(qulonglong n, int base = 10);
     static QByteArray fromBase64(const QByteArray &base64);
-    static QByteArray fromRawData(const char * /Array/, int size /ArraySize/);
+    static QByteArray fromRawData(const char * /Array, TypeHint="Py_v3:bytes;str"/, int size /ArraySize/);
 %If (Qt_4_3_0 -)
     static QByteArray fromHex(const QByteArray &hexEncoded);
 %End
@@ -294,7 +294,7 @@ public:
         sipRes = qHash(*sipCpp);
 %End
 
-    SIP_PYOBJECT __str__() const /DocType="str"/;
+    SIP_PYOBJECT __str__() const /TypeHint="str"/;
 %MethodCode
         sipRes = QByteArrayToPyStr(sipCpp);
         
@@ -309,7 +309,7 @@ public:
         #endif
 %End
 
-    SIP_PYOBJECT __repr__() const /DocType="str"/;
+    SIP_PYOBJECT __repr__() const /TypeHint="str"/;
 %MethodCode
         if (sipCpp->isNull())
         {
@@ -357,7 +357,7 @@ public:
 %End
 
     bool isEmpty() const;
-    SIP_PYOBJECT data() /DocType="Py_v3:bytes;str"/;
+    SIP_PYOBJECT data() /TypeHint="Py_v3:bytes;str"/;
 %MethodCode
         // QByteArrays may contain embedded '\0's so set the size explicitly.
         
@@ -415,6 +415,3 @@ QDataStream &operator<<(QDataStream &, const QByteArray & /Constrained/);
 QDataStream &operator>>(QDataStream &, QByteArray & /Constrained/);
 QByteArray qCompress(const QByteArray &data, int compressionLevel = -1);
 QByteArray qUncompress(const QByteArray &data);
-%If (Qt_4_3_0 -)
-void qSwap(QByteArray &value1, QByteArray &value2);
-%End

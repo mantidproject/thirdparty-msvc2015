@@ -1,0 +1,40 @@
+--- siplib/sip.h.in.orig	2017-07-17 15:56:15.134393300 +0100
++++ siplib/sip.h.in	2017-07-17 15:57:34.586393300 +0100
+@@ -29,7 +29,7 @@
+ #undef slots
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ /*
+  * There is a mis-feature somewhere with the Borland compiler.  This works
+--- sipgen/gencode.c.orig	2017-07-17 15:55:04.286393300 +0100
++++ sipgen/gencode.c	2017-07-17 15:55:28.059393300 +0100
+@@ -1088,7 +1088,7 @@
+ 
+     prcode(fp,
+ "\n"
+-"#include <Python.h>\n"
++"#include <wrappython.h>\n"
+ "\n"
+ "\n"
+ "static void sip_import_component_module(PyObject *d, const char *name)\n"
+@@ -1191,7 +1191,7 @@
+ 
+     prcode(fp,
+ "\n"
+-"#include <Python.h>\n"
++"#include <wrappython.h>\n"
+ "#include <string.h>\n"
+ "#include <sip.h>\n"
+         );
+@@ -1362,7 +1362,7 @@
+ 
+     prcode(fp,
+ "\n"
+-"#include <Python.h>\n"
++"#include <wrappython.h>\n"
+         );
+ 
+     generateModInitStart(pt->module, TRUE, fp);

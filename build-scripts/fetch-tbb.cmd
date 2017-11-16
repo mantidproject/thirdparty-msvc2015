@@ -34,16 +34,16 @@
 :: Includes under the SRC_ROOT\include directory
 @set INCLUDE_DIRS=serial tbb
 for %%D in (%INCLUDE_DIRS%) do (
-  xcopy include\%%D %INSTALL_ROOT%\include\%%D /Y /I /E
+  xcopy include\%%D %INSTALL_PREFIX%\include\%%D /Y /I /E
 )
 
 :: Library export files
 :: xcopy cmd by default copies all files from the given directory to the destination and does not include the directory itself
 @set VC_DIR=intel64\vc14
-xcopy lib\%VC_DIR% %INSTALL_ROOT%\lib /Y /I
+xcopy lib\%VC_DIR% %INSTALL_PREFIX%\lib /Y /I
 
 :: Runtime DLLs
-xcopy bin\%VC_DIR% %INSTALL_ROOT%\bin /Y /I
+xcopy bin\%VC_DIR% %INSTALL_PREFIX%\bin /Y /I
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Patch

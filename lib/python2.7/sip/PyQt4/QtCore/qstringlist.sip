@@ -2,7 +2,7 @@
 //
 // This file is part of the QtCore Python extension module.
 //
-// Copyright (c) 2015 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2016 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt4.
 // 
@@ -20,12 +20,8 @@
 // WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
 
-%ModuleCode
-#include <qstringlist.h>
-%End
-
-// class QStringList /API=QString:2 -,DocType="list-of-str"/
-%MappedType QStringList /API=QString:2 -,DocType="list-of-str"/
+// class QStringList /API=QString:2 -, TypeHintIn="Sequence[str]", TypeHintOut="List[str]"/
+%MappedType QStringList /API=QString:2 -, TypeHintIn="Sequence[str]", TypeHintOut="List[str]", TypeHintValue="[]"/
 {
 %TypeHeaderCode
 #include <qstringlist.h>
@@ -45,7 +41,7 @@ return sipGetState(sipTransferObj);
 %End
 };
 
-class QStringList /API=QString: - 2/
+class QStringList /API=QString: - 2,TypeHintIn="Union[QStringList, Sequence[QString]]"/
 {
 %TypeHeaderCode
 #include <qstringlist.h>
