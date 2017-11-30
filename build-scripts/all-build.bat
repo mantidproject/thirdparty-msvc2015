@@ -28,6 +28,7 @@ cd /D %~dp0
 @call build-oce.bat
 @call build-poco.bat
 @call fetch-tbb.bat
+@call build-lz4.bat
 @call build-librdkafka.bat
 
 :: gui

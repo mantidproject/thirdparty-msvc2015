@@ -147,7 +147,9 @@ static RD_INLINE RD_UNUSED const char *rd_strerror(int err) {
 /**
  * Atomics
  */
+#ifndef __cplusplus
 #include "rdatomic.h"
+#endif
 
 
 /**
@@ -189,7 +191,7 @@ int rd_gettimeofday (struct timeval *tv, struct timezone *tz) {
  */
 #define RD_ZERO_INIT  {0}
 
-
+#ifndef __cplusplus
 /**
  * Sockets, IO
  */
@@ -242,3 +244,19 @@ static RD_UNUSED int rd_pipe_nonblocking (int *fds) {
 #define rd_read(fd,buf,sz) _read(fd,buf,sz)
 #define rd_write(fd,buf,sz) _write(fd,buf,sz)
 #define rd_close(fd) closesocket(fd)
+
+static RD_UNUSED char *
+rd_strerror_w32 (DWORD errcode, char *dst, size_t dstsize) {
+        char *t;
+        FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM |
+                       FORMAT_MESSAGE_IGNORE_INSERTS,
+                       NULL, errcode,
+                       MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                       (LPSTR)dst, (DWORD)dstsize - 1, NULL);
+        /* Remove newlines */
+        while ((t = strchr(dst, (int)'\r')) || (t = strchr(dst, (int)'\n')))
+                *t = (char)'.';
+        return dst;
+}
+
+#endif /* !__cplusplus*/

@@ -200,6 +200,10 @@ class MessageImpl : public Message {
 
   void               *msg_opaque () const { return rkmessage_->_private; };
 
+  int64_t             latency () const {
+          return rd_kafka_message_latency(rkmessage_);
+  }
+
   RdKafka::Topic *topic_;
   const rd_kafka_message_t *rkmessage_;
   bool free_rkmessage_;
@@ -240,26 +244,10 @@ class ConfImpl : public Conf {
                        const std::string &value,
                        std::string &errstr);
 
-  Conf::ConfResult set (const std::string &name, ConsumeCb *consume_cb,
-                        std::string &errstr) {
-    if (name != "consume_cb") {
-      errstr = "Invalid value type";
-      return Conf::CONF_INVALID;
-    }
-
-    if (!rk_conf_) {
-      errstr = "Requires RdKafka::Conf::CONF_GLOBAL object";
-      return Conf::CONF_INVALID;
-    }
-
-    consume_cb_ = consume_cb;
-    return Conf::CONF_OK;
-  }
-
   Conf::ConfResult set (const std::string &name, DeliveryReportCb *dr_cb,
                         std::string &errstr) {
     if (name != "dr_cb") {
-      errstr = "Invalid value type";
+      errstr = "Invalid value type, expected RdKafka::DeliveryReportCb";
       return Conf::CONF_INVALID;
     }
 
@@ -275,7 +263,7 @@ class ConfImpl : public Conf {
   Conf::ConfResult set (const std::string &name, EventCb *event_cb,
                         std::string &errstr) {
     if (name != "event_cb") {
-      errstr = "Invalid value type";
+      errstr = "Invalid value type, expected RdKafka::EventCb";
       return Conf::CONF_INVALID;
     }
 
@@ -293,7 +281,7 @@ class ConfImpl : public Conf {
     const ConfImpl *tconf_impl =
         dynamic_cast<const RdKafka::ConfImpl *>(topic_conf);
     if (name != "default_topic_conf" || !tconf_impl->rkt_conf_) {
-      errstr = "Invalid value type";
+      errstr = "Invalid value type, expected RdKafka::Conf";
       return Conf::CONF_INVALID;
     }
 
@@ -312,7 +300,7 @@ class ConfImpl : public Conf {
   Conf::ConfResult set (const std::string &name, PartitionerCb *partitioner_cb,
                         std::string &errstr) {
     if (name != "partitioner_cb") {
-      errstr = "Invalid value type";
+      errstr = "Invalid value type, expected RdKafka::PartitionerCb";
       return Conf::CONF_INVALID;
     }
 
@@ -329,7 +317,7 @@ class ConfImpl : public Conf {
                         PartitionerKeyPointerCb *partitioner_kp_cb,
                         std::string &errstr) {
     if (name != "partitioner_key_pointer_cb") {
-      errstr = "Invalid value type";
+      errstr = "Invalid value type, expected RdKafka::PartitionerKeyPointerCb";
       return Conf::CONF_INVALID;
     }
 
@@ -345,7 +333,7 @@ class ConfImpl : public Conf {
   Conf::ConfResult set (const std::string &name, SocketCb *socket_cb,
                         std::string &errstr) {
     if (name != "socket_cb") {
-      errstr = "Invalid value type";
+      errstr = "Invalid value type, expected RdKafka::SocketCb";
       return Conf::CONF_INVALID;
     }
 
@@ -362,7 +350,7 @@ class ConfImpl : public Conf {
   Conf::ConfResult set (const std::string &name, OpenCb *open_cb,
                         std::string &errstr) {
     if (name != "open_cb") {
-      errstr = "Invalid value type";
+      errstr = "Invalid value type, expected RdKafka::OpenCb";
       return Conf::CONF_INVALID;
     }
 
@@ -376,10 +364,12 @@ class ConfImpl : public Conf {
   }
 
 
+
+
   Conf::ConfResult set (const std::string &name, RebalanceCb *rebalance_cb,
                         std::string &errstr) {
     if (name != "rebalance_cb") {
-      errstr = "Invalid value type";
+      errstr = "Invalid value type, expected RdKafka::RebalanceCb";
       return Conf::CONF_INVALID;
     }
 
@@ -397,7 +387,7 @@ class ConfImpl : public Conf {
                         OffsetCommitCb *offset_commit_cb,
                         std::string &errstr) {
     if (name != "offset_commit_cb") {
-      errstr = "Invalid value type";
+      errstr = "Invalid value type, expected RdKafka::OffsetCommitCb";
       return Conf::CONF_INVALID;
     }
 
@@ -411,48 +401,43 @@ class ConfImpl : public Conf {
   }
 
   Conf::ConfResult get(const std::string &name, std::string &value) const {
-      if (name.compare("dr_cb") == 0 ||
-	  name.compare("event_cb") == 0 ||
-	  name.compare("partitioner_cb") == 0 ||
-	  name.compare("partitioner_key_pointer_cb") == 0 ||
-	  name.compare("socket_cb") == 0 ||
-	  name.compare("open_cb") == 0 ||
-	  name.compare("rebalance_cb") == 0 ||
-	  name.compare("offset_commit_cb") == 0 ) {
-	  return Conf::CONF_INVALID;
-      }
-      size_t size;
-      rd_kafka_conf_res_t res = RD_KAFKA_CONF_OK;
-      char *tmpValue = NULL;
-      if (rk_conf_) {
-	  if ((res = rd_kafka_conf_get(rk_conf_,
-				       name.c_str(), NULL, &size)) != RD_KAFKA_CONF_OK)
-	      return static_cast<Conf::ConfResult>(res);
+    if (name.compare("dr_cb") == 0 ||
+        name.compare("event_cb") == 0 ||
+        name.compare("partitioner_cb") == 0 ||
+        name.compare("partitioner_key_pointer_cb") == 0 ||
+        name.compare("socket_cb") == 0 ||
+        name.compare("open_cb") == 0 ||
+        name.compare("rebalance_cb") == 0 ||
+        name.compare("offset_commit_cb") == 0 ) {
+      return Conf::CONF_INVALID;
+    }
+    rd_kafka_conf_res_t res = RD_KAFKA_CONF_INVALID;
 
-	  tmpValue = new char[size];
-	  if ((res = rd_kafka_conf_get(rk_conf_, name.c_str(),
-				       tmpValue, &size)) != RD_KAFKA_CONF_OK)
-	      return static_cast<Conf::ConfResult>(res);
-      }
-      else if (rkt_conf_) {
-	  if ((res = rd_kafka_topic_conf_get(rkt_conf_,
-					     name.c_str(), NULL, &size)) != RD_KAFKA_CONF_OK)
-	      return static_cast<Conf::ConfResult>(res);
+    /* Get size of property */
+    size_t size;
+    if (rk_conf_)
+      res = rd_kafka_conf_get(rk_conf_,
+                              name.c_str(), NULL, &size);
+    else if (rkt_conf_)
+      res = rd_kafka_topic_conf_get(rkt_conf_,
+                                    name.c_str(), NULL, &size);
+    if (res != RD_KAFKA_CONF_OK)
+      return static_cast<Conf::ConfResult>(res);
 
-	  tmpValue = new char[size];
-	  if ((res = rd_kafka_topic_conf_get(rkt_conf_, name.c_str(),
-					     tmpValue, &size)) != RD_KAFKA_CONF_OK)
-	      return static_cast<Conf::ConfResult>(res);
-      }
+    char *tmpValue = new char[size];
 
-      if (tmpValue != NULL) {
-	  value.assign(tmpValue);
-	  delete tmpValue;
-      }
-      else
-      	  value = "";
-      return Conf::CONF_OK;
+    if (rk_conf_)
+      res = rd_kafka_conf_get(rk_conf_, name.c_str(),
+                              tmpValue, &size);
+    else if (rkt_conf_)
+      res = rd_kafka_topic_conf_get(rkt_conf_,
+                                    name.c_str(), NULL, &size);
 
+    if (res == RD_KAFKA_CONF_OK)
+      value.assign(tmpValue);
+    delete[] tmpValue;
+
+    return static_cast<Conf::ConfResult>(res);
   }
 
   Conf::ConfResult get(DeliveryReportCb *&dr_cb) const {
@@ -514,6 +499,24 @@ class ConfImpl : public Conf {
 
 
   std::list<std::string> *dump ();
+
+
+  Conf::ConfResult set (const std::string &name, ConsumeCb *consume_cb,
+                        std::string &errstr) {
+    if (name != "consume_cb") {
+      errstr = "Invalid value type, expected RdKafka::ConsumeCb";
+      return Conf::CONF_INVALID;
+    }
+
+    if (!rk_conf_) {
+      errstr = "Requires RdKafka::Conf::CONF_GLOBAL object";
+      return Conf::CONF_INVALID;
+    }
+
+    consume_cb_ = consume_cb;
+    return Conf::CONF_OK;
+  }
+
 
   ConsumeCb *consume_cb_;
   DeliveryReportCb *dr_cb_;
@@ -585,6 +588,18 @@ class HandleImpl : virtual public Handle {
   }
 
   ErrorCode set_log_queue (Queue *queue);
+
+  void yield () {
+    rd_kafka_yield(rk_);
+  }
+
+  const std::string clusterid (int timeout_ms) {
+          char *str = rd_kafka_clusterid(rk_, timeout_ms);
+          std::string clusterid = str ? str : "";
+          if (str)
+                  rd_kafka_mem_free(rk_, str);
+          return clusterid;
+  }
 
   rd_kafka_t *rk_;
   /* All Producer and Consumer callbacks must reside in HandleImpl and
@@ -755,6 +770,19 @@ public:
   ErrorCode position (std::vector<TopicPartition*> &partitions);
 
   ErrorCode close ();
+
+  ErrorCode seek (const TopicPartition &partition, int timeout_ms);
+
+  ErrorCode offsets_store (std::vector<TopicPartition*> &offsets) {
+          rd_kafka_topic_partition_list_t *c_parts =
+                  partitions_to_c_parts(offsets);
+          rd_kafka_resp_err_t err =
+                  rd_kafka_offsets_store(rk_, c_parts);
+          update_partitions_from_c_parts(offsets, c_parts);
+          rd_kafka_topic_partition_list_destroy(c_parts);
+          return static_cast<ErrorCode>(err);
+  }
+
 };
 
 
