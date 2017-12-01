@@ -8,10 +8,10 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call %~dp0cmds\common-setup.cmd
 @set QWTPLOT3D_EXTRAS_DIR=%~dp0extras\qwtplot3d
-@set INCLUDE=%INSTALL_ROOT%\include;%INCLUDE%
+@set INCLUDE=%INSTALL_PREFIX%\include;%INCLUDE%
 @echo %INLCUDE%
-@set LIB=%INSTALL_ROOT%\lib;%LIB%
-@set PATH=%INSTALL_ROOT%\bin;%INSTALL_ROOT%\lib\qt4\bin;%BUILD_ROOT%\jom;%PATH%
+@set LIB=%INSTALL_PREFIX%\lib;%LIB%
+@set PATH=%INSTALL_PREFIX%\bin;%INSTALL_PREFIX%\lib\qt4\bin;%BUILD_ROOT%\jom;%PATH%
 @set NJOBS=8
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -40,11 +40,11 @@ nmake
 :: Install
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: No install rule generated so do it by hand
-if not exist %INSTALL_ROOT%\include\qwt-qt4 mkdir %INSTALL_ROOT%\include\qwtplot3d-qt4
-xcopy %SRC_ROOT%\include\*.h %INSTALL_ROOT%\include\qwtplot3d-qt4 /Y /I
-xcopy %SRC_ROOT%\lib\*.dll %INSTALL_ROOT%\bin /Y /I
-xcopy %SRC_ROOT%\lib\*.pdb %INSTALL_ROOT%\lib /Y /I
-xcopy %SRC_ROOT%\lib\*.lib %INSTALL_ROOT%\lib /Y /I
+if not exist %INSTALL_PREFIX%\include\qwt-qt4 mkdir %INSTALL_PREFIX%\include\qwtplot3d-qt4
+xcopy %SRC_ROOT%\include\*.h %INSTALL_PREFIX%\include\qwtplot3d-qt4 /Y /I
+xcopy %SRC_ROOT%\lib\*.dll %INSTALL_PREFIX%\bin /Y /I
+xcopy %SRC_ROOT%\lib\*.pdb %INSTALL_PREFIX%\lib /Y /I
+xcopy %SRC_ROOT%\lib\*.lib %INSTALL_PREFIX%\lib /Y /I
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize

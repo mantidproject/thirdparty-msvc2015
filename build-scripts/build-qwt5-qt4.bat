@@ -8,7 +8,7 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call %~dp0cmds\common-setup.cmd
 @set QWT5_EXTRAS_DIR=%~dp0extras\qwt5
-@set PATH=%INSTALL_ROOT%\bin;%INSTALL_ROOT%\lib\qt4\bin;%BUILD_ROOT%\jom;%PATH%
+@set PATH=%INSTALL_PREFIX%\bin;%INSTALL_PREFIX%\lib\qt4\bin;%BUILD_ROOT%\jom;%PATH%
 @set NJOBS=8
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -38,9 +38,9 @@ nmake
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Install
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-set INSTALL_PREFIX=%INSTALL_ROOT%
+set INSTALL_PREFIX=%INSTALL_PREFIX%
 :: nmake uses this internally
-set INSTALL_ROOT=
+set INSTALL_PREFIX=
 nmake install
 :: Change of INSTALLBASE still leaves files in the wrong place so move them manually
 set QWT_INSTALLBASE=C:\%SRC_PKG:~0,-4%

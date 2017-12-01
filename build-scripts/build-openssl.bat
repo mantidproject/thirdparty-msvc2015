@@ -20,7 +20,7 @@
 
 @cd %BUILD_DIR%\openssl-1.0.2d
 :: release build
-@ perl Configure VC-WIN64A --prefix=%INSTALL_ROOT%
+@ perl Configure VC-WIN64A --prefix=%INSTALL_PREFIX%
 @ call ms\do_win64a
 @ nmake -f ms\ntdll.mak
 @ nmake -f ms\ntdll.mak install

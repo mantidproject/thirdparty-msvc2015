@@ -8,6 +8,9 @@ Current prerequisites:
 * [7-zip](http://www.7-zip.org/)
 * [Git](https://git-scm.com/downloads) - (For cURL)
 * [CMake](http://www.cmake.org)
+* [Ruby](https://rubyinstaller.org/downloads/) - Required for building Qt5 with webkit
+* [Cygwin](https://www.cygwin.com/) - Required for building ICU. Make sure you install dos2unix, make, binutils
+
 
 VC++ for Python
 ---------------

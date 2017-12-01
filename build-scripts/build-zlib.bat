@@ -29,9 +29,9 @@ cd %SRC_ROOT%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@call cmake-build-and-install %BUILD_DIR%\ZLib\ %ZLIB_EXTRAS_DIR%\zlib.cmake %INSTALL_ROOT% zlib.vcxproj
+@call cmake-build-and-install %BUILD_DIR%\ZLib\ %ZLIB_EXTRAS_DIR%\zlib.cmake %INSTALL_PREFIX% zlib.vcxproj
 :: remove unwanted files
-for %%F in (FAQ README INDEX RELEASE_HDF.txt) do ( del %INSTALL_ROOT%\%%F )
+for %%F in (FAQ README INDEX RELEASE_HDF.txt) do ( del %INSTALL_PREFIX%\%%F )
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize

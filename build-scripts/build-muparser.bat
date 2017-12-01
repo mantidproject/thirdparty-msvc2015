@@ -35,8 +35,8 @@ nmake -f makefile.vc.debug
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Install
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-xcopy %SRC_ROOT%\include\*.h %INSTALL_ROOT%\include /Y /I
-xcopy %SRC_ROOT%\lib\*.lib %INSTALL_ROOT%\lib /Y /I
+xcopy %SRC_ROOT%\include\*.h %INSTALL_PREFIX%\include /Y /I
+xcopy %SRC_ROOT%\lib\*.lib %INSTALL_PREFIX%\lib /Y /I
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize

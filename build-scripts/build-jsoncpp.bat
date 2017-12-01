@@ -32,7 +32,7 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@call cmake-build-and-install %SRC_ROOT%\ %JSONCPP_EXTRAS_DIR%\jsoncpp.cmake %INSTALL_ROOT% ALL_BUILD.vcxproj
+@call cmake-build-and-install %SRC_ROOT%\ %JSONCPP_EXTRAS_DIR%\jsoncpp.cmake %INSTALL_PREFIX% ALL_BUILD.vcxproj
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize

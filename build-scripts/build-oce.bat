@@ -32,7 +32,7 @@ cd %SRC_ROOT%
 :: TKBO,TKBRep,TKernel,TKG2d,TKG3d,TKGeomAlgo,TKGeomBase,TKMath,TKPrim
 ::,TKTopAlgo
 @call cmake-configure %SRC_ROOT%\ -C "%OCE_EXTRAS_DIR%\oce.cmake" ^
- "-DCMAKE_INSTALL_PREFIX=%INSTALL_ROOT%" "-DOCE_INSTALL_PREFIX=%INSTALL_ROOT%"
+ "-DCMAKE_INSTALL_PREFIX=%INSTALL_PREFIX%" "-DOCE_INSTALL_PREFIX=%INSTALL_PREFIX%"
 cd %SRC_ROOT%\build\adm\cmake
 
 :: Requires 2 calls to build all as the script can only take 8 project arguments
@@ -48,10 +48,10 @@ cd %SRC_ROOT%\build
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Post-install
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: install target creates a INSTALL_ROOT\Win64\{bin\lib} directory. We don't want this
-move /Y %INSTALL_ROOT%\Win64\bin\* %INSTALL_ROOT%\bin\
-move /Y %INSTALL_ROOT%\Win64\lib\* %INSTALL_ROOT%\lib\
-rmdir /S /Q %INSTALL_ROOT%\Win64\
+:: install target creates a INSTALL_PREFIX\Win64\{bin\lib} directory. We don't want this
+move /Y %INSTALL_PREFIX%\Win64\bin\* %INSTALL_PREFIX%\bin\
+move /Y %INSTALL_PREFIX%\Win64\lib\* %INSTALL_PREFIX%\lib\
+rmdir /S /Q %INSTALL_PREFIX%\Win64\
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize

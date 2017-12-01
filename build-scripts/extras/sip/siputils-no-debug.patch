@@ -1,0 +1,21 @@
+--- siputils.py.orig	2017-07-03 18:24:26.000000000 +0100
++++ siputils.py	2017-08-22 19:53:46.531410800 +0100
+@@ -462,8 +462,6 @@
+                         py_lib = bpy_lib
+ 
+                 if self._debug:
+-                    py_lib = py_lib + "_d"
+-
+                     if self.generator != "MINGW":
+                         cflags.append("/D_DEBUG")
+                         cxxflags.append("/D_DEBUG")
+@@ -1514,9 +1512,6 @@
+         if sys.platform != "win32" and static:
+             self._target = "lib" + self._target
+ 
+-        if sys.platform == "win32" and debug:
+-            self._target = self._target + "_d"
+-
+     def finalise(self):
+         """Finalise the macros common to all module Makefiles.
+         """

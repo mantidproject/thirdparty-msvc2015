@@ -13,22 +13,24 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Download and unpack source
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set SRC_PKG_URL="https://github.com/edenhill/librdkafka/archive/v0.9.4.zip"
-@set SRC_PKG=v0.9.4.zip
+@set SRC_PKG_URL="https://github.com/edenhill/librdkafka/archive/v0.11.1.zip"
+@set SRC_PKG=v0.11.1.zip
 @set BUILD_DIR=%BUILD_ROOT%\librdkafka
+
+@set NUGET_URL="https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+@set NUGET_EXE=nuget.exe
 
 @call try-mkdir.cmd %BUILD_DIR%
 @cd %BUILD_DIR%
 @call download-file.cmd %SRC_PKG% %SRC_PKG_URL%
-
-@set LIBRDKAFKA_ROOT=%BUILD_DIR%\librdkafka-0.9.4
+@set LIBRDKAFKA_ROOT=%BUILD_DIR%\librdkafka-0.11.1
 @call extract-zip-file.cmd %SRC_PKG% %CD%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Patch source
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 cd %LIBRDKAFKA_ROOT%
-@call patch -p0 --input=%LIBRDKAFKA_EXTRAS_DIR%\win32_config.h.patch --backup
+@call download-file.cmd %NUGET_EXE% %NUGET_URL%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build
@@ -39,10 +41,12 @@ cd %LIBRDKAFKA_ROOT%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Patch build files
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set MANTIDTHIRDPARTY=%INSTALL_ROOT%
+@set MANTIDTHIRDPARTY=%INSTALL_PREFIX%
 @call patch -p0 --input=%LIBRDKAFKA_EXTRAS_DIR%\librdkafka.sln.patch --backup
 @call patch -p0 --input=%LIBRDKAFKA_EXTRAS_DIR%\librdkafka.vcxproj.patch --backup
 @call patch -p0 --input=%LIBRDKAFKA_EXTRAS_DIR%\librdkafkacpp.vcxproj.patch --backup
+
+@call %LIBRDKAFKA_ROOT%/nuget restore
 
 @call:build-rdkafka Release
 @call:build-rdkafka Debug
@@ -50,9 +54,9 @@ cd %LIBRDKAFKA_ROOT%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Install
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-if not exist %INSTALL_ROOT%\include\librdkafka mkdir %INSTALL_ROOT%\include\librdkafka
-xcopy %LIBRDKAFKA_ROOT%\src-cpp\*.h %INSTALL_ROOT%\include\librdkafka /Y
-xcopy %LIBRDKAFKA_ROOT%\src\*.h %INSTALL_ROOT%\include\librdkafka /Y
+if not exist %INSTALL_PREFIX%\include\librdkafka mkdir %INSTALL_PREFIX%\include\librdkafka
+xcopy %LIBRDKAFKA_ROOT%\src-cpp\*.h %INSTALL_PREFIX%\include\librdkafka /Y
+xcopy %LIBRDKAFKA_ROOT%\src\*.h %INSTALL_PREFIX%\include\librdkafka /Y
 
 @call:install-libs Release
 @call:install-libs Debug
@@ -73,7 +77,7 @@ goto:eof
 
 :: %1 Configuration to build: Release/Debug
 :install-libs
-xcopy %VS_BUILD_DIR%\outdir\v140\x64\%1\librdkafka*.lib %INSTALL_ROOT%\lib /Y /I
-xcopy %VS_BUILD_DIR%\outdir\v140\x64\%1\librdkafka*.pdb %INSTALL_ROOT%\bin /Y /I
-xcopy %VS_BUILD_DIR%\outdir\v140\x64\%1\librdkafka*.dll %INSTALL_ROOT%\bin /Y /I
+xcopy %VS_BUILD_DIR%\outdir\v140\x64\%1\librdkafka*.lib %INSTALL_PREFIX%\lib /Y /I
+xcopy %VS_BUILD_DIR%\outdir\v140\x64\%1\librdkafka*.pdb %INSTALL_PREFIX%\bin /Y /I
+xcopy %VS_BUILD_DIR%\outdir\v140\x64\%1\librdkafka*.dll %INSTALL_PREFIX%\bin /Y /I
 goto:eof
