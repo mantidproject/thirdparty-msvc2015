@@ -17,20 +17,12 @@
 @set SRC_PKG=v0.11.1.zip
 @set BUILD_DIR=%BUILD_ROOT%\librdkafka
 
-@set NUGET_URL="https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
-@set NUGET_EXE=nuget.exe
-
 @call try-mkdir.cmd %BUILD_DIR%
 @cd %BUILD_DIR%
 @call download-file.cmd %SRC_PKG% %SRC_PKG_URL%
 @set LIBRDKAFKA_ROOT=%BUILD_DIR%\librdkafka-0.11.1
 @call extract-zip-file.cmd %SRC_PKG% %CD%
 
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Patch source
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-cd %LIBRDKAFKA_ROOT%
-@call download-file.cmd %NUGET_EXE% %NUGET_URL%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build
@@ -41,12 +33,11 @@ cd %LIBRDKAFKA_ROOT%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Patch build files
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set MANTIDTHIRDPARTY=%INSTALL_PREFIX%
 @call patch -p0 --input=%LIBRDKAFKA_EXTRAS_DIR%\librdkafka.sln.patch --backup
 @call patch -p0 --input=%LIBRDKAFKA_EXTRAS_DIR%\librdkafka.vcxproj.patch --backup
 @call patch -p0 --input=%LIBRDKAFKA_EXTRAS_DIR%\librdkafkacpp.vcxproj.patch --backup
 
-@call %LIBRDKAFKA_ROOT%/nuget restore
+::@call %LIBRDKAFKA_ROOT%/nuget restore
 
 @call:build-rdkafka Release
 @call:build-rdkafka Debug
