@@ -4,11 +4,17 @@
 :: are built in both release and debug mode:
 @echo Building LibRDKafka
 
+echo There seems to be an issue with patching the solution files reliably. For now this has been done by hand and the project files are in the extras directory
+
+exit /b 1
+
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Setup environment. Important to ensure correct detection of environment
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call %~dp0cmds\common-setup.cmd
 @set LIBRDKAFKA_EXTRAS_DIR=%~dp0extras\librdkafka
+@set INCLUDE=%INSTALL_PREFIX%\include;%INCLUDE%
+@set LIB=%INSTALL_PREFIX%\lib;%LIB%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Download and unpack source
@@ -30,14 +36,7 @@
 @set VS_BUILD_DIR=%LIBRDKAFKA_ROOT%\win32
 @cd %VS_BUILD_DIR%
 
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Patch build files
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@call patch -p0 --input=%LIBRDKAFKA_EXTRAS_DIR%\librdkafka.sln.patch --backup
-@call patch -p0 --input=%LIBRDKAFKA_EXTRAS_DIR%\librdkafka.vcxproj.patch --backup
-@call patch -p0 --input=%LIBRDKAFKA_EXTRAS_DIR%\librdkafkacpp.vcxproj.patch --backup
 
-::@call %LIBRDKAFKA_ROOT%/nuget restore
 
 @call:build-rdkafka Release
 @call:build-rdkafka Debug
