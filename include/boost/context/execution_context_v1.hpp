@@ -60,7 +60,7 @@ struct data_t {
     void                *   data;
 };
 
-struct activation_record {
+struct BOOST_CONTEXT_DECL activation_record {
     typedef boost::intrusive_ptr< activation_record >    ptr_t;
 
     thread_local static ptr_t   current_rec;
@@ -72,7 +72,7 @@ struct activation_record {
 
     // used for toplevel-context
     // (e.g. main context, thread-entry context)
-    constexpr activation_record() = default;
+    activation_record() = default;
 
     activation_record( fcontext_t fctx_, stack_context sctx_) noexcept :
         fctx{ fctx_ },
@@ -146,7 +146,7 @@ struct activation_record {
     }
 };
 
-struct activation_record_initializer {
+struct BOOST_CONTEXT_DECL activation_record_initializer {
     activation_record_initializer() noexcept;
     ~activation_record_initializer();
 };
@@ -170,13 +170,13 @@ transfer_t context_ontop( transfer_t t) {
 template< typename StackAlloc, typename Fn, typename ... Args >
 class capture_record : public activation_record {
 private:
-    StackAlloc                                          salloc_;
+    typename std::decay< StackAlloc >::type             salloc_;
     typename std::decay< Fn >::type                     fn_;
     std::tuple< typename std::decay< Args >::type ... > args_;
     activation_record                               *   caller_;
 
     static void destroy( capture_record * p) noexcept {
-        StackAlloc salloc = p->salloc_;
+        typename std::decay< StackAlloc >::type salloc = std::move( p->salloc_);
         stack_context sctx = p->sctx;
         // deallocate activation record
         p->~capture_record();
@@ -185,12 +185,12 @@ private:
     }
 
 public:
-    capture_record( stack_context sctx, StackAlloc const& salloc,
+    capture_record( stack_context sctx, StackAlloc && salloc,
                     fcontext_t fctx,
                     activation_record * caller,
                     Fn && fn, Args && ... args) noexcept :
         activation_record{ fctx, sctx },
-        salloc_{ salloc },
+        salloc_{ std::forward< StackAlloc >( salloc) },
         fn_( std::forward< Fn >( fn) ),
         args_( std::forward< Args >( args) ... ),
         caller_{ caller } {
@@ -233,7 +233,7 @@ private:
     ptr_t   ptr_;
 
     template< typename StackAlloc, typename Fn, typename ... Args >
-    static detail::activation_record * create_context( StackAlloc salloc,
+    static detail::activation_record * create_context( StackAlloc && salloc,
                                                        Fn && fn, Args && ... args) {
         typedef detail::capture_record<
             StackAlloc, Fn, Args ...
@@ -263,11 +263,11 @@ private:
         auto curr = execution_context::current().ptr_;
         // placment new for control structure on fast-context stack
         return ::new ( sp) capture_t{
-                sctx, salloc, fctx, curr.get(), std::forward< Fn >( fn), std::forward< Args >( args) ... };
+                sctx, std::forward< StackAlloc >( salloc), fctx, curr.get(), std::forward< Fn >( fn), std::forward< Args >( args) ... };
     }
 
     template< typename StackAlloc, typename Fn, typename ... Args >
-    static detail::activation_record * create_context( preallocated palloc, StackAlloc salloc,
+    static detail::activation_record * create_context( preallocated palloc, StackAlloc && salloc,
                                                        Fn && fn, Args && ... args) {
         typedef detail::capture_record<
             StackAlloc, Fn, Args ...
@@ -296,7 +296,7 @@ private:
         auto curr = execution_context::current().ptr_;
         // placment new for control structure on fast-context stack
         return ::new ( sp) capture_t{
-                palloc.sctx, salloc, fctx, curr.get(), std::forward< Fn >( fn), std::forward< Args >( args) ... };
+                palloc.sctx, std::forward< StackAlloc >( salloc), fctx, curr.get(), std::forward< Fn >( fn), std::forward< Args >( args) ... };
     }
 
     execution_context() noexcept :
@@ -333,7 +333,7 @@ public:
         // non-type template parameter pack via std::index_sequence_for<>
         // preserves the number of arguments
         // used to extract the function arguments from std::tuple<>
-        ptr_{ create_context( salloc,
+        ptr_{ create_context( std::forward< StackAlloc >( salloc),
                               std::forward< Fn >( fn),
                               std::forward< Args >( args) ...) } {
         ptr_->resume( ptr_.get() );
@@ -348,7 +348,7 @@ public:
         // non-type template parameter pack via std::index_sequence_for<>
         // preserves the number of arguments
         // used to extract the function arguments from std::tuple<>
-        ptr_{ create_context( palloc, salloc,
+        ptr_{ create_context( palloc, std::forward< StackAlloc >( salloc),
                               std::forward< Fn >( fn),
                               std::forward< Args >( args) ...) } {
         ptr_->resume( ptr_.get() );
@@ -374,13 +374,13 @@ public:
               typename Fn,
               typename ... Args
     >
-    execution_context( std::allocator_arg_t, StackAlloc salloc, Fn && fn, Args && ... args) :
+    execution_context( std::allocator_arg_t, StackAlloc && salloc, Fn && fn, Args && ... args) :
         // deferred execution of fn and its arguments
         // arguments are stored in std::tuple<>
         // non-type template parameter pack via std::index_sequence_for<>
         // preserves the number of arguments
         // used to extract the function arguments from std::tuple<>
-        ptr_{ create_context( salloc,
+        ptr_{ create_context( std::forward< StackAlloc >( salloc),
                               std::forward< Fn >( fn),
                               std::forward< Args >( args) ...) } {
         ptr_->resume( ptr_.get() );
@@ -390,13 +390,13 @@ public:
               typename Fn,
               typename ... Args
     >
-    execution_context( std::allocator_arg_t, preallocated palloc, StackAlloc salloc, Fn && fn, Args && ... args) :
+    execution_context( std::allocator_arg_t, preallocated palloc, StackAlloc && salloc, Fn && fn, Args && ... args) :
         // deferred execution of fn and its arguments
         // arguments are stored in std::tuple<>
         // non-type template parameter pack via std::index_sequence_for<>
         // preserves the number of arguments
         // used to extract the function arguments from std::tuple<>
-        ptr_{ create_context( palloc, salloc,
+        ptr_{ create_context( palloc, std::forward< StackAlloc >( salloc),
                               std::forward< Fn >( fn),
                               std::forward< Args >( args) ...) } {
         ptr_->resume( ptr_.get() );

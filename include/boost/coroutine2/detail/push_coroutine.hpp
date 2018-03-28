@@ -43,7 +43,7 @@ public:
     explicit push_coroutine( Fn &&);
 
     template< typename StackAllocator, typename Fn >
-    push_coroutine( StackAllocator, Fn &&);
+    push_coroutine( StackAllocator &&, Fn &&);
 
     ~push_coroutine();
 
@@ -72,14 +72,14 @@ public:
         push_coroutine< T > *   c_{ nullptr };
 
     public:
-        constexpr iterator() noexcept = default;
+        iterator() noexcept = default;
 
         explicit iterator( push_coroutine< T > * c) noexcept :
             c_{ c } {
         }
 
         iterator & operator=( T t) {
-            BOOST_ASSERT( c_);
+            BOOST_ASSERT( nullptr != c_);
             if ( ! ( * c_)( t) ) {
                 c_ = nullptr;
             }
@@ -123,7 +123,7 @@ public:
     explicit push_coroutine( Fn &&);
 
     template< typename StackAllocator, typename Fn >
-    push_coroutine( StackAllocator, Fn &&);
+    push_coroutine( StackAllocator &&, Fn &&);
 
     ~push_coroutine();
 
@@ -150,14 +150,14 @@ public:
         push_coroutine< T & >   *   c_{ nullptr };
 
     public:
-        constexpr iterator() noexcept = default;
+        iterator() noexcept = default;
 
         explicit iterator( push_coroutine< T & > * c) noexcept :
             c_{ c } {
         }
 
         iterator & operator=( T & t) {
-            BOOST_ASSERT( c_);
+            BOOST_ASSERT( nullptr != c_);
             if ( ! ( * c_)( t) ) {
                 c_ = nullptr;
             }
@@ -201,7 +201,7 @@ public:
     explicit push_coroutine( Fn &&);
 
     template< typename StackAllocator, typename Fn >
-    push_coroutine( StackAllocator, Fn &&);
+    push_coroutine( StackAllocator &&, Fn &&);
 
     ~push_coroutine();
 

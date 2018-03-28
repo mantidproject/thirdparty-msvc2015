@@ -45,7 +45,7 @@ public:
     explicit pull_coroutine( Fn &&);
 
     template< typename StackAllocator, typename Fn >
-    pull_coroutine( StackAllocator, Fn &&);
+    pull_coroutine( StackAllocator &&, Fn &&);
 
     ~pull_coroutine();
 
@@ -92,7 +92,7 @@ public:
         typedef typename iterator::pointer pointer_t;
         typedef typename iterator::reference reference_t;
 
-        constexpr iterator() noexcept = default;
+        iterator() noexcept = default;
 
         explicit iterator( pull_coroutine< T > * c) noexcept :
             c_{ c } {
@@ -157,7 +157,7 @@ public:
     explicit pull_coroutine( Fn &&);
 
     template< typename StackAllocator, typename Fn >
-    pull_coroutine( StackAllocator, Fn &&);
+    pull_coroutine( StackAllocator &&, Fn &&);
 
     ~pull_coroutine();
 
@@ -204,7 +204,7 @@ public:
         typedef typename iterator::pointer pointer_t;
         typedef typename iterator::reference reference_t;
 
-        constexpr iterator() noexcept = default;
+        iterator() noexcept = default;
 
         explicit iterator( pull_coroutine< T & > * c) noexcept :
             c_{ c } {
@@ -267,7 +267,7 @@ public:
     explicit pull_coroutine( Fn &&);
 
     template< typename StackAllocator, typename Fn >
-    pull_coroutine( StackAllocator, Fn &&);
+    pull_coroutine( StackAllocator &&, Fn &&);
 
     ~pull_coroutine();
 
