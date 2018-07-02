@@ -1,11 +1,14 @@
---- boost/config/compiler/visualc.hpp.orig	Thu Dec 22 12:33:10 2016
-+++ boost/config/compiler/visualc.hpp	Tue Oct 31 14:44:39 2017
-@@ -294,7 +294,7 @@
+--- boost/config/compiler/visualc.hpp.orig	Wed Dec 13 23:56:42 2017
++++ boost/config/compiler/visualc.hpp	Thu Mar 15 10:24:29 2018
+@@ -325,10 +325,11 @@
+ #  define BOOST_COMPILER "Microsoft Visual C++ version " BOOST_STRINGIZE(BOOST_COMPILER_VERSION)
+ #endif
  
  //
- // last known and checked version is 19.10.24629 (VC++ 2017 RC):
--#if (_MSC_VER > 1910)
-+#if (_MSC_VER > 1911)
+ // last known and checked version is 19.11.25547 (VC++ 2017.4):
++#  define BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE
+ #if (_MSC_VER > 1911)
  #  if defined(BOOST_ASSERT_CONFIG)
- #     error "Unknown compiler version - please run the configure tests and report the results"
- #  else
+ #     error "Boost.Config is older than your current compiler version."
+ #  elif !defined(BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE)
+ #     pragma message("Info: Boost.Config is older than your compiler version - probably nothing bad will happen - but you may wish to look for an update Boost version.  Define BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE to suppress this message.")

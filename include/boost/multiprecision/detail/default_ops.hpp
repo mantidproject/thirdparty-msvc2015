@@ -50,8 +50,9 @@ namespace default_ops{
 
 #ifdef BOOST_MSVC
 // warning C4127: conditional expression is constant
+// warning C4146: unary minus operator applied to unsigned type, result still unsigned
 #pragma warning(push)
-#pragma warning(disable:4127)
+#pragma warning(disable:4127 4146)
 #endif
 //
 // Default versions of mixed arithmetic, these just construct a temporary
@@ -889,29 +890,42 @@ struct calculate_next_larger_type
 };
 
 template <class R, class T>
-inline bool check_in_range(const T& t)
+inline typename boost::enable_if_c<boost::is_integral<R>::value, bool>::type check_in_range(const T& t)
 {
    // Can t fit in an R?
-   if(std::numeric_limits<R>::is_specialized && std::numeric_limits<R>::is_bounded && (t > (std::numeric_limits<R>::max)()))
+   if((t > 0) && std::numeric_limits<R>::is_specialized && std::numeric_limits<R>::is_bounded && (t > (std::numeric_limits<R>::max)()))
       return true;
-   return false;
-}
-
-template <class R, class T>
-inline bool check_in_range(const terminal<T>&)
-{
+   else
    return false;
 }
 
 template <class R, class B>
-inline void eval_convert_to(R* result, const B& backend)
+inline typename boost::enable_if_c<boost::is_integral<R>::value>::type eval_convert_to(R* result, const B& backend)
 {
    typedef typename calculate_next_larger_type<R, B>::type next_type;
    next_type n;
    eval_convert_to(&n, backend);
-   if(check_in_range<R>(n))
+   if(std::numeric_limits<R>::is_specialized && std::numeric_limits<R>::is_bounded && (n > (next_type)(std::numeric_limits<R>::max)()))
    {
       *result = (std::numeric_limits<R>::max)();
+   }
+   else if (std::numeric_limits<R>::is_specialized && std::numeric_limits<R>::is_bounded && (n < (next_type)(std::numeric_limits<R>::min)()))
+   {
+      *result = (std::numeric_limits<R>::min)();
+   }
+   else
+      *result = static_cast<R>(n);
+}
+
+template <class R, class B>
+inline typename boost::disable_if_c<boost::is_integral<R>::value>::type eval_convert_to(R* result, const B& backend)
+{
+   typedef typename calculate_next_larger_type<R, B>::type next_type;
+   next_type n;
+   eval_convert_to(&n, backend);
+   if(std::numeric_limits<R>::is_specialized && std::numeric_limits<R>::is_bounded && ((n > (next_type)(std::numeric_limits<R>::max)() || (n < (next_type)-(std::numeric_limits<R>::max)()) )))
+   {
+      *result = n > 0 ? (std::numeric_limits<R>::max)() : -(std::numeric_limits<R>::max)();
    }
    else
       *result = static_cast<R>(n);
@@ -924,7 +938,21 @@ inline void eval_convert_to(terminal<R>* result, const B& backend)
    // We ran out of types to try for the conversion, try
    // a lexical_cast and hope for the best:
    //
-   result->value = boost::lexical_cast<R>(backend.str(0, std::ios_base::fmtflags(0)));
+   if (std::numeric_limits<R>::is_integer && !std::numeric_limits<R>::is_signed && (eval_get_sign(backend) < 0))
+      BOOST_THROW_EXCEPTION(std::range_error("Attempt to convert negative value to an unsigned integer results in undefined behaviour"));
+   try 
+   {
+      result->value = boost::lexical_cast<R>(backend.str(0, std::ios_base::fmtflags(0)));
+   }
+   catch (const bad_lexical_cast&)
+   {
+      if (eval_get_sign(backend) < 0)
+      {
+         *result = std::numeric_limits<R>::is_integer && std::numeric_limits<R>::is_signed ? (std::numeric_limits<R>::min)() : -(std::numeric_limits<R>::max)();
+      }
+      else
+         *result = (std::numeric_limits<R>::max)();
+   }
 }
 
 template <class B1, class B2, expression_template_option et>
@@ -981,6 +1009,25 @@ inline void eval_fmod(T& result, const T& a, const T& b)
       T temp;
       eval_fmod(temp, a, b);
       result = temp;
+      return;
+   }
+   switch(eval_fpclassify(a))
+   {
+   case FP_ZERO:
+      result = a;
+      return;
+   case FP_INFINITE:
+   case FP_NAN:
+      result = std::numeric_limits<number<T> >::quiet_NaN().backend();
+      errno = EDOM;
+      return;
+   }
+   switch(eval_fpclassify(b))
+   {
+   case FP_ZERO:
+   case FP_NAN:
+      result = std::numeric_limits<number<T> >::quiet_NaN().backend();
+      errno = EDOM;
       return;
    }
    T n;
@@ -1162,10 +1209,14 @@ template <class T>
 inline void eval_trunc(T& result, const T& a)
 {
    BOOST_STATIC_ASSERT_MSG(number_category<T>::value == number_kind_floating_point, "The trunc function is only valid for floating point types.");
-   int c = eval_fpclassify(a);
-   if(c == (int)FP_NAN || c == (int)FP_INFINITE)
+   switch(eval_fpclassify(a))
    {
-      result = boost::math::policies::raise_rounding_error("boost::multiprecision::trunc<%1%>(%1%)", 0, number<T>(a), number<T>(a), boost::math::policies::policy<>()).backend();
+   case FP_NAN:
+      errno = EDOM;
+      // fallthrough...
+   case FP_ZERO:
+   case FP_INFINITE:
+      result = a;
       return;
    }
    if(eval_get_sign(a) < 0)
@@ -1212,12 +1263,17 @@ inline void eval_round(T& result, const T& a)
    BOOST_STATIC_ASSERT_MSG(number_category<T>::value == number_kind_floating_point, "The round function is only valid for floating point types.");
    typedef typename boost::multiprecision::detail::canonical<float, T>::type fp_type;
    int c = eval_fpclassify(a);
-   if((c == (int)FP_NAN) || (c == (int)FP_INFINITE))
+   if(c == (int)FP_NAN)
    {
-      result = boost::math::policies::raise_rounding_error("boost::multiprecision::round<%1%>(%1%)", 0, number<T>(a), number<T>(a), boost::math::policies::policy<>()).backend();
+      result = a;
+      errno = EDOM;
       return;
    }
-   if(eval_get_sign(a) < 0)
+   if((c == FP_ZERO) || (c == (int)FP_INFINITE))
+   {
+      result = a;
+   }
+   else if(eval_get_sign(a) < 0)
    {
       eval_subtract(result, a, fp_type(0.5f));
       eval_ceil(result, result);
@@ -1382,9 +1438,10 @@ void eval_integer_sqrt(B& s, B& r, const B& x)
       return;
    }
    int g = eval_msb(x);
-   if(g == 0)
+   if(g <= 1)
    {
-      r = ui_type(1);
+      s = ui_type(1);
+      eval_subtract(r, x, s);
       return;
    }
    
@@ -1408,6 +1465,7 @@ void eval_integer_sqrt(B& s, B& r, const B& x)
          eval_bit_set(t, 2 * g);
          if(t.compare(r) <= 0)
          {
+            BOOST_ASSERT(g >= 0);
             eval_bit_set(s, g);
             eval_subtract(r, t);
             if(eval_get_sign(r) == 0)
@@ -1448,7 +1506,11 @@ inline typename B::exponent_type eval_ilogb(const B& val)
    switch(eval_fpclassify(val))
    {
    case FP_NAN:
-      return (std::numeric_limits<typename B::exponent_type>::min)();
+#ifdef FP_ILOGBNAN
+      return FP_ILOGBNAN > 0 ? (std::numeric_limits<typename B::exponent_type>::max)() : (std::numeric_limits<typename B::exponent_type>::min)();
+#else
+      return (std::numeric_limits<typename B::exponent_type>::max)();
+#endif
    case FP_INFINITE:
       return (std::numeric_limits<typename B::exponent_type>::max)();
    case FP_ZERO:
@@ -1458,9 +1520,30 @@ inline typename B::exponent_type eval_ilogb(const B& val)
    eval_frexp(result, val, &e);
    return e - 1;
 }
+
+template <class T>
+int eval_signbit(const T& val);
+
 template <class B>
 inline void eval_logb(B& result, const B& val)
 {
+   switch(eval_fpclassify(val))
+   {
+   case FP_NAN:
+      result = val;
+      errno = EDOM;
+      return;
+   case FP_ZERO:
+      result = std::numeric_limits<number<B> >::infinity().backend();
+      result.negate();
+      errno = ERANGE;
+      return;
+   case FP_INFINITE:
+      result = val;
+      if(eval_signbit(val))
+         result.negate();
+      return;
+   }
    typedef typename boost::mpl::if_c<boost::is_same<boost::intmax_t, long>::value, boost::long_long_type, boost::intmax_t>::type max_t;
    result = static_cast<max_t>(eval_ilogb(val));
 }
@@ -1598,6 +1681,12 @@ inline void eval_rint(R& result, const T& a)
    eval_nearbyint(result, a);
 }
 
+template <class T>
+inline int eval_signbit(const T& val)
+{
+   return eval_get_sign(val) < 0 ? 1 : 0;
+}
+
 //
 // These functions are implemented in separate files, but expanded inline here,
 // DO NOT CHANGE THE ORDER OF THESE INCLUDES:
@@ -1687,7 +1776,8 @@ inline int sign BOOST_PREVENT_MACRO_SUBSTITUTION(const multiprecision::detail::e
 template <class Backend, multiprecision::expression_template_option ExpressionTemplates>
 inline int signbit BOOST_PREVENT_MACRO_SUBSTITUTION(const multiprecision::number<Backend, ExpressionTemplates>& arg)
 {
-   return arg.sign() < 0;
+   using default_ops::eval_signbit;
+   return eval_signbit(arg.backend());
 }
 template <class tag, class A1, class A2, class A3, class A4>
 inline int signbit BOOST_PREVENT_MACRO_SUBSTITUTION(const multiprecision::detail::expression<tag, A1, A2, A3, A4>& arg)
@@ -1837,7 +1927,14 @@ namespace multiprecision{
    template <class Backend, multiprecision::expression_template_option ExpressionTemplates>
    inline multiprecision::number<Backend, ExpressionTemplates> lgamma BOOST_PREVENT_MACRO_SUBSTITUTION(const multiprecision::number<Backend, ExpressionTemplates>& arg)
    {
-      return boost::math::lgamma(arg, c99_error_policy());
+      multiprecision::number<Backend, ExpressionTemplates> result;
+      result = boost::math::lgamma(arg, c99_error_policy());
+      if((boost::multiprecision::isnan)(result) && !(boost::multiprecision::isnan)(arg))
+      {
+         result = std::numeric_limits<multiprecision::number<Backend, ExpressionTemplates> >::infinity();
+         errno = ERANGE;
+      }
+      return result;
    }
    template <class tag, class A1, class A2, class A3, class A4>
    inline typename multiprecision::detail::expression<tag, A1, A2, A3, A4>::result_type lgamma BOOST_PREVENT_MACRO_SUBSTITUTION(const multiprecision::detail::expression<tag, A1, A2, A3, A4>& arg)
@@ -1848,6 +1945,11 @@ namespace multiprecision{
    template <class Backend, multiprecision::expression_template_option ExpressionTemplates>
    inline multiprecision::number<Backend, ExpressionTemplates> tgamma BOOST_PREVENT_MACRO_SUBSTITUTION(const multiprecision::number<Backend, ExpressionTemplates>& arg)
    {
+      if((arg == 0) && std::numeric_limits<multiprecision::number<Backend, ExpressionTemplates> >::has_infinity)
+      {
+         errno = ERANGE;
+         return 1 / arg;
+      }
       return boost::math::tgamma(arg, c99_error_policy());
    }
    template <class tag, class A1, class A2, class A3, class A4>
@@ -3127,10 +3229,21 @@ inline multiprecision::number<Backend, ExpressionTemplates> sinhc_pi(const multi
    return BOOST_MP_MOVE(boost::math::sinhc_pi(x));
 }
 
+using boost::multiprecision::gcd;
+using boost::multiprecision::lcm;
+
 #ifdef BOOST_MSVC
 #pragma warning(pop)
 #endif
 } // namespace math
+
+namespace integer {
+
+using boost::multiprecision::gcd;
+using boost::multiprecision::lcm;
+
+}
+
 } // namespace boost
 
 //
