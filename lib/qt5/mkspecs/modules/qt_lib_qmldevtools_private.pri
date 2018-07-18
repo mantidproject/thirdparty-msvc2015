@@ -1,11 +1,8 @@
-QT.qmldevtools_private.VERSION = 5.8.0
-QT.qmldevtools_private.MAJOR_VERSION = 5
-QT.qmldevtools_private.MINOR_VERSION = 8
-QT.qmldevtools_private.PATCH_VERSION = 0
+QT.qmldevtools_private.VERSION = 5.10.1
 QT.qmldevtools_private.name = QtQmlDevTools
 QT.qmldevtools_private.module = Qt5QmlDevTools
 QT.qmldevtools_private.libs = $$QT_MODULE_HOST_LIB_BASE
-QT.qmldevtools_private.includes = $$QT_MODULE_INCLUDE_BASE $$QT_MODULE_INCLUDE_BASE/QtQmlDevTools $$QT_MODULE_INCLUDE_BASE/QtQmlDevTools/5.8.0 $$QT_MODULE_INCLUDE_BASE/QtQmlDevTools/5.8.0/QtQmlDevTools
+QT.qmldevtools_private.includes = $$QT_MODULE_INCLUDE_BASE $$QT_MODULE_INCLUDE_BASE/QtQml $$QT_MODULE_INCLUDE_BASE/QtQml/5.10.1 $$QT_MODULE_INCLUDE_BASE/QtQml/5.10.1/QtQml
 QT.qmldevtools_private.frameworks =
 QT.qmldevtools_private.depends = core_private
 QT.qmldevtools_private.uses =

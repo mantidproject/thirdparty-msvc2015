@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -34,10 +34,12 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
-import QtQuick.Templates 2.1 as T
-import QtQuick.Controls.Material 2.1
-import QtQuick.Controls.Material.impl 2.1
+import QtQuick 2.10
+import QtQuick.Templates 2.3 as T
+import QtQuick.Controls 2.3
+import QtQuick.Controls.impl 2.3
+import QtQuick.Controls.Material 2.3
+import QtQuick.Controls.Material.impl 2.3
 
 T.SwipeDelegate {
     id: control
@@ -54,25 +56,22 @@ T.SwipeDelegate {
     bottomPadding: 8
     spacing: 16
 
-    contentItem: Text {
-        leftPadding: !control.mirrored ? (control.indicator ? control.indicator.width + control.spacing : 0) : 0
-        rightPadding: control.mirrored ? (control.indicator ? control.indicator.width + control.spacing : 0) : 0
+    icon.width: 24
+    icon.height: 24
+    icon.color: enabled ? Material.foreground : Material.hintTextColor
 
+    swipe.transition: Transition { SmoothedAnimation { velocity: 3; easing.type: Easing.InOutCubic } }
+
+    contentItem: IconLabel {
+        spacing: control.spacing
+        mirrored: control.mirrored
+        display: control.display
+        alignment: control.display === IconLabel.IconOnly || control.display === IconLabel.TextUnderIcon ? Qt.AlignCenter : Qt.AlignLeft
+
+        icon: control.icon
         text: control.text
         font: control.font
         color: control.enabled ? control.Material.foreground : control.Material.hintTextColor
-        elide: Text.ElideRight
-        visible: control.text
-        horizontalAlignment: Text.AlignLeft
-        verticalAlignment: Text.AlignVCenter
-
-        Behavior on x {
-            enabled: !control.down
-            NumberAnimation {
-                easing.type: Easing.InOutCubic
-                duration: 400
-            }
-        }
     }
 
     background: Rectangle {
@@ -97,14 +96,6 @@ T.SwipeDelegate {
             active: control.down || control.visualFocus || control.hovered
             color: control.Material.rippleColor
             enabled: control.swipe.position === 0
-        }
-
-        Behavior on x {
-            enabled: !control.down
-            NumberAnimation {
-                easing.type: Easing.InOutCubic
-                duration: 400
-            }
         }
     }
 }

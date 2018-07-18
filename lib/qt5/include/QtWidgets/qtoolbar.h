@@ -116,12 +116,12 @@ public:
 #else
     // addAction(QString): Connect to a QObject slot / functor or function pointer (with context)
     template<class Obj, typename Func1>
-    inline typename QtPrivate::QEnableIf<!std::is_same<const char*, Func1>::value
-        && QtPrivate::IsPointerToTypeDerivedFromQObject<Obj*>::Value, QAction *>::Type
+    inline typename std::enable_if<!std::is_same<const char*, Func1>::value
+        && QtPrivate::IsPointerToTypeDerivedFromQObject<Obj*>::Value, QAction *>::type
         addAction(const QString &text, const Obj *object, Func1 slot)
     {
         QAction *result = addAction(text);
-        connect(result, &QAction::triggered, object, slot);
+        connect(result, &QAction::triggered, object, std::move(slot));
         return result;
     }
     // addAction(QString): Connect to a functor or function pointer (without context)
@@ -134,12 +134,12 @@ public:
     }
     // addAction(QString): Connect to a QObject slot / functor or function pointer (with context)
     template<class Obj, typename Func1>
-    inline typename QtPrivate::QEnableIf<!std::is_same<const char*, Func1>::value
-        && QtPrivate::IsPointerToTypeDerivedFromQObject<Obj*>::Value, QAction *>::Type
+    inline typename std::enable_if<!std::is_same<const char*, Func1>::value
+        && QtPrivate::IsPointerToTypeDerivedFromQObject<Obj*>::Value, QAction *>::type
         addAction(const QIcon &actionIcon, const QString &text, const Obj *object, Func1 slot)
     {
         QAction *result = addAction(actionIcon, text);
-        connect(result, &QAction::triggered, object, slot);
+        connect(result, &QAction::triggered, object, std::move(slot));
         return result;
     }
     // addAction(QIcon, QString): Connect to a functor or function pointer (without context)

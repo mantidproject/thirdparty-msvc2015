@@ -86,6 +86,13 @@ public:
     Q_DECL_CONSTEXPR QChar(int rc) Q_DECL_NOTHROW : ucs(ushort(rc & 0xffff)) {}
     Q_DECL_CONSTEXPR QChar(SpecialCharacter s) Q_DECL_NOTHROW : ucs(ushort(s)) {} // implicit
     Q_DECL_CONSTEXPR QChar(QLatin1Char ch) Q_DECL_NOTHROW : ucs(ch.unicode()) {} // implicit
+#if defined(Q_COMPILER_UNICODE_STRINGS)
+    Q_DECL_CONSTEXPR QChar(char16_t ch) Q_DECL_NOTHROW : ucs(ushort(ch)) {} // implicit
+#endif
+#if defined(Q_OS_WIN)
+    Q_STATIC_ASSERT(sizeof(wchar_t) == sizeof(ushort));
+    Q_DECL_CONSTEXPR QChar(wchar_t ch) Q_DECL_NOTHROW : ucs(ushort(ch)) {} // implicit
+#endif
 
 #ifndef QT_NO_CAST_FROM_ASCII
     QT_ASCII_CAST_WARN Q_DECL_CONSTEXPR explicit QChar(char c) Q_DECL_NOTHROW : ucs(uchar(c)) { }
@@ -578,17 +585,21 @@ Q_DECL_CONSTEXPR inline bool operator>=(QChar c1, QChar c2) Q_DECL_NOTHROW { ret
 Q_DECL_CONSTEXPR inline bool operator> (QChar c1, QChar c2) Q_DECL_NOTHROW { return  operator< (c2, c1); }
 Q_DECL_CONSTEXPR inline bool operator<=(QChar c1, QChar c2) Q_DECL_NOTHROW { return !operator< (c2, c1); }
 
-// disambiguate QChar == int (but only that, so constrain template to exactly 'int'):
-template <typename T>
-Q_DECL_DEPRECATED_X("don't compare ints to QChars, compare them to QChar::unicode() instead")
-Q_DECL_CONSTEXPR inline
-typename std::enable_if<std::is_same<typename std::remove_cv<T>::type, int>::value, bool>::type
-operator==(QChar lhs, T rhs) Q_DECL_NOEXCEPT { return lhs == QChar(rhs); }
-template <typename T>
-Q_DECL_DEPRECATED_X("don't compare ints to QChars, compare them to QChar::unicode() instead")
-Q_DECL_CONSTEXPR inline
-typename std::enable_if<std::is_same<typename std::remove_cv<T>::type, int>::value, bool>::type
-operator!=(QChar lhs, T rhs) Q_DECL_NOEXCEPT { return lhs != QChar(rhs); }
+
+Q_DECL_CONSTEXPR inline bool operator==(QChar lhs, std::nullptr_t) Q_DECL_NOTHROW { return lhs.isNull(); }
+Q_DECL_CONSTEXPR inline bool operator< (QChar,     std::nullptr_t) Q_DECL_NOTHROW { return false; }
+Q_DECL_CONSTEXPR inline bool operator==(std::nullptr_t, QChar rhs) Q_DECL_NOTHROW { return rhs.isNull(); }
+Q_DECL_CONSTEXPR inline bool operator< (std::nullptr_t, QChar rhs) Q_DECL_NOTHROW { return !rhs.isNull(); }
+
+Q_DECL_CONSTEXPR inline bool operator!=(QChar lhs, std::nullptr_t) Q_DECL_NOTHROW { return !operator==(lhs, nullptr); }
+Q_DECL_CONSTEXPR inline bool operator>=(QChar lhs, std::nullptr_t) Q_DECL_NOTHROW { return !operator< (lhs, nullptr); }
+Q_DECL_CONSTEXPR inline bool operator> (QChar lhs, std::nullptr_t) Q_DECL_NOTHROW { return  operator< (nullptr, lhs); }
+Q_DECL_CONSTEXPR inline bool operator<=(QChar lhs, std::nullptr_t) Q_DECL_NOTHROW { return !operator< (nullptr, lhs); }
+
+Q_DECL_CONSTEXPR inline bool operator!=(std::nullptr_t, QChar rhs) Q_DECL_NOTHROW { return !operator==(nullptr, rhs); }
+Q_DECL_CONSTEXPR inline bool operator>=(std::nullptr_t, QChar rhs) Q_DECL_NOTHROW { return !operator< (nullptr, rhs); }
+Q_DECL_CONSTEXPR inline bool operator> (std::nullptr_t, QChar rhs) Q_DECL_NOTHROW { return  operator< (rhs, nullptr); }
+Q_DECL_CONSTEXPR inline bool operator<=(std::nullptr_t, QChar rhs) Q_DECL_NOTHROW { return !operator< (rhs, nullptr); }
 
 #ifndef QT_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, QChar);

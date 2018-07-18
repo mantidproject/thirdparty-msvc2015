@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt5Quick_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt5Quick_VERSION instead.
-set(Qt5Quick_VERSION_STRING 5.8.0)
+set(Qt5Quick_VERSION_STRING 5.10.1)
 
 set(Qt5Quick_LIBRARIES Qt5::Quick)
 
@@ -49,8 +49,8 @@ if (NOT TARGET Qt5::Quick)
 
     set(_Qt5Quick_OWN_INCLUDE_DIRS "${_qt5Quick_install_prefix}/include/" "${_qt5Quick_install_prefix}/include/QtQuick")
     set(Qt5Quick_PRIVATE_INCLUDE_DIRS
-        "${_qt5Quick_install_prefix}/include/QtQuick/5.8.0"
-        "${_qt5Quick_install_prefix}/include/QtQuick/5.8.0/QtQuick"
+        "${_qt5Quick_install_prefix}/include/QtQuick/5.10.1"
+        "${_qt5Quick_install_prefix}/include/QtQuick/5.10.1/QtQuick"
     )
 
     foreach(_dir ${_Qt5Quick_OWN_INCLUDE_DIRS})
@@ -70,8 +70,10 @@ if (NOT TARGET Qt5::Quick)
 
     set(Qt5Quick_DEFINITIONS -DQT_QUICK_LIB)
     set(Qt5Quick_COMPILE_DEFINITIONS QT_QUICK_LIB)
-    set(_Qt5Quick_MODULE_DEPENDENCIES "Gui;Qml;Core")
+    set(_Qt5Quick_MODULE_DEPENDENCIES "Qml;Gui;Core")
 
+
+    set(Qt5Quick_OWN_PRIVATE_INCLUDE_DIRS ${Qt5Quick_PRIVATE_INCLUDE_DIRS})
 
     set(_Qt5Quick_FIND_DEPENDENCIES_REQUIRED)
     if (Qt5Quick_FIND_REQUIRED)
@@ -91,7 +93,7 @@ if (NOT TARGET Qt5::Quick)
     foreach(_module_dep ${_Qt5Quick_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt5Quick_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt5Quick_FIND_VERSION_EXACT}
                 ${_Qt5Quick_DEPENDENCIES_FIND_QUIET}
                 ${_Qt5Quick_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -115,7 +117,7 @@ if (NOT TARGET Qt5::Quick)
     list(REMOVE_DUPLICATES Qt5Quick_COMPILE_DEFINITIONS)
     list(REMOVE_DUPLICATES Qt5Quick_EXECUTABLE_COMPILE_FLAGS)
 
-    set(_Qt5Quick_LIB_DEPENDENCIES "Qt5::Gui;Qt5::Qml;Qt5::Core")
+    set(_Qt5Quick_LIB_DEPENDENCIES "Qt5::Qml;Qt5::Gui;Qt5::Core")
 
 
     add_library(Qt5::Quick SHARED IMPORTED)
@@ -124,6 +126,30 @@ if (NOT TARGET Qt5::Quick)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt5Quick_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::Quick PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_QUICK_LIB)
+
+    set(_Qt5Quick_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt5Quick_PRIVATE_DIR ${Qt5Quick_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt5Quick_PRIVATE_DIR})
+            set(_Qt5Quick_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt5Quick_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::QuickPrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::QuickPrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt5Quick_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt5Quick_PRIVATEDEPS)
+        foreach(dep ${_Qt5Quick_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt5Quick_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::QuickPrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::Quick ${_Qt5Quick_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_Quick_target_properties(RELEASE "Qt5Quick.dll" "Qt5Quick.lib" )
 

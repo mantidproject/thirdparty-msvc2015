@@ -88,7 +88,10 @@ public:
         TouchIconsEnabled,
         FocusOnNavigationEnabled,
         PrintElementBackgrounds,
-        AllowRunningInsecureContent
+        AllowRunningInsecureContent,
+        AllowGeolocationOnInsecureOrigins,
+        AllowWindowActivationFromJavaScript,
+        ShowScrollBars
     };
 
     enum FontSize {

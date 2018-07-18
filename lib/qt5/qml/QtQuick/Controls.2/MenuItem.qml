@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
-import QtQuick.Controls 2.1
-import QtQuick.Controls.impl 2.1
-import QtQuick.Templates 2.1 as T
+import QtQuick 2.10
+import QtQuick.Controls 2.3
+import QtQuick.Controls.impl 2.3
+import QtQuick.Templates 2.3 as T
 
 T.MenuItem {
     id: control
@@ -50,38 +50,57 @@ T.MenuItem {
     baselineOffset: contentItem.y + contentItem.baselineOffset
 
     padding: 6
+    spacing: 6
 
-    contentItem: Text {
-        leftPadding: control.checkable && !control.mirrored ? control.indicator.width + control.spacing : 0
-        rightPadding: control.checkable && control.mirrored ? control.indicator.width + control.spacing : 0
+    icon.width: 24
+    icon.height: 24
+    icon.color: control.palette.windowText
 
+    contentItem: IconLabel {
+        readonly property real arrowPadding: control.subMenu && control.arrow ? control.arrow.width + control.spacing : 0
+        readonly property real indicatorPadding: control.checkable && control.indicator ? control.indicator.width + control.spacing : 0
+        leftPadding: !control.mirrored ? indicatorPadding : arrowPadding
+        rightPadding: control.mirrored ? indicatorPadding : arrowPadding
+
+        spacing: control.spacing
+        mirrored: control.mirrored
+        display: control.display
+        alignment: Qt.AlignLeft
+
+        icon: control.icon
         text: control.text
         font: control.font
-        color: control.enabled ? Default.textDarkColor : Default.textDisabledColor
-        elide: Text.ElideRight
-        visible: control.text
-        horizontalAlignment: Text.AlignLeft
-        verticalAlignment: Text.AlignVCenter
+        color: control.palette.windowText
     }
 
-    indicator: Image {
+    indicator: ColorImage {
         x: control.mirrored ? control.width - width - control.rightPadding : control.leftPadding
         y: control.topPadding + (control.availableHeight - height) / 2
 
         visible: control.checked
         source: control.checkable ? "qrc:/qt-project.org/imports/QtQuick/Controls.2/images/check.png" : ""
+        color: control.palette.windowText
+        defaultColor: "#353637"
     }
 
-    background: Item {
+    arrow: ColorImage {
+        x: control.mirrored ? control.leftPadding : control.width - width - control.rightPadding
+        y: control.topPadding + (control.availableHeight - height) / 2
+
+        visible: control.subMenu
+        mirror: control.mirrored
+        source: control.subMenu ? "qrc:/qt-project.org/imports/QtQuick/Controls.2/images/arrow-indicator.png" : ""
+        color: control.palette.windowText
+        defaultColor: "#353637"
+    }
+
+    background: Rectangle {
         implicitWidth: 200
         implicitHeight: 40
-
-        Rectangle {
-            x: 1
-            y: 1
-            width: parent.width - 2
-            height: parent.height - 2
-            color: control.visualFocus || control.down ? Default.delegateColor : "transparent"
-        }
+        x: 1
+        y: 1
+        width: control.width - 2
+        height: control.height - 2
+        color: control.down ? control.palette.midlight : control.highlighted ? control.palette.light : "transparent"
     }
 }

@@ -135,7 +135,6 @@ class Q_WIDGETS_EXPORT QPinchGesture : public QGesture
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(QPinchGesture)
-    Q_FLAGS(ChangeFlags ChangeFlag)
 
 public:
     enum ChangeFlag {
@@ -143,7 +142,9 @@ public:
         RotationAngleChanged = 0x2,
         CenterPointChanged = 0x4
     };
+    Q_FLAG(ChangeFlag)
     Q_DECLARE_FLAGS(ChangeFlags, ChangeFlag)
+    Q_FLAG(ChangeFlags)
 
     Q_PROPERTY(ChangeFlags totalChangeFlags READ totalChangeFlags WRITE setTotalChangeFlags)
     Q_PROPERTY(ChangeFlags changeFlags READ changeFlags WRITE setChangeFlags)
@@ -300,7 +301,7 @@ public:
     void setWidget(QWidget *widget);
     QWidget *widget() const;
 
-#ifndef QT_NO_GRAPHICSVIEW
+#if QT_CONFIG(graphicsview)
     QPointF mapToGraphicsScene(const QPointF &gesturePoint) const;
 #endif
 

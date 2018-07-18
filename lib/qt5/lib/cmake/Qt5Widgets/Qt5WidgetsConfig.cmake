@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt5Widgets_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt5Widgets_VERSION instead.
-set(Qt5Widgets_VERSION_STRING 5.8.0)
+set(Qt5Widgets_VERSION_STRING 5.10.1)
 
 set(Qt5Widgets_LIBRARIES Qt5::Widgets)
 
@@ -49,8 +49,8 @@ if (NOT TARGET Qt5::Widgets)
 
     set(_Qt5Widgets_OWN_INCLUDE_DIRS "${_qt5Widgets_install_prefix}/include/" "${_qt5Widgets_install_prefix}/include/QtWidgets")
     set(Qt5Widgets_PRIVATE_INCLUDE_DIRS
-        "${_qt5Widgets_install_prefix}/include/QtWidgets/5.8.0"
-        "${_qt5Widgets_install_prefix}/include/QtWidgets/5.8.0/QtWidgets"
+        "${_qt5Widgets_install_prefix}/include/QtWidgets/5.10.1"
+        "${_qt5Widgets_install_prefix}/include/QtWidgets/5.10.1/QtWidgets"
     )
 
     foreach(_dir ${_Qt5Widgets_OWN_INCLUDE_DIRS})
@@ -73,6 +73,8 @@ if (NOT TARGET Qt5::Widgets)
     set(_Qt5Widgets_MODULE_DEPENDENCIES "Gui;Core")
 
 
+    set(Qt5Widgets_OWN_PRIVATE_INCLUDE_DIRS ${Qt5Widgets_PRIVATE_INCLUDE_DIRS})
+
     set(_Qt5Widgets_FIND_DEPENDENCIES_REQUIRED)
     if (Qt5Widgets_FIND_REQUIRED)
         set(_Qt5Widgets_FIND_DEPENDENCIES_REQUIRED REQUIRED)
@@ -91,7 +93,7 @@ if (NOT TARGET Qt5::Widgets)
     foreach(_module_dep ${_Qt5Widgets_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt5Widgets_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt5Widgets_FIND_VERSION_EXACT}
                 ${_Qt5Widgets_DEPENDENCIES_FIND_QUIET}
                 ${_Qt5Widgets_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -124,6 +126,30 @@ if (NOT TARGET Qt5::Widgets)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt5Widgets_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::Widgets PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_WIDGETS_LIB)
+
+    set(_Qt5Widgets_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt5Widgets_PRIVATE_DIR ${Qt5Widgets_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt5Widgets_PRIVATE_DIR})
+            set(_Qt5Widgets_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt5Widgets_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::WidgetsPrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::WidgetsPrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt5Widgets_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt5Widgets_PRIVATEDEPS)
+        foreach(dep ${_Qt5Widgets_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt5Widgets_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::WidgetsPrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::Widgets ${_Qt5Widgets_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_Widgets_target_properties(RELEASE "Qt5Widgets.dll" "Qt5Widgets.lib" )
 

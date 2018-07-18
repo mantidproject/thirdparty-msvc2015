@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt5Sql_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt5Sql_VERSION instead.
-set(Qt5Sql_VERSION_STRING 5.8.0)
+set(Qt5Sql_VERSION_STRING 5.10.1)
 
 set(Qt5Sql_LIBRARIES Qt5::Sql)
 
@@ -49,8 +49,8 @@ if (NOT TARGET Qt5::Sql)
 
     set(_Qt5Sql_OWN_INCLUDE_DIRS "${_qt5Sql_install_prefix}/include/" "${_qt5Sql_install_prefix}/include/QtSql")
     set(Qt5Sql_PRIVATE_INCLUDE_DIRS
-        "${_qt5Sql_install_prefix}/include/QtSql/5.8.0"
-        "${_qt5Sql_install_prefix}/include/QtSql/5.8.0/QtSql"
+        "${_qt5Sql_install_prefix}/include/QtSql/5.10.1"
+        "${_qt5Sql_install_prefix}/include/QtSql/5.10.1/QtSql"
     )
 
     foreach(_dir ${_Qt5Sql_OWN_INCLUDE_DIRS})
@@ -73,6 +73,8 @@ if (NOT TARGET Qt5::Sql)
     set(_Qt5Sql_MODULE_DEPENDENCIES "Core")
 
 
+    set(Qt5Sql_OWN_PRIVATE_INCLUDE_DIRS ${Qt5Sql_PRIVATE_INCLUDE_DIRS})
+
     set(_Qt5Sql_FIND_DEPENDENCIES_REQUIRED)
     if (Qt5Sql_FIND_REQUIRED)
         set(_Qt5Sql_FIND_DEPENDENCIES_REQUIRED REQUIRED)
@@ -91,7 +93,7 @@ if (NOT TARGET Qt5::Sql)
     foreach(_module_dep ${_Qt5Sql_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt5Sql_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt5Sql_FIND_VERSION_EXACT}
                 ${_Qt5Sql_DEPENDENCIES_FIND_QUIET}
                 ${_Qt5Sql_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -124,6 +126,30 @@ if (NOT TARGET Qt5::Sql)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt5Sql_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::Sql PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_SQL_LIB)
+
+    set(_Qt5Sql_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt5Sql_PRIVATE_DIR ${Qt5Sql_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt5Sql_PRIVATE_DIR})
+            set(_Qt5Sql_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt5Sql_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::SqlPrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::SqlPrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt5Sql_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt5Sql_PRIVATEDEPS)
+        foreach(dep ${_Qt5Sql_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt5Sql_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::SqlPrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::Sql ${_Qt5Sql_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_Sql_target_properties(RELEASE "Qt5Sql.dll" "Qt5Sql.lib" )
 

@@ -6,6 +6,9 @@
 # qt_build_config tells us to re-enable exceptions here.
 testcase_exceptions: CONFIG += exceptions
 
+# Set in qt_build_config.prf
+testcase_no_bundle: CONFIG -= app_bundle
+
 benchmark: type = benchmark
 else: type = check
 
@@ -41,7 +44,7 @@ unix {
         $${type}.commands += $${TEST_TARGET_DIR}/$(QMAKE_TARGET)
 } else {
     # Windows
-    !isEmpty(TEST_TARGET_DIR): TEST_TARGET_DIR = $${TEST_TARGET_DIR}$${QMAKE_DIR_SEP}
+    !isEmpty(TEST_TARGET_DIR): TEST_TARGET_DIR = $$shell_path($$TEST_TARGET_DIR)$${QMAKE_DIR_SEP}
     $${type}.commands += $${TEST_TARGET_DIR}$(TARGET)
 }
 

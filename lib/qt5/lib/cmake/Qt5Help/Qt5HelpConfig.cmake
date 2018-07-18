@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt5Help_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt5Help_VERSION instead.
-set(Qt5Help_VERSION_STRING 5.8.0)
+set(Qt5Help_VERSION_STRING 5.10.1)
 
 set(Qt5Help_LIBRARIES Qt5::Help)
 
@@ -49,8 +49,8 @@ if (NOT TARGET Qt5::Help)
 
     set(_Qt5Help_OWN_INCLUDE_DIRS "${_qt5Help_install_prefix}/include/" "${_qt5Help_install_prefix}/include/QtHelp")
     set(Qt5Help_PRIVATE_INCLUDE_DIRS
-        "${_qt5Help_install_prefix}/include/QtHelp/5.8.0"
-        "${_qt5Help_install_prefix}/include/QtHelp/5.8.0/QtHelp"
+        "${_qt5Help_install_prefix}/include/QtHelp/5.10.1"
+        "${_qt5Help_install_prefix}/include/QtHelp/5.10.1/QtHelp"
     )
 
     foreach(_dir ${_Qt5Help_OWN_INCLUDE_DIRS})
@@ -70,8 +70,10 @@ if (NOT TARGET Qt5::Help)
 
     set(Qt5Help_DEFINITIONS -DQT_HELP_LIB)
     set(Qt5Help_COMPILE_DEFINITIONS QT_HELP_LIB)
-    set(_Qt5Help_MODULE_DEPENDENCIES "Widgets;Gui;Core")
+    set(_Qt5Help_MODULE_DEPENDENCIES "Widgets;Gui;Sql;Core")
 
+
+    set(Qt5Help_OWN_PRIVATE_INCLUDE_DIRS ${Qt5Help_PRIVATE_INCLUDE_DIRS})
 
     set(_Qt5Help_FIND_DEPENDENCIES_REQUIRED)
     if (Qt5Help_FIND_REQUIRED)
@@ -91,7 +93,7 @@ if (NOT TARGET Qt5::Help)
     foreach(_module_dep ${_Qt5Help_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt5Help_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt5Help_FIND_VERSION_EXACT}
                 ${_Qt5Help_DEPENDENCIES_FIND_QUIET}
                 ${_Qt5Help_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -115,7 +117,7 @@ if (NOT TARGET Qt5::Help)
     list(REMOVE_DUPLICATES Qt5Help_COMPILE_DEFINITIONS)
     list(REMOVE_DUPLICATES Qt5Help_EXECUTABLE_COMPILE_FLAGS)
 
-    set(_Qt5Help_LIB_DEPENDENCIES "Qt5::Widgets;Qt5::Gui;Qt5::Core")
+    set(_Qt5Help_LIB_DEPENDENCIES "Qt5::Widgets;Qt5::Gui;Qt5::Sql;Qt5::Core")
 
 
     add_library(Qt5::Help SHARED IMPORTED)
@@ -124,6 +126,30 @@ if (NOT TARGET Qt5::Help)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt5Help_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::Help PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_HELP_LIB)
+
+    set(_Qt5Help_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt5Help_PRIVATE_DIR ${Qt5Help_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt5Help_PRIVATE_DIR})
+            set(_Qt5Help_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt5Help_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::HelpPrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::HelpPrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt5Help_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt5Help_PRIVATEDEPS)
+        foreach(dep ${_Qt5Help_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt5Help_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::HelpPrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::Help ${_Qt5Help_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_Help_target_properties(RELEASE "Qt5Help.dll" "Qt5Help.lib" )
 

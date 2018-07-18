@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -50,6 +50,7 @@ public:
     static QString path();
     static void setStyle(const QString &style);
     static void setFallbackStyle(const QString &style);
+    static QStringList availableStyles();
 };
 
 QT_END_NAMESPACE

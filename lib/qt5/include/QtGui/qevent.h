@@ -169,7 +169,7 @@ protected:
     QPointF p, op;
 };
 
-#ifndef QT_NO_WHEELEVENT
+#if QT_CONFIG(wheelevent)
 class Q_GUI_EXPORT QWheelEvent : public QInputEvent
 {
 public:
@@ -205,10 +205,10 @@ public:
 #ifndef QT_NO_INTEGER_EVENT_COORDINATES
     inline QPoint pos() const { return p.toPoint(); }
     inline QPoint globalPos()   const { return g.toPoint(); }
-    inline int x() const { return p.x(); }
-    inline int y() const { return p.y(); }
-    inline int globalX() const { return g.x(); }
-    inline int globalY() const { return g.y(); }
+    inline int x() const { return int(p.x()); }
+    inline int y() const { return int(p.y()); }
+    inline int globalX() const { return int(g.x()); }
+    inline int globalY() const { return int(g.y()); }
 #endif
     inline const QPointF &posF() const { return p; }
     inline const QPointF &globalPosF()   const { return g; }
@@ -237,7 +237,7 @@ protected:
 };
 #endif
 
-#ifndef QT_NO_TABLETEVENT
+#if QT_CONFIG(tabletevent)
 class Q_GUI_EXPORT QTabletEvent : public QInputEvent
 {
     Q_GADGET
@@ -295,14 +295,19 @@ protected:
     // ### Qt 6: QPointingEvent will have Buttons, QTabletEvent will inherit
     void *mExtra;
 };
-#endif // QT_NO_TABLETEVENT
+#endif // QT_CONFIG(tabletevent)
 
 #ifndef QT_NO_GESTURES
 class Q_GUI_EXPORT QNativeGestureEvent : public QInputEvent
 {
 public:
-    QNativeGestureEvent(Qt::NativeGestureType type, const QPointF &localPos, const QPointF &windowPos,
+#if QT_DEPRECATED_SINCE(5, 10)
+    QT_DEPRECATED QNativeGestureEvent(Qt::NativeGestureType type, const QPointF &localPos, const QPointF &windowPos,
                         const QPointF &screenPos, qreal value, ulong sequenceId, quint64 intArgument);
+#endif
+    QNativeGestureEvent(Qt::NativeGestureType type, const QTouchDevice *dev, const QPointF &localPos, const QPointF &windowPos,
+                        const QPointF &screenPos, qreal value, ulong sequenceId, quint64 intArgument);
+    ~QNativeGestureEvent();
     Qt::NativeGestureType gestureType() const { return mGestureType; }
     qreal value() const { return mRealValue; }
 
@@ -313,6 +318,8 @@ public:
     const QPointF &localPos() const { return mLocalPos; }
     const QPointF &windowPos() const { return mWindowPos; }
     const QPointF &screenPos() const { return mScreenPos; }
+
+    const QTouchDevice *device() const;
 
 protected:
     Qt::NativeGestureType mGestureType;
@@ -699,7 +706,7 @@ private:
 };
 #endif
 
-#ifndef QT_NO_WHATSTHIS
+#if QT_CONFIG(whatsthis)
 class Q_GUI_EXPORT QWhatsThisClickedEvent : public QEvent
 {
 public:
@@ -885,6 +892,8 @@ public:
 
         qreal pressure() const;
         qreal rotation() const;
+        QSizeF ellipseDiameters() const;
+
         QVector2D velocity() const;
         InfoFlags flags() const;
         QVector<QPointF> rawScreenPositions() const;
@@ -905,11 +914,12 @@ public:
         void setLastScenePos(const QPointF &lastScenePos);
         void setLastScreenPos(const QPointF &lastScreenPos);
         void setLastNormalizedPos(const QPointF &lastNormalizedPos);
-        void setRect(const QRectF &rect);
-        void setSceneRect(const QRectF &sceneRect);
-        void setScreenRect(const QRectF &screenRect);
+        void setRect(const QRectF &rect); // deprecated
+        void setSceneRect(const QRectF &sceneRect); // deprecated
+        void setScreenRect(const QRectF &screenRect); // deprecated
         void setPressure(qreal pressure);
         void setRotation(qreal angle);
+        void setEllipseDiameters(const QSizeF &dia);
         void setVelocity(const QVector2D &v);
         void setFlags(InfoFlags flags);
         void setRawScreenPositions(const QVector<QPointF> &positions);

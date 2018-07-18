@@ -51,7 +51,6 @@
 
 QT_BEGIN_NAMESPACE
 
-
 class QHelpSearchResultWidgetPrivate;
 
 class QHELP_EXPORT QHelpSearchResultWidget : public QWidget
@@ -70,7 +69,7 @@ private:
 
     QHelpSearchResultWidgetPrivate *d;
     QHelpSearchResultWidget(QHelpSearchEngine *engine);
-    virtual void changeEvent(QEvent *event);
+    void changeEvent(QEvent *event) override;
 };
 
 QT_END_NAMESPACE

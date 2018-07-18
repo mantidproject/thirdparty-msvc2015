@@ -36,7 +36,9 @@
 #include "qkeysequence.h"
 #include "qmatrix.h"
 #include "qmatrix4x4.h"
+#if QT_CONFIG(movie)
 #include "qmovie.h"
+#endif
 #include "qoffscreensurface.h"
 #include "qopengl.h"
 #include "qopenglbuffer.h"

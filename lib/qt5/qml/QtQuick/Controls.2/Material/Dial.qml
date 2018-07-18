@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
-import QtQuick.Templates 2.1 as T
-import QtQuick.Controls.Material 2.1
-import QtQuick.Controls.Material.impl 2.1
+import QtQuick 2.10
+import QtQuick.Templates 2.3 as T
+import QtQuick.Controls.Material 2.3
+import QtQuick.Controls.Material.impl 2.3
 
 T.Dial {
     id: control
@@ -57,8 +57,6 @@ T.Dial {
     }
 
     handle: SliderHandle {
-        id: handleItem
-
         x: background.x + background.width / 2 - handle.width / 2
         y: background.y + background.height / 2 - handle.height / 2
         transform: [

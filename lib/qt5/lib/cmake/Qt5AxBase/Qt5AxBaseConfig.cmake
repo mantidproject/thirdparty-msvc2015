@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt5AxBase_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt5AxBase_VERSION instead.
-set(Qt5AxBase_VERSION_STRING 5.8.0)
+set(Qt5AxBase_VERSION_STRING 5.10.1)
 
 set(Qt5AxBase_LIBRARIES Qt5::AxBase)
 
@@ -49,8 +49,8 @@ if (NOT TARGET Qt5::AxBase)
 
     set(_Qt5AxBase_OWN_INCLUDE_DIRS "${_qt5AxBase_install_prefix}/include/" "${_qt5AxBase_install_prefix}/include/ActiveQt")
     set(Qt5AxBase_PRIVATE_INCLUDE_DIRS
-        "${_qt5AxBase_install_prefix}/include/ActiveQt/5.8.0"
-        "${_qt5AxBase_install_prefix}/include/ActiveQt/5.8.0/ActiveQt"
+        "${_qt5AxBase_install_prefix}/include/ActiveQt/5.10.1"
+        "${_qt5AxBase_install_prefix}/include/ActiveQt/5.10.1/ActiveQt"
     )
 
     foreach(_dir ${_Qt5AxBase_OWN_INCLUDE_DIRS})
@@ -73,6 +73,8 @@ if (NOT TARGET Qt5::AxBase)
     set(_Qt5AxBase_MODULE_DEPENDENCIES "Widgets;Gui;Core")
 
 
+    set(Qt5AxBase_OWN_PRIVATE_INCLUDE_DIRS ${Qt5AxBase_PRIVATE_INCLUDE_DIRS})
+
     set(_Qt5AxBase_FIND_DEPENDENCIES_REQUIRED)
     if (Qt5AxBase_FIND_REQUIRED)
         set(_Qt5AxBase_FIND_DEPENDENCIES_REQUIRED REQUIRED)
@@ -91,7 +93,7 @@ if (NOT TARGET Qt5::AxBase)
     foreach(_module_dep ${_Qt5AxBase_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt5AxBase_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt5AxBase_FIND_VERSION_EXACT}
                 ${_Qt5AxBase_DEPENDENCIES_FIND_QUIET}
                 ${_Qt5AxBase_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -125,6 +127,30 @@ if (NOT TARGET Qt5::AxBase)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt5AxBase_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::AxBase PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_AXBASE_LIB)
+
+    set(_Qt5AxBase_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt5AxBase_PRIVATE_DIR ${Qt5AxBase_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt5AxBase_PRIVATE_DIR})
+            set(_Qt5AxBase_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt5AxBase_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::AxBasePrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::AxBasePrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt5AxBase_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt5AxBase_PRIVATEDEPS)
+        foreach(dep ${_Qt5AxBase_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt5AxBase_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::AxBasePrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::AxBase ${_Qt5AxBase_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_AxBase_target_properties(RELEASE "Qt5AxBase.lib" "" )
 

@@ -43,6 +43,8 @@
 #include <QtWidgets/qtwidgetsglobal.h>
 #include <QtWidgets/qabstractbutton.h>
 
+QT_REQUIRE_CONFIG(pushbutton);
+
 QT_BEGIN_NAMESPACE
 
 
@@ -72,7 +74,7 @@ public:
     bool isDefault() const;
     void setDefault(bool);
 
-#ifndef QT_NO_MENU
+#if QT_CONFIG(menu)
     void setMenu(QMenu* menu);
     QMenu* menu() const;
 #endif
@@ -81,7 +83,7 @@ public:
     bool isFlat() const;
 
 public Q_SLOTS:
-#ifndef QT_NO_MENU
+#if QT_CONFIG(menu)
     void showMenu();
 #endif
 
@@ -99,7 +101,7 @@ public:
 private:
     Q_DISABLE_COPY(QPushButton)
     Q_DECLARE_PRIVATE(QPushButton)
-#ifndef QT_NO_MENU
+#if QT_CONFIG(menu)
     Q_PRIVATE_SLOT(d_func(), void _q_popupPressed())
 #endif
 };

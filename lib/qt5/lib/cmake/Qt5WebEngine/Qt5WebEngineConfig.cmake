@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt5WebEngine_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt5WebEngine_VERSION instead.
-set(Qt5WebEngine_VERSION_STRING 5.8.0)
+set(Qt5WebEngine_VERSION_STRING 5.10.1)
 
 set(Qt5WebEngine_LIBRARIES Qt5::WebEngine)
 
@@ -49,8 +49,8 @@ if (NOT TARGET Qt5::WebEngine)
 
     set(_Qt5WebEngine_OWN_INCLUDE_DIRS "${_qt5WebEngine_install_prefix}/include/" "${_qt5WebEngine_install_prefix}/include/QtWebEngine")
     set(Qt5WebEngine_PRIVATE_INCLUDE_DIRS
-        "${_qt5WebEngine_install_prefix}/include/QtWebEngine/5.8.0"
-        "${_qt5WebEngine_install_prefix}/include/QtWebEngine/5.8.0/QtWebEngine"
+        "${_qt5WebEngine_install_prefix}/include/QtWebEngine/5.10.1"
+        "${_qt5WebEngine_install_prefix}/include/QtWebEngine/5.10.1/QtWebEngine"
     )
 
     foreach(_dir ${_Qt5WebEngine_OWN_INCLUDE_DIRS})
@@ -73,6 +73,8 @@ if (NOT TARGET Qt5::WebEngine)
     set(_Qt5WebEngine_MODULE_DEPENDENCIES "WebEngineCore;Quick;Gui;Qml;Core")
 
 
+    set(Qt5WebEngine_OWN_PRIVATE_INCLUDE_DIRS ${Qt5WebEngine_PRIVATE_INCLUDE_DIRS})
+
     set(_Qt5WebEngine_FIND_DEPENDENCIES_REQUIRED)
     if (Qt5WebEngine_FIND_REQUIRED)
         set(_Qt5WebEngine_FIND_DEPENDENCIES_REQUIRED REQUIRED)
@@ -91,7 +93,7 @@ if (NOT TARGET Qt5::WebEngine)
     foreach(_module_dep ${_Qt5WebEngine_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt5WebEngine_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt5WebEngine_FIND_VERSION_EXACT}
                 ${_Qt5WebEngine_DEPENDENCIES_FIND_QUIET}
                 ${_Qt5WebEngine_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -124,6 +126,30 @@ if (NOT TARGET Qt5::WebEngine)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt5WebEngine_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::WebEngine PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_WEBENGINE_LIB)
+
+    set(_Qt5WebEngine_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt5WebEngine_PRIVATE_DIR ${Qt5WebEngine_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt5WebEngine_PRIVATE_DIR})
+            set(_Qt5WebEngine_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt5WebEngine_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::WebEnginePrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::WebEnginePrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt5WebEngine_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt5WebEngine_PRIVATEDEPS)
+        foreach(dep ${_Qt5WebEngine_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt5WebEngine_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::WebEnginePrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::WebEngine ${_Qt5WebEngine_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_WebEngine_target_properties(RELEASE "Qt5WebEngine.dll" "Qt5WebEngine.lib" )
 

@@ -44,9 +44,11 @@
 #ifdef __cplusplus
 #  include <type_traits>
 #  include <cstddef>
+#  include <utility>
 #endif
-
-#include <stddef.h>
+#ifndef __ASSEMBLER__
+#  include <stddef.h>
+#endif
 
 /*
    QT_VERSION is (major << 16) + (minor << 8) + patch.
@@ -81,7 +83,7 @@
         1: The feature is available
 */
 #define QT_CONFIG(feature) (1/QT_FEATURE_##feature == 1)
-#define QT_REQUIRE_CONFIG(feature) Q_STATIC_ASSERT_X(QT_FEATURE_##feature == 1, "Required feature " #feature " for file " __FILE__ " not vailable.")
+#define QT_REQUIRE_CONFIG(feature) Q_STATIC_ASSERT_X(QT_FEATURE_##feature == 1, "Required feature " #feature " for file " __FILE__ " not available.")
 
 #if QT_VERSION >= QT_VERSION_CHECK(6,0,0)
 #  define QT_NO_UNSHARABLE_CONTAINERS
@@ -187,6 +189,7 @@ namespace QT_NAMESPACE {}
 #  define QT_LARGEFILE_SUPPORT 64
 #endif
 
+#ifndef __ASSEMBLER__
 QT_BEGIN_NAMESPACE
 
 /*
@@ -338,10 +341,10 @@ typedef double qreal;
 
 #define Q_INIT_RESOURCE(name) \
     do { extern int QT_MANGLE_NAMESPACE(qInitResources_ ## name) ();       \
-        QT_MANGLE_NAMESPACE(qInitResources_ ## name) (); } while (0)
+        QT_MANGLE_NAMESPACE(qInitResources_ ## name) (); } while (false)
 #define Q_CLEANUP_RESOURCE(name) \
     do { extern int QT_MANGLE_NAMESPACE(qCleanupResources_ ## name) ();    \
-        QT_MANGLE_NAMESPACE(qCleanupResources_ ## name) (); } while (0)
+        QT_MANGLE_NAMESPACE(qCleanupResources_ ## name) (); } while (false)
 
 /*
  * If we're compiling C++ code:
@@ -354,7 +357,7 @@ typedef double qreal;
 #if !defined(QT_NAMESPACE) && defined(__cplusplus) && !defined(Q_QDOC)
 extern "C"
 #endif
-Q_CORE_EXPORT const char *qVersion() Q_DECL_NOTHROW;
+Q_CORE_EXPORT Q_DECL_CONST_FUNCTION const char *qVersion(void) Q_DECL_NOTHROW;
 
 #if defined(__cplusplus)
 
@@ -435,6 +438,9 @@ namespace QtPrivate {
 
       sizeof(void *) == sizeof(quintptr)
       && sizeof(void *) == sizeof(qptrdiff)
+
+  size_t and qsizetype are not guaranteed to be the same size as a pointer, but
+  they usually are.
 */
 template <int> struct QIntegerForSize;
 template <>    struct QIntegerForSize<1> { typedef quint8  Unsigned; typedef qint8  Signed; };
@@ -450,6 +456,7 @@ typedef QIntegerForSize<Q_PROCESSOR_WORDSIZE>::Unsigned qregisteruint;
 typedef QIntegerForSizeof<void*>::Unsigned quintptr;
 typedef QIntegerForSizeof<void*>::Signed qptrdiff;
 typedef qptrdiff qintptr;
+using qsizetype = QIntegerForSizeof<std::size_t>::Signed;
 
 /* moc compats (signals/slots) */
 #ifndef QT_MOC_COMPAT
@@ -460,12 +467,12 @@ typedef qptrdiff qintptr;
 #endif
 
 #ifdef QT_ASCII_CAST_WARNINGS
-#  define QT_ASCII_CAST_WARN Q_DECL_DEPRECATED
+#  define QT_ASCII_CAST_WARN Q_DECL_DEPRECATED_X("Use fromUtf8, QStringLiteral, or QLatin1String")
 #else
 #  define QT_ASCII_CAST_WARN
 #endif
 
-#if defined(__i386__) || defined(_WIN32)
+#ifdef Q_PROCESSOR_X86_32
 #  if defined(Q_CC_GNU)
 #    define QT_FASTCALL __attribute__((regparm(3)))
 #  elif defined(Q_CC_MSVC)
@@ -499,6 +506,12 @@ typedef qptrdiff qintptr;
 #else
 #  define Q_NEVER_INLINE
 #  define Q_ALWAYS_INLINE inline
+#endif
+
+#ifdef Q_CC_GNU
+#  define QT_INIT_METAOBJECT __attribute__((init_priority(101)))
+#else
+#  define QT_INIT_METAOBJECT
 #endif
 
 //defines the type for the WNDPROC on windows
@@ -611,6 +624,18 @@ private:
     void *pool;
 };
 
+#else
+
+#define QT_DARWIN_PLATFORM_SDK_EQUAL_OR_ABOVE(macos, ios, tvos, watchos) (0)
+#define QT_MACOS_IOS_PLATFORM_SDK_EQUAL_OR_ABOVE(macos, ios) (0)
+#define QT_MACOS_PLATFORM_SDK_EQUAL_OR_ABOVE(macos) (0)
+#define QT_IOS_PLATFORM_SDK_EQUAL_OR_ABOVE(ios) (0)
+#define QT_TVOS_PLATFORM_SDK_EQUAL_OR_ABOVE(tvos) (0)
+#define QT_WATCHOS_PLATFORM_SDK_EQUAL_OR_ABOVE(watchos) (0)
+
+#define QT_MAC_PLATFORM_SDK_EQUAL_OR_ABOVE(osx, ios) (0)
+#define QT_OSX_PLATFORM_SDK_EQUAL_OR_ABOVE(osx) (0)
+
 #endif // Q_OS_DARWIN
 
 /*
@@ -630,7 +655,12 @@ inline void qt_noop(void) {}
 */
 
 #if !defined(QT_NO_EXCEPTIONS)
-#  if defined(QT_BOOTSTRAPPED) || (defined(Q_CC_GNU) && !defined (__EXCEPTIONS) && !defined(Q_MOC_RUN))
+#  if !defined(Q_MOC_RUN)
+#    if (defined(Q_CC_CLANG) && !defined(Q_CC_INTEL) && !QT_HAS_FEATURE(cxx_exceptions)) || \
+        (defined(Q_CC_GNU) && !defined(__EXCEPTIONS))
+#      define QT_NO_EXCEPTIONS
+#    endif
+#  elif defined(QT_BOOTSTRAPPED)
 #    define QT_NO_EXCEPTIONS
 #  endif
 #endif
@@ -640,7 +670,7 @@ inline void qt_noop(void) {}
 #  define QT_CATCH(A) else
 #  define QT_THROW(A) qt_noop()
 #  define QT_RETHROW qt_noop()
-#  define QT_TERMINATE_ON_EXCEPTION(expr) do { expr; } while (0)
+#  define QT_TERMINATE_ON_EXCEPTION(expr) do { expr; } while (false)
 #else
 #  define QT_TRY try
 #  define QT_CATCH(A) catch (A)
@@ -648,13 +678,13 @@ inline void qt_noop(void) {}
 #  define QT_RETHROW throw
 Q_NORETURN Q_CORE_EXPORT void qTerminate() Q_DECL_NOTHROW;
 #  ifdef Q_COMPILER_NOEXCEPT
-#    define QT_TERMINATE_ON_EXCEPTION(expr) do { expr; } while (0)
+#    define QT_TERMINATE_ON_EXCEPTION(expr) do { expr; } while (false)
 #  else
-#    define QT_TERMINATE_ON_EXCEPTION(expr) do { try { expr; } catch (...) { qTerminate(); } } while (0)
+#    define QT_TERMINATE_ON_EXCEPTION(expr) do { try { expr; } catch (...) { qTerminate(); } } while (false)
 #  endif
 #endif
 
-Q_CORE_EXPORT bool qSharedBuild() Q_DECL_NOTHROW;
+Q_CORE_EXPORT Q_DECL_CONST_FUNCTION bool qSharedBuild() Q_DECL_NOTHROW;
 
 #ifndef Q_OUTOFLINE_TEMPLATE
 #  define Q_OUTOFLINE_TEMPLATE
@@ -703,9 +733,9 @@ Q_CORE_EXPORT void qt_assert(const char *assertion, const char *file, int line) 
 
 #if !defined(Q_ASSERT)
 #  if defined(QT_NO_DEBUG) && !defined(QT_FORCE_ASSERTS)
-#    define Q_ASSERT(cond) do { } while ((false) && (cond))
+#    define Q_ASSERT(cond) static_cast<void>(false && (cond))
 #  else
-#    define Q_ASSERT(cond) ((!(cond)) ? qt_assert(#cond,__FILE__,__LINE__) : qt_noop())
+#    define Q_ASSERT(cond) ((cond) ? static_cast<void>(0) : qt_assert(#cond, __FILE__, __LINE__))
 #  endif
 #endif
 
@@ -720,9 +750,9 @@ Q_CORE_EXPORT void qt_assert_x(const char *where, const char *what, const char *
 
 #if !defined(Q_ASSERT_X)
 #  if defined(QT_NO_DEBUG) && !defined(QT_FORCE_ASSERTS)
-#    define Q_ASSERT_X(cond, where, what) do { } while ((false) && (cond))
+#    define Q_ASSERT_X(cond, where, what) static_cast<void>(false && (cond))
 #  else
-#    define Q_ASSERT_X(cond, where, what) ((!(cond)) ? qt_assert_x(where, what,__FILE__,__LINE__) : qt_noop())
+#    define Q_ASSERT_X(cond, where, what) ((cond) ? static_cast<void>(0) : qt_assert_x(where, what, __FILE__, __LINE__))
 #  endif
 #endif
 
@@ -747,17 +777,17 @@ template <> class QStaticAssertFailure<true> {};
 #define Q_STATIC_ASSERT_X(Condition, Message) Q_STATIC_ASSERT(Condition)
 #endif
 
-Q_CORE_EXPORT void qt_check_pointer(const char *, int);
+Q_NORETURN Q_CORE_EXPORT void qt_check_pointer(const char *, int) Q_DECL_NOTHROW;
 Q_CORE_EXPORT void qBadAlloc();
 
 #ifdef QT_NO_EXCEPTIONS
 #  if defined(QT_NO_DEBUG) && !defined(QT_FORCE_ASSERTS)
 #    define Q_CHECK_PTR(p) qt_noop()
 #  else
-#    define Q_CHECK_PTR(p) do {if(!(p))qt_check_pointer(__FILE__,__LINE__);} while (0)
+#    define Q_CHECK_PTR(p) do {if (!(p)) qt_check_pointer(__FILE__,__LINE__);} while (false)
 #  endif
 #else
-#  define Q_CHECK_PTR(p) do { if (!(p)) qBadAlloc(); } while (0)
+#  define Q_CHECK_PTR(p) do { if (!(p)) qBadAlloc(); } while (false)
 #endif
 
 template <typename T>
@@ -769,26 +799,22 @@ typedef void (*QFunctionPointer)();
 #  define Q_UNIMPLEMENTED() qWarning("Unimplemented code.")
 #endif
 
-Q_DECL_CONSTEXPR static inline bool qFuzzyCompare(double p1, double p2) Q_REQUIRED_RESULT Q_DECL_UNUSED;
-Q_DECL_CONSTEXPR static inline bool qFuzzyCompare(double p1, double p2)
+Q_REQUIRED_RESULT Q_DECL_CONSTEXPR static inline Q_DECL_UNUSED bool qFuzzyCompare(double p1, double p2)
 {
     return (qAbs(p1 - p2) * 1000000000000. <= qMin(qAbs(p1), qAbs(p2)));
 }
 
-Q_DECL_CONSTEXPR static inline bool qFuzzyCompare(float p1, float p2) Q_REQUIRED_RESULT Q_DECL_UNUSED;
-Q_DECL_CONSTEXPR static inline bool qFuzzyCompare(float p1, float p2)
+Q_REQUIRED_RESULT Q_DECL_CONSTEXPR static inline Q_DECL_UNUSED bool qFuzzyCompare(float p1, float p2)
 {
     return (qAbs(p1 - p2) * 100000.f <= qMin(qAbs(p1), qAbs(p2)));
 }
 
-Q_DECL_CONSTEXPR static inline bool qFuzzyIsNull(double d) Q_REQUIRED_RESULT Q_DECL_UNUSED;
-Q_DECL_CONSTEXPR static inline bool qFuzzyIsNull(double d)
+Q_REQUIRED_RESULT Q_DECL_CONSTEXPR static inline Q_DECL_UNUSED bool qFuzzyIsNull(double d)
 {
     return qAbs(d) <= 0.000000000001;
 }
 
-Q_DECL_CONSTEXPR static inline bool qFuzzyIsNull(float f) Q_REQUIRED_RESULT Q_DECL_UNUSED;
-Q_DECL_CONSTEXPR static inline bool qFuzzyIsNull(float f)
+Q_REQUIRED_RESULT Q_DECL_CONSTEXPR static inline Q_DECL_UNUSED  bool qFuzzyIsNull(float f)
 {
     return qAbs(f) <= 0.00001f;
 }
@@ -798,8 +824,7 @@ Q_DECL_CONSTEXPR static inline bool qFuzzyIsNull(float f)
    check whether the actual value is 0 or close to 0, but whether
    it is binary 0, disregarding sign.
 */
-static inline bool qIsNull(double d) Q_REQUIRED_RESULT Q_DECL_UNUSED;
-static inline bool qIsNull(double d)
+Q_REQUIRED_RESULT static inline Q_DECL_UNUSED bool qIsNull(double d)
 {
     union U {
         double d;
@@ -815,8 +840,7 @@ static inline bool qIsNull(double d)
    check whether the actual value is 0 or close to 0, but whether
    it is binary 0, disregarding sign.
 */
-static inline bool qIsNull(float f) Q_REQUIRED_RESULT Q_DECL_UNUSED;
-static inline bool qIsNull(float f)
+Q_REQUIRED_RESULT static inline Q_DECL_UNUSED bool qIsNull(float f)
 {
     union U {
         float f;
@@ -915,19 +939,53 @@ QT_WARNING_DISABLE_MSVC(4530) /* C++ exception handler used, but unwind semantic
 #  endif
 #endif
 
+// this adds const to non-const objects (like std::as_const)
+template <typename T>
+Q_DECL_CONSTEXPR typename std::add_const<T>::type &qAsConst(T &t) Q_DECL_NOTHROW { return t; }
+// prevent rvalue arguments:
+template <typename T>
+void qAsConst(const T &&) Q_DECL_EQ_DELETE;
+
 #ifndef QT_NO_FOREACH
+
+namespace QtPrivate {
 
 template <typename T>
 class QForeachContainer {
-    QForeachContainer &operator=(const QForeachContainer &) Q_DECL_EQ_DELETE;
+    Q_DISABLE_COPY(QForeachContainer)
 public:
-    QForeachContainer(const T &t) : c(t), i(c.begin()), e(c.end()) {}
-    QForeachContainer(T &&t) : c(std::move(t)), i(c.begin()), e(c.end())  {}
-    const T c;
+    QForeachContainer(const T &t) : c(t), i(qAsConst(c).begin()), e(qAsConst(c).end()) {}
+    QForeachContainer(T &&t) : c(std::move(t)), i(qAsConst(c).begin()), e(qAsConst(c).end())  {}
+
+    QForeachContainer(QForeachContainer &&other)
+        : c(std::move(other.c)),
+          i(qAsConst(c).begin()),
+          e(qAsConst(c).end()),
+          control(std::move(other.control))
+    {
+    }
+
+    QForeachContainer &operator=(QForeachContainer &&other)
+    {
+        c = std::move(other.c);
+        i = qAsConst(c).begin();
+        e = qAsConst(c).end();
+        control = std::move(other.control);
+        return *this;
+    }
+
+    T c;
     typename T::const_iterator i, e;
     int control = 1;
 };
 
+template<typename T>
+QForeachContainer<typename std::decay<T>::type> qMakeForeachContainer(T &&t)
+{
+    return QForeachContainer<typename std::decay<T>::type>(std::forward<T>(t));
+}
+
+}
 // Explanation of the control word:
 //  - it's initialized to 1
 //  - that means both the inner and outer loops start
@@ -938,7 +996,7 @@ public:
 //  - if there was a break inside the inner loop, it will exit with control still
 //    set to 1; in that case, the outer loop will invert it to 0 and will exit too
 #define Q_FOREACH(variable, container)                                \
-for (QForeachContainer<typename std::remove_reference<decltype(container)>::type> _container_((container)); \
+for (auto _container_ = QtPrivate::qMakeForeachContainer(container); \
      _container_.control && _container_.i != _container_.e;         \
      ++_container_.i, _container_.control ^= 1)                     \
     for (variable = *_container_.i; _container_.control; _container_.control = 0)
@@ -966,8 +1024,8 @@ template <typename Wrapper> static inline typename Wrapper::pointer qGetPtrHelpe
     friend class Class##Private;
 
 #define Q_DECLARE_PRIVATE_D(Dptr, Class) \
-    inline Class##Private* d_func() { return reinterpret_cast<Class##Private *>(Dptr); } \
-    inline const Class##Private* d_func() const { return reinterpret_cast<const Class##Private *>(Dptr); } \
+    inline Class##Private* d_func() { return reinterpret_cast<Class##Private *>(qGetPtrHelper(Dptr)); } \
+    inline const Class##Private* d_func() const { return reinterpret_cast<const Class##Private *>(qGetPtrHelper(Dptr)); } \
     friend class Class##Private;
 
 #define Q_DECLARE_PUBLIC(Class)                                    \
@@ -1074,6 +1132,13 @@ template <typename... Args> Q_CONSTEXPR Q_DECL_UNUSED QNonConstOverload<Args...>
 
 class QByteArray;
 Q_CORE_EXPORT QByteArray qgetenv(const char *varName);
+#ifdef Q_QDOC
+Q_CORE_EXPORT QString qEnvironmentVariable(const char *varName,
+                                           const QString &defaultValue = QString());
+#else // need it as two functions because QString is only forward-declared here
+Q_CORE_EXPORT QString qEnvironmentVariable(const char *varName);
+Q_CORE_EXPORT QString qEnvironmentVariable(const char *varName, const QString &defaultValue);
+#endif
 Q_CORE_EXPORT bool qputenv(const char *varName, const QByteArray& value);
 Q_CORE_EXPORT bool qunsetenv(const char *varName);
 
@@ -1105,16 +1170,7 @@ template <typename T> struct QEnableIf<true, T> { typedef T Type; };
 
 template <bool B, typename T, typename F> struct QConditional { typedef T Type; };
 template <typename T, typename F> struct QConditional<false, T, F> { typedef F Type; };
-
-template <typename T> struct QAddConst { typedef const T Type; };
 }
-
-// this adds const to non-const objects (like std::as_const)
-template <typename T>
-Q_DECL_CONSTEXPR typename QtPrivate::QAddConst<T>::Type &qAsConst(T &t) Q_DECL_NOTHROW { return t; }
-// prevent rvalue arguments:
-template <typename T>
-void qAsConst(const T &&) Q_DECL_EQ_DELETE;
 
 QT_END_NAMESPACE
 
@@ -1132,5 +1188,6 @@ QT_END_NAMESPACE
 #include <QtCore/qversiontagging.h>
 
 #endif /* __cplusplus */
+#endif /* !__ASSEMBLER__ */
 
 #endif /* QGLOBAL_H */

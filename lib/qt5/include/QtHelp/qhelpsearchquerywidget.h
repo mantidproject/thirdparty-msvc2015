@@ -66,8 +66,13 @@ public:
     void expandExtendedSearch();
     void collapseExtendedSearch();
 
-    QList<QHelpSearchQuery> query() const;
-    void setQuery(const QList<QHelpSearchQuery> &queryList);
+#if QT_DEPRECATED_SINCE(5, 9)
+    QT_DEPRECATED QList<QHelpSearchQuery> query() const;
+    QT_DEPRECATED void setQuery(const QList<QHelpSearchQuery> &queryList);
+#endif
+
+    QString searchInput() const;
+    void setSearchInput(const QString &searchInput);
 
     bool isCompactMode() const;
     Q_SLOT void setCompactMode(bool on);
@@ -76,8 +81,8 @@ Q_SIGNALS:
     void search();
 
 private:
-    virtual void focusInEvent(QFocusEvent *focusEvent);
-    virtual void changeEvent(QEvent *event);
+    void focusInEvent(QFocusEvent *focusEvent) override;
+    void changeEvent(QEvent *event) override;
 
 private:
     QHelpSearchQueryWidgetPrivate *d;

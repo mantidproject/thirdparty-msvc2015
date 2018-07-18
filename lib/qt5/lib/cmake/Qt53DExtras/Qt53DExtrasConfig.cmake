@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt53DExtras_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt53DExtras_VERSION instead.
-set(Qt53DExtras_VERSION_STRING 5.8.0)
+set(Qt53DExtras_VERSION_STRING 5.10.1)
 
 set(Qt53DExtras_LIBRARIES Qt5::3DExtras)
 
@@ -49,8 +49,8 @@ if (NOT TARGET Qt5::3DExtras)
 
     set(_Qt53DExtras_OWN_INCLUDE_DIRS "${_qt53DExtras_install_prefix}/include/" "${_qt53DExtras_install_prefix}/include/Qt3DExtras")
     set(Qt53DExtras_PRIVATE_INCLUDE_DIRS
-        "${_qt53DExtras_install_prefix}/include/Qt3DExtras/5.8.0"
-        "${_qt53DExtras_install_prefix}/include/Qt3DExtras/5.8.0/Qt3DExtras"
+        "${_qt53DExtras_install_prefix}/include/Qt3DExtras/5.10.1"
+        "${_qt53DExtras_install_prefix}/include/Qt3DExtras/5.10.1/Qt3DExtras"
     )
 
     foreach(_dir ${_Qt53DExtras_OWN_INCLUDE_DIRS})
@@ -73,6 +73,8 @@ if (NOT TARGET Qt5::3DExtras)
     set(_Qt53DExtras_MODULE_DEPENDENCIES "3DRender;3DInput;3DLogic;3DCore;Gui;Core")
 
 
+    set(Qt53DExtras_OWN_PRIVATE_INCLUDE_DIRS ${Qt53DExtras_PRIVATE_INCLUDE_DIRS})
+
     set(_Qt53DExtras_FIND_DEPENDENCIES_REQUIRED)
     if (Qt53DExtras_FIND_REQUIRED)
         set(_Qt53DExtras_FIND_DEPENDENCIES_REQUIRED REQUIRED)
@@ -91,7 +93,7 @@ if (NOT TARGET Qt5::3DExtras)
     foreach(_module_dep ${_Qt53DExtras_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt53DExtras_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt53DExtras_FIND_VERSION_EXACT}
                 ${_Qt53DExtras_DEPENDENCIES_FIND_QUIET}
                 ${_Qt53DExtras_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -124,6 +126,30 @@ if (NOT TARGET Qt5::3DExtras)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt53DExtras_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::3DExtras PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_3DEXTRAS_LIB)
+
+    set(_Qt53DExtras_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt53DExtras_PRIVATE_DIR ${Qt53DExtras_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt53DExtras_PRIVATE_DIR})
+            set(_Qt53DExtras_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt53DExtras_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::3DExtrasPrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::3DExtrasPrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt53DExtras_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt53DExtras_PRIVATEDEPS)
+        foreach(dep ${_Qt53DExtras_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt53DExtras_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::3DExtrasPrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::3DExtras ${_Qt53DExtras_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_3DExtras_target_properties(RELEASE "Qt53DExtras.dll" "Qt53DExtras.lib" )
 

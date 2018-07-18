@@ -50,10 +50,9 @@
 Q_FORWARD_DECLARE_OBJC_CLASS(NSMenu);
 #endif
 
+QT_REQUIRE_CONFIG(menu);
+
 QT_BEGIN_NAMESPACE
-
-
-#ifndef QT_NO_MENU
 
 class QMenuPrivate;
 class QStyleOptionMenuItem;
@@ -98,8 +97,8 @@ public:
 #else
     // addAction(QString): Connect to a QObject slot / functor or function pointer (with context)
     template<class Obj, typename Func1>
-    inline typename QtPrivate::QEnableIf<!std::is_same<const char*, Func1>::value
-        && QtPrivate::IsPointerToTypeDerivedFromQObject<Obj*>::Value, QAction *>::Type
+    inline typename std::enable_if<!std::is_same<const char*, Func1>::value
+        && QtPrivate::IsPointerToTypeDerivedFromQObject<Obj*>::Value, QAction *>::type
         addAction(const QString &text, const Obj *object, Func1 slot, const QKeySequence &shortcut = 0)
     {
         QAction *result = addAction(text);
@@ -108,7 +107,7 @@ public:
 #else
         result->setShortcut(shortcut);
 #endif
-        connect(result, &QAction::triggered, object, slot);
+        connect(result, &QAction::triggered, object, std::move(slot));
         return result;
     }
     // addAction(QString): Connect to a functor or function pointer (without context)
@@ -121,13 +120,13 @@ public:
 #else
         result->setShortcut(shortcut);
 #endif
-        connect(result, &QAction::triggered, slot);
+        connect(result, &QAction::triggered, std::move(slot));
         return result;
     }
     // addAction(QIcon, QString): Connect to a QObject slot / functor or function pointer (with context)
     template<class Obj, typename Func1>
-    inline typename QtPrivate::QEnableIf<!std::is_same<const char*, Func1>::value
-        && QtPrivate::IsPointerToTypeDerivedFromQObject<Obj*>::Value, QAction *>::Type
+    inline typename std::enable_if<!std::is_same<const char*, Func1>::value
+        && QtPrivate::IsPointerToTypeDerivedFromQObject<Obj*>::Value, QAction *>::type
         addAction(const QIcon &actionIcon, const QString &text, const Obj *object, Func1 slot, const QKeySequence &shortcut = 0)
     {
         QAction *result = addAction(actionIcon, text);
@@ -136,7 +135,7 @@ public:
 #else
         result->setShortcut(shortcut);
 #endif
-        connect(result, &QAction::triggered, object, slot);
+        connect(result, &QAction::triggered, object, std::move(slot));
         return result;
     }
     // addAction(QIcon, QString): Connect to a functor or function pointer (without context)
@@ -149,7 +148,7 @@ public:
 #else
         result->setShortcut(shortcut);
 #endif
-        connect(result, &QAction::triggered, slot);
+        connect(result, &QAction::triggered, std::move(slot));
         return result;
     }
 #endif // !Q_QDOC
@@ -237,7 +236,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent *) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *) Q_DECL_OVERRIDE;
-#ifndef QT_NO_WHEELEVENT
+#if QT_CONFIG(wheelevent)
     void wheelEvent(QWheelEvent *) Q_DECL_OVERRIDE;
 #endif
     void enterEvent(QEvent *) Q_DECL_OVERRIDE;
@@ -279,8 +278,6 @@ private:
 // ### Qt 4 compatibility; remove in Qt 6
 inline QT_DEPRECATED void qt_mac_set_dock_menu(QMenu *menu) { menu->setAsDockMenu(); }
 #endif
-
-#endif // QT_NO_MENU
 
 QT_END_NAMESPACE
 

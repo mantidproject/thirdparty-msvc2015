@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt53DQuickExtras_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt53DQuickExtras_VERSION instead.
-set(Qt53DQuickExtras_VERSION_STRING 5.8.0)
+set(Qt53DQuickExtras_VERSION_STRING 5.10.1)
 
 set(Qt53DQuickExtras_LIBRARIES Qt5::3DQuickExtras)
 
@@ -48,7 +48,10 @@ endmacro()
 if (NOT TARGET Qt5::3DQuickExtras)
 
     set(_Qt53DQuickExtras_OWN_INCLUDE_DIRS "${_qt53DQuickExtras_install_prefix}/include/" "${_qt53DQuickExtras_install_prefix}/include/Qt3DQuickExtras")
-    set(Qt53DQuickExtras_PRIVATE_INCLUDE_DIRS "")
+    set(Qt53DQuickExtras_PRIVATE_INCLUDE_DIRS
+        "${_qt53DQuickExtras_install_prefix}/include/Qt3DQuickExtras/5.10.1"
+        "${_qt53DQuickExtras_install_prefix}/include/Qt3DQuickExtras/5.10.1/Qt3DQuickExtras"
+    )
 
     foreach(_dir ${_Qt53DQuickExtras_OWN_INCLUDE_DIRS})
         _qt5_3DQuickExtras_check_file_exists(${_dir})
@@ -67,8 +70,10 @@ if (NOT TARGET Qt5::3DQuickExtras)
 
     set(Qt53DQuickExtras_DEFINITIONS -DQT_3DQUICKEXTRAS_LIB)
     set(Qt53DQuickExtras_COMPILE_DEFINITIONS QT_3DQUICKEXTRAS_LIB)
-    set(_Qt53DQuickExtras_MODULE_DEPENDENCIES "3DInput;3DQuick;3DRender;3DLogic;3DCore;Gui;Qml;Core")
+    set(_Qt53DQuickExtras_MODULE_DEPENDENCIES "3DExtras;3DInput;3DQuick;3DRender;3DLogic;3DCore;Gui;Qml;Core")
 
+
+    set(Qt53DQuickExtras_OWN_PRIVATE_INCLUDE_DIRS ${Qt53DQuickExtras_PRIVATE_INCLUDE_DIRS})
 
     set(_Qt53DQuickExtras_FIND_DEPENDENCIES_REQUIRED)
     if (Qt53DQuickExtras_FIND_REQUIRED)
@@ -88,7 +93,7 @@ if (NOT TARGET Qt5::3DQuickExtras)
     foreach(_module_dep ${_Qt53DQuickExtras_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt53DQuickExtras_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt53DQuickExtras_FIND_VERSION_EXACT}
                 ${_Qt53DQuickExtras_DEPENDENCIES_FIND_QUIET}
                 ${_Qt53DQuickExtras_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -112,7 +117,7 @@ if (NOT TARGET Qt5::3DQuickExtras)
     list(REMOVE_DUPLICATES Qt53DQuickExtras_COMPILE_DEFINITIONS)
     list(REMOVE_DUPLICATES Qt53DQuickExtras_EXECUTABLE_COMPILE_FLAGS)
 
-    set(_Qt53DQuickExtras_LIB_DEPENDENCIES "Qt5::3DInput;Qt5::3DQuick;Qt5::3DRender;Qt5::3DLogic;Qt5::3DCore;Qt5::Gui;Qt5::Qml;Qt5::Core")
+    set(_Qt53DQuickExtras_LIB_DEPENDENCIES "Qt5::3DExtras;Qt5::3DInput;Qt5::3DQuick;Qt5::3DRender;Qt5::3DLogic;Qt5::3DCore;Qt5::Gui;Qt5::Qml;Qt5::Core")
 
 
     add_library(Qt5::3DQuickExtras SHARED IMPORTED)
@@ -121,6 +126,30 @@ if (NOT TARGET Qt5::3DQuickExtras)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt53DQuickExtras_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::3DQuickExtras PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_3DQUICKEXTRAS_LIB)
+
+    set(_Qt53DQuickExtras_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt53DQuickExtras_PRIVATE_DIR ${Qt53DQuickExtras_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt53DQuickExtras_PRIVATE_DIR})
+            set(_Qt53DQuickExtras_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt53DQuickExtras_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::3DQuickExtrasPrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::3DQuickExtrasPrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt53DQuickExtras_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt53DQuickExtras_PRIVATEDEPS)
+        foreach(dep ${_Qt53DQuickExtras_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt53DQuickExtras_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::3DQuickExtrasPrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::3DQuickExtras ${_Qt53DQuickExtras_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_3DQuickExtras_target_properties(RELEASE "Qt53DQuickExtras.dll" "Qt53DQuickExtras.lib" )
 

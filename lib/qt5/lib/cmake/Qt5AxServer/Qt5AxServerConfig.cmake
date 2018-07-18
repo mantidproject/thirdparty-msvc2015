@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt5AxServer_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt5AxServer_VERSION instead.
-set(Qt5AxServer_VERSION_STRING 5.8.0)
+set(Qt5AxServer_VERSION_STRING 5.10.1)
 
 set(Qt5AxServer_LIBRARIES Qt5::AxServer)
 
@@ -66,9 +66,11 @@ if (NOT TARGET Qt5::AxServer)
     set(Qt5AxServer_INCLUDE_DIRS ${_Qt5AxServer_OWN_INCLUDE_DIRS})
 
     set(Qt5AxServer_DEFINITIONS -DQT_AXSERVER_LIB)
-    set(Qt5AxServer_COMPILE_DEFINITIONS QT_AXSERVER_LIB)
+    set(Qt5AxServer_COMPILE_DEFINITIONS QT_AXSERVER_LIB QAXSERVER)
     set(_Qt5AxServer_MODULE_DEPENDENCIES "AxBase;Widgets;Gui;Core")
 
+
+    set(Qt5AxServer_OWN_PRIVATE_INCLUDE_DIRS ${Qt5AxServer_PRIVATE_INCLUDE_DIRS})
 
     set(_Qt5AxServer_FIND_DEPENDENCIES_REQUIRED)
     if (Qt5AxServer_FIND_REQUIRED)
@@ -88,7 +90,7 @@ if (NOT TARGET Qt5::AxServer)
     foreach(_module_dep ${_Qt5AxServer_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt5AxServer_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt5AxServer_FIND_VERSION_EXACT}
                 ${_Qt5AxServer_DEPENDENCIES_FIND_QUIET}
                 ${_Qt5AxServer_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -121,7 +123,31 @@ if (NOT TARGET Qt5::AxServer)
     set_property(TARGET Qt5::AxServer PROPERTY
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt5AxServer_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::AxServer PROPERTY
-      INTERFACE_COMPILE_DEFINITIONS QT_AXSERVER_LIB)
+      INTERFACE_COMPILE_DEFINITIONS QT_AXSERVER_LIB QAXSERVER)
+
+    set(_Qt5AxServer_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt5AxServer_PRIVATE_DIR ${Qt5AxServer_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt5AxServer_PRIVATE_DIR})
+            set(_Qt5AxServer_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt5AxServer_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::AxServerPrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::AxServerPrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt5AxServer_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt5AxServer_PRIVATEDEPS)
+        foreach(dep ${_Qt5AxServer_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt5AxServer_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::AxServerPrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::AxServer ${_Qt5AxServer_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_AxServer_target_properties(RELEASE "Qt5AxServer.lib" "" )
 

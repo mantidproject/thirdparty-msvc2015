@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt5Gui_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt5Gui_VERSION instead.
-set(Qt5Gui_VERSION_STRING 5.8.0)
+set(Qt5Gui_VERSION_STRING 5.10.1)
 
 set(Qt5Gui_LIBRARIES Qt5::Gui)
 
@@ -49,8 +49,8 @@ if (NOT TARGET Qt5::Gui)
 
     set(_Qt5Gui_OWN_INCLUDE_DIRS "${_qt5Gui_install_prefix}/include/" "${_qt5Gui_install_prefix}/include/QtGui")
     set(Qt5Gui_PRIVATE_INCLUDE_DIRS
-        "${_qt5Gui_install_prefix}/include/QtGui/5.8.0"
-        "${_qt5Gui_install_prefix}/include/QtGui/5.8.0/QtGui"
+        "${_qt5Gui_install_prefix}/include/QtGui/5.10.1"
+        "${_qt5Gui_install_prefix}/include/QtGui/5.10.1/QtGui"
     )
 
     foreach(_dir ${_Qt5Gui_OWN_INCLUDE_DIRS})
@@ -73,6 +73,8 @@ if (NOT TARGET Qt5::Gui)
     set(_Qt5Gui_MODULE_DEPENDENCIES "Core")
 
 
+    set(Qt5Gui_OWN_PRIVATE_INCLUDE_DIRS ${Qt5Gui_PRIVATE_INCLUDE_DIRS})
+
     set(_Qt5Gui_FIND_DEPENDENCIES_REQUIRED)
     if (Qt5Gui_FIND_REQUIRED)
         set(_Qt5Gui_FIND_DEPENDENCIES_REQUIRED REQUIRED)
@@ -91,7 +93,7 @@ if (NOT TARGET Qt5::Gui)
     foreach(_module_dep ${_Qt5Gui_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt5Gui_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt5Gui_FIND_VERSION_EXACT}
                 ${_Qt5Gui_DEPENDENCIES_FIND_QUIET}
                 ${_Qt5Gui_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -124,6 +126,30 @@ if (NOT TARGET Qt5::Gui)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt5Gui_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::Gui PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_GUI_LIB)
+
+    set(_Qt5Gui_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt5Gui_PRIVATE_DIR ${Qt5Gui_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt5Gui_PRIVATE_DIR})
+            set(_Qt5Gui_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt5Gui_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::GuiPrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::GuiPrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt5Gui_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt5Gui_PRIVATEDEPS)
+        foreach(dep ${_Qt5Gui_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt5Gui_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::GuiPrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::Gui ${_Qt5Gui_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_Gui_target_properties(RELEASE "Qt5Gui.dll" "Qt5Gui.lib" )
 

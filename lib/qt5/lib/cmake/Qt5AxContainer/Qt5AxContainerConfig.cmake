@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt5AxContainer_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt5AxContainer_VERSION instead.
-set(Qt5AxContainer_VERSION_STRING 5.8.0)
+set(Qt5AxContainer_VERSION_STRING 5.10.1)
 
 set(Qt5AxContainer_LIBRARIES Qt5::AxContainer)
 
@@ -70,6 +70,8 @@ if (NOT TARGET Qt5::AxContainer)
     set(_Qt5AxContainer_MODULE_DEPENDENCIES "AxBase;Widgets;Gui;Core")
 
 
+    set(Qt5AxContainer_OWN_PRIVATE_INCLUDE_DIRS ${Qt5AxContainer_PRIVATE_INCLUDE_DIRS})
+
     set(_Qt5AxContainer_FIND_DEPENDENCIES_REQUIRED)
     if (Qt5AxContainer_FIND_REQUIRED)
         set(_Qt5AxContainer_FIND_DEPENDENCIES_REQUIRED REQUIRED)
@@ -88,7 +90,7 @@ if (NOT TARGET Qt5::AxContainer)
     foreach(_module_dep ${_Qt5AxContainer_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt5AxContainer_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt5AxContainer_FIND_VERSION_EXACT}
                 ${_Qt5AxContainer_DEPENDENCIES_FIND_QUIET}
                 ${_Qt5AxContainer_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -122,6 +124,30 @@ if (NOT TARGET Qt5::AxContainer)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt5AxContainer_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::AxContainer PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_AXCONTAINER_LIB)
+
+    set(_Qt5AxContainer_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt5AxContainer_PRIVATE_DIR ${Qt5AxContainer_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt5AxContainer_PRIVATE_DIR})
+            set(_Qt5AxContainer_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt5AxContainer_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::AxContainerPrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::AxContainerPrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt5AxContainer_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt5AxContainer_PRIVATEDEPS)
+        foreach(dep ${_Qt5AxContainer_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt5AxContainer_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::AxContainerPrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::AxContainer ${_Qt5AxContainer_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_AxContainer_target_properties(RELEASE "Qt5AxContainer.lib" "" )
 

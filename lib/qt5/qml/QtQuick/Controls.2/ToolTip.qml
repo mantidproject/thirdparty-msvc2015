@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
-import QtQuick.Controls 2.1
-import QtQuick.Controls.impl 2.1
-import QtQuick.Templates 2.1 as T
+import QtQuick 2.10
+import QtQuick.Controls 2.3
+import QtQuick.Controls.impl 2.3
+import QtQuick.Templates 2.3 as T
 
 T.ToolTip {
     id: control
@@ -58,10 +58,12 @@ T.ToolTip {
     contentItem: Text {
         text: control.text
         font: control.font
+        color: control.palette.toolTipText
         // TODO: wrapMode: Label.Wrap
     }
 
     background: Rectangle {
-        border.color: Default.frameDarkColor
+        border.color: control.palette.dark
+        color: control.palette.toolTipBase
     }
 }

@@ -76,9 +76,11 @@ qintptr functorTypeId()
 class QT3DRENDERSHARED_EXPORT QAbstractFunctor
 {
 public:
+    QAbstractFunctor() = default;
     virtual ~QAbstractFunctor();
     virtual qintptr id() const = 0;
 
+    // TODO: Remove when moving a copy of this to Qt3DCore
     template<class T>
     const T *functor_cast(const QAbstractFunctor *other) const
     {
@@ -86,6 +88,8 @@ public:
             return static_cast<const T *>(other);
         return nullptr;
     }
+private:
+    Q_DISABLE_COPY(QAbstractFunctor)
 };
 
 template<class T>

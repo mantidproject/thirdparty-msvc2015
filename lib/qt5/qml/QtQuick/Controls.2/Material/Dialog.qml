@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -34,11 +34,12 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
-import QtQuick.Templates 2.1 as T
-import QtQuick.Controls 2.1
-import QtQuick.Controls.Material 2.1
-import QtQuick.Controls.Material.impl 2.1
+import QtQuick 2.10
+import QtQuick.Templates 2.3 as T
+import QtQuick.Controls 2.3
+import QtQuick.Controls.impl 2.3
+import QtQuick.Controls.Material 2.3
+import QtQuick.Controls.Material.impl 2.3
 
 T.Dialog {
     id: control
@@ -101,5 +102,15 @@ T.Dialog {
 
     footer: DialogButtonBox {
         visible: count > 0
+    }
+
+    T.Overlay.modal: Rectangle {
+        color: control.Material.backgroundDimColor
+        Behavior on opacity { NumberAnimation { duration: 150 } }
+    }
+
+    T.Overlay.modeless: Rectangle {
+        color: control.Material.backgroundDimColor
+        Behavior on opacity { NumberAnimation { duration: 150 } }
     }
 }

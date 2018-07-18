@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt5WebEngineWidgets_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt5WebEngineWidgets_VERSION instead.
-set(Qt5WebEngineWidgets_VERSION_STRING 5.8.0)
+set(Qt5WebEngineWidgets_VERSION_STRING 5.10.1)
 
 set(Qt5WebEngineWidgets_LIBRARIES Qt5::WebEngineWidgets)
 
@@ -49,8 +49,8 @@ if (NOT TARGET Qt5::WebEngineWidgets)
 
     set(_Qt5WebEngineWidgets_OWN_INCLUDE_DIRS "${_qt5WebEngineWidgets_install_prefix}/include/" "${_qt5WebEngineWidgets_install_prefix}/include/QtWebEngineWidgets")
     set(Qt5WebEngineWidgets_PRIVATE_INCLUDE_DIRS
-        "${_qt5WebEngineWidgets_install_prefix}/include/QtWebEngineWidgets/5.8.0"
-        "${_qt5WebEngineWidgets_install_prefix}/include/QtWebEngineWidgets/5.8.0/QtWebEngineWidgets"
+        "${_qt5WebEngineWidgets_install_prefix}/include/QtWebEngineWidgets/5.10.1"
+        "${_qt5WebEngineWidgets_install_prefix}/include/QtWebEngineWidgets/5.10.1/QtWebEngineWidgets"
     )
 
     foreach(_dir ${_Qt5WebEngineWidgets_OWN_INCLUDE_DIRS})
@@ -73,6 +73,8 @@ if (NOT TARGET Qt5::WebEngineWidgets)
     set(_Qt5WebEngineWidgets_MODULE_DEPENDENCIES "WebEngineCore;Quick;PrintSupport;Widgets;Gui;Network;Core")
 
 
+    set(Qt5WebEngineWidgets_OWN_PRIVATE_INCLUDE_DIRS ${Qt5WebEngineWidgets_PRIVATE_INCLUDE_DIRS})
+
     set(_Qt5WebEngineWidgets_FIND_DEPENDENCIES_REQUIRED)
     if (Qt5WebEngineWidgets_FIND_REQUIRED)
         set(_Qt5WebEngineWidgets_FIND_DEPENDENCIES_REQUIRED REQUIRED)
@@ -91,7 +93,7 @@ if (NOT TARGET Qt5::WebEngineWidgets)
     foreach(_module_dep ${_Qt5WebEngineWidgets_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt5WebEngineWidgets_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt5WebEngineWidgets_FIND_VERSION_EXACT}
                 ${_Qt5WebEngineWidgets_DEPENDENCIES_FIND_QUIET}
                 ${_Qt5WebEngineWidgets_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -124,6 +126,30 @@ if (NOT TARGET Qt5::WebEngineWidgets)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt5WebEngineWidgets_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::WebEngineWidgets PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_WEBENGINEWIDGETS_LIB)
+
+    set(_Qt5WebEngineWidgets_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt5WebEngineWidgets_PRIVATE_DIR ${Qt5WebEngineWidgets_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt5WebEngineWidgets_PRIVATE_DIR})
+            set(_Qt5WebEngineWidgets_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt5WebEngineWidgets_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::WebEngineWidgetsPrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::WebEngineWidgetsPrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt5WebEngineWidgets_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt5WebEngineWidgets_PRIVATEDEPS)
+        foreach(dep ${_Qt5WebEngineWidgets_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt5WebEngineWidgets_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::WebEngineWidgetsPrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::WebEngineWidgets ${_Qt5WebEngineWidgets_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_WebEngineWidgets_target_properties(RELEASE "Qt5WebEngineWidgets.dll" "Qt5WebEngineWidgets.lib" )
 

@@ -42,6 +42,8 @@ if (NOT TARGET Qt5::UiPlugin)
     set(_Qt5UiPlugin_MODULE_DEPENDENCIES "Widgets;Gui;Core")
 
 
+    set(Qt5UiPlugin_OWN_PRIVATE_INCLUDE_DIRS ${Qt5UiPlugin_PRIVATE_INCLUDE_DIRS})
+
     set(_Qt5UiPlugin_FIND_DEPENDENCIES_REQUIRED)
     if (Qt5UiPlugin_FIND_REQUIRED)
         set(_Qt5UiPlugin_FIND_DEPENDENCIES_REQUIRED REQUIRED)
@@ -59,7 +61,7 @@ if (NOT TARGET Qt5::UiPlugin)
     foreach(_module_dep ${_Qt5UiPlugin_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt5UiPlugin_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt5UiPlugin_FIND_VERSION_EXACT}
                 ${_Qt5UiPlugin_DEPENDENCIES_FIND_QUIET}
                 ${_Qt5UiPlugin_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -82,6 +84,30 @@ if (NOT TARGET Qt5::UiPlugin)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt5UiPlugin_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::UiPlugin PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_UIPLUGIN_LIB)
+
+    set(_Qt5UiPlugin_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt5UiPlugin_PRIVATE_DIR ${Qt5UiPlugin_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt5UiPlugin_PRIVATE_DIR})
+            set(_Qt5UiPlugin_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt5UiPlugin_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::UiPluginPrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::UiPluginPrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt5UiPlugin_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt5UiPlugin_PRIVATEDEPS)
+        foreach(dep ${_Qt5UiPlugin_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt5UiPlugin_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::UiPluginPrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::UiPlugin ${_Qt5UiPlugin_PRIVATEDEPS}
+        )
+    endif()
 
     set_target_properties(Qt5::UiPlugin PROPERTIES
         INTERFACE_LINK_LIBRARIES "${_Qt5UiPlugin_LIB_DEPENDENCIES}"

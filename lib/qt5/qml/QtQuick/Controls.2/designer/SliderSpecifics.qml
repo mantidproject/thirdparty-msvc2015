@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -55,6 +55,7 @@ Column {
                     minimumValue: Math.min(backendValues.from.value, backendValues.to.value)
                     maximumValue: Math.max(backendValues.from.value, backendValues.to.value)
                     decimals: 2
+                    stepSize: 0.1
                     backendValue: backendValues.value
                     Layout.fillWidth: true
                 }
@@ -69,6 +70,7 @@ Column {
                     maximumValue: 9999999
                     minimumValue: -9999999
                     decimals: 2
+                    stepSize: 0.1
                     backendValue: backendValues.from
                     Layout.fillWidth: true
                 }
@@ -83,6 +85,7 @@ Column {
                     maximumValue: 9999999
                     minimumValue: -9999999
                     decimals: 2
+                    stepSize: 0.1
                     backendValue: backendValues.to
                     Layout.fillWidth: true
                 }
@@ -97,7 +100,21 @@ Column {
                     maximumValue: 9999999
                     minimumValue: -9999999
                     decimals: 2
+                    stepSize: 0.1
                     backendValue: backendValues.stepSize
+                    Layout.fillWidth: true
+                }
+            }
+
+            Label {
+                text: qsTr("Snap Mode")
+                tooltip: qsTr("The snap mode of the slider.")
+            }
+            SecondColumnLayout {
+                ComboBox {
+                    backendValue: backendValues.orientation
+                    model: [ "NoSnap", "SnapOnRelease", "SnapAlways" ]
+                    scope: "Slider"
                     Layout.fillWidth: true
                 }
             }
@@ -114,10 +131,26 @@ Column {
                     Layout.fillWidth: true
                 }
             }
+
+            Label {
+                text: qsTr("Live")
+                tooltip: qsTr("Whether the slider provides live value updates.")
+            }
+            SecondColumnLayout {
+                CheckBox {
+                    text: backendValues.live.valueToString
+                    backendValue: backendValues.live
+                    Layout.fillWidth: true
+                }
+            }
         }
     }
 
     ControlSection {
+        width: parent.width
+    }
+
+    FontSection {
         width: parent.width
     }
 

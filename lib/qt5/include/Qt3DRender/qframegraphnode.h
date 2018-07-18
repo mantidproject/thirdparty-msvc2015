@@ -42,7 +42,7 @@
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRender/qt3drender_global.h>
-#include <QObject>
+#include <QtCore/QObject>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,6 +61,7 @@ public:
 
 protected:
     explicit QFrameGraphNode(QFrameGraphNodePrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QFrameGraphNode)

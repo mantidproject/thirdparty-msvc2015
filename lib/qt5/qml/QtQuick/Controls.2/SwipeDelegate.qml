@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
-import QtQuick.Controls 2.1
-import QtQuick.Controls.impl 2.1
-import QtQuick.Templates 2.1 as T
+import QtQuick 2.10
+import QtQuick.Controls 2.3
+import QtQuick.Controls.impl 2.3
+import QtQuick.Templates 2.3 as T
 
 T.SwipeDelegate {
     id: control
@@ -52,38 +52,28 @@ T.SwipeDelegate {
     padding: 12
     spacing: 12
 
-    contentItem: Text {
-        leftPadding: control.mirrored ? (control.indicator ? control.indicator.width : 0) + control.spacing : 0
-        rightPadding: !control.mirrored ? (control.indicator ? control.indicator.width : 0) + control.spacing : 0
+    icon.width: 24
+    icon.height: 24
+    icon.color: control.palette.text
 
+    swipe.transition: Transition { SmoothedAnimation { velocity: 3; easing.type: Easing.InOutCubic } }
+
+    contentItem: IconLabel {
+        spacing: control.spacing
+        mirrored: control.mirrored
+        display: control.display
+        alignment: control.display === IconLabel.IconOnly || control.display === IconLabel.TextUnderIcon ? Qt.AlignCenter : Qt.AlignLeft
+
+        icon: control.icon
         text: control.text
         font: control.font
-        color: control.enabled ? Default.textDarkColor : Default.textDisabledColor
-        elide: Text.ElideRight
-        visible: control.text
-        horizontalAlignment: Text.AlignLeft
-        verticalAlignment: Text.AlignVCenter
-
-        Behavior on x {
-            enabled: !control.down
-            NumberAnimation {
-                easing.type: Easing.InOutCubic
-                duration: 400
-            }
-        }
+        color: control.palette.text
     }
 
     background: Rectangle {
-        color: control.visualFocus
-            ? (control.down ? Default.focusPressedColor : Default.delegateFocusColor)
-            : (control.down ? Default.delegatePressedColor : Default.backgroundColor)
-
-        Behavior on x {
-            enabled: !control.down
-            NumberAnimation {
-                easing.type: Easing.InOutCubic
-                duration: 400
-            }
-        }
+        implicitWidth: 100
+        implicitHeight: 40
+        color: Color.blend(control.down ? control.palette.midlight : control.palette.light,
+                                          control.palette.highlight, control.visualFocus ? 0.15 : 0.0)
     }
 }

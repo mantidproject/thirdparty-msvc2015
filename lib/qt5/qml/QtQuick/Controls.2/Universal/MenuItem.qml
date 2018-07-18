@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -34,9 +34,11 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
-import QtQuick.Templates 2.1 as T
-import QtQuick.Controls.Universal 2.1
+import QtQuick 2.10
+import QtQuick.Templates 2.3 as T
+import QtQuick.Controls 2.3
+import QtQuick.Controls.impl 2.3
+import QtQuick.Controls.Universal 2.3
 
 T.MenuItem {
     id: control
@@ -53,27 +55,44 @@ T.MenuItem {
     bottomPadding: padding + 1
     spacing: 12
 
-    contentItem: Text {
-        leftPadding: !control.mirrored ? control.indicator.width + control.spacing : 0
-        rightPadding: control.mirrored ? control.indicator.width + control.spacing : 0
+    icon.width: 20
+    icon.height: 20
+    icon.color: !enabled ? Universal.baseLowColor : Universal.baseHighColor
 
+    contentItem: IconLabel {
+        readonly property real arrowPadding: control.subMenu && control.arrow ? control.arrow.width + control.spacing : 0
+        readonly property real indicatorPadding: control.checkable && control.indicator ? control.indicator.width + control.spacing : 0
+        leftPadding: !control.mirrored ? indicatorPadding : arrowPadding
+        rightPadding: control.mirrored ? indicatorPadding : arrowPadding
+
+        spacing: control.spacing
+        mirrored: control.mirrored
+        display: control.display
+        alignment: Qt.AlignLeft
+
+        icon: control.icon
         text: control.text
         font: control.font
         color: !control.enabled ? control.Universal.baseLowColor : control.Universal.baseHighColor
-        elide: Text.ElideRight
-        visible: control.text
-        horizontalAlignment: Text.AlignLeft
-        verticalAlignment: Text.AlignVCenter
     }
 
-    indicator: Image {
+    arrow: ColorImage {
+        x: control.mirrored ? control.leftPadding : control.width - width - control.rightPadding
+        y: control.topPadding + (control.availableHeight - height) / 2
+
+        visible: control.subMenu
+        mirror: control.mirrored
+        color: !enabled ? control.Universal.baseLowColor : control.Universal.baseHighColor
+        source: "qrc:/qt-project.org/imports/QtQuick/Controls.2/Universal/images/rightarrow.png"
+    }
+
+    indicator: ColorImage {
         x: control.text ? (control.mirrored ? control.width - width - control.rightPadding : control.leftPadding) : control.leftPadding + (control.availableWidth - width) / 2
         y: control.topPadding + (control.availableHeight - height) / 2
 
         visible: control.checked
-        source: !control.checkable ? "" : "image://universal/checkmark/" + (!control.enabled ? control.Universal.baseLowColor : control.down ? control.Universal.baseHighColor : control.Universal.baseMediumHighColor)
-        sourceSize.width: width
-        sourceSize.height: height
+        color: !control.enabled ? control.Universal.baseLowColor : control.down ? control.Universal.baseHighColor : control.Universal.baseMediumHighColor
+        source: !control.checkable ? "" : "qrc:/qt-project.org/imports/QtQuick/Controls.2/Universal/images/checkmark.png"
     }
 
     background: Rectangle {
@@ -82,7 +101,7 @@ T.MenuItem {
 
         color: !control.enabled ? control.Universal.baseLowColor :
                 control.down ? control.Universal.listMediumColor :
-                control.hovered ? control.Universal.listLowColor : control.Universal.altMediumLowColor
+                control.highlighted ? control.Universal.listLowColor : control.Universal.altMediumLowColor
 
         Rectangle {
             x: 1; y: 1

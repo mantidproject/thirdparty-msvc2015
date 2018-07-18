@@ -136,6 +136,7 @@ public:
 
     void setOfflineStoragePath(const QString& dir);
     QString offlineStoragePath() const;
+    QString offlineStorageDatabaseFilePath(const QString &databaseName) const;
 
     QUrl baseUrl() const;
     void setBaseUrl(const QUrl &);
@@ -143,6 +144,10 @@ public:
     bool outputWarningsToStandardError() const;
     void setOutputWarningsToStandardError(bool);
 
+public Q_SLOTS:
+    void retranslate();
+
+public:
     static QQmlContext *contextForObject(const QObject *);
     static void setContextForObject(QObject *, QQmlContext *);
 
@@ -151,7 +156,7 @@ public:
     static ObjectOwnership objectOwnership(QObject *);
 protected:
     QQmlEngine(QQmlEnginePrivate &dd, QObject *p);
-    virtual bool event(QEvent *);
+    bool event(QEvent *) override;
 
 Q_SIGNALS:
     void quit();

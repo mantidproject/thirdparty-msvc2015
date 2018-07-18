@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt5Svg_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt5Svg_VERSION instead.
-set(Qt5Svg_VERSION_STRING 5.8.0)
+set(Qt5Svg_VERSION_STRING 5.10.1)
 
 set(Qt5Svg_LIBRARIES Qt5::Svg)
 
@@ -49,8 +49,8 @@ if (NOT TARGET Qt5::Svg)
 
     set(_Qt5Svg_OWN_INCLUDE_DIRS "${_qt5Svg_install_prefix}/include/" "${_qt5Svg_install_prefix}/include/QtSvg")
     set(Qt5Svg_PRIVATE_INCLUDE_DIRS
-        "${_qt5Svg_install_prefix}/include/QtSvg/5.8.0"
-        "${_qt5Svg_install_prefix}/include/QtSvg/5.8.0/QtSvg"
+        "${_qt5Svg_install_prefix}/include/QtSvg/5.10.1"
+        "${_qt5Svg_install_prefix}/include/QtSvg/5.10.1/QtSvg"
     )
 
     foreach(_dir ${_Qt5Svg_OWN_INCLUDE_DIRS})
@@ -73,6 +73,8 @@ if (NOT TARGET Qt5::Svg)
     set(_Qt5Svg_MODULE_DEPENDENCIES "Widgets;Gui;Core")
 
 
+    set(Qt5Svg_OWN_PRIVATE_INCLUDE_DIRS ${Qt5Svg_PRIVATE_INCLUDE_DIRS})
+
     set(_Qt5Svg_FIND_DEPENDENCIES_REQUIRED)
     if (Qt5Svg_FIND_REQUIRED)
         set(_Qt5Svg_FIND_DEPENDENCIES_REQUIRED REQUIRED)
@@ -91,7 +93,7 @@ if (NOT TARGET Qt5::Svg)
     foreach(_module_dep ${_Qt5Svg_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt5Svg_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt5Svg_FIND_VERSION_EXACT}
                 ${_Qt5Svg_DEPENDENCIES_FIND_QUIET}
                 ${_Qt5Svg_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -124,6 +126,30 @@ if (NOT TARGET Qt5::Svg)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt5Svg_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::Svg PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_SVG_LIB)
+
+    set(_Qt5Svg_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt5Svg_PRIVATE_DIR ${Qt5Svg_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt5Svg_PRIVATE_DIR})
+            set(_Qt5Svg_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt5Svg_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::SvgPrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::SvgPrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt5Svg_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt5Svg_PRIVATEDEPS)
+        foreach(dep ${_Qt5Svg_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt5Svg_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::SvgPrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::Svg ${_Qt5Svg_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_Svg_target_properties(RELEASE "Qt5Svg.dll" "Qt5Svg.lib" )
 
