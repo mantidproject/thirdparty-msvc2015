@@ -32,7 +32,7 @@ cd %SRC_ROOT%
 :: Build
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 cd %SRC_ROOT%\Qt4Qt5
-qmake qscintilla.pro
+qmake -spec win32-msvc qscintilla.pro
 nmake debug
 nmake release
 
