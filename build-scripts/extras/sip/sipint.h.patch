@@ -1,0 +1,15 @@
+--- siplib/sipint.h.orig	Thu Jul 05 10:54:58 2018
++++ siplib/sipint.h	Fri Jul 20 10:25:40 2018
+@@ -19,11 +19,11 @@
+ 
+ #ifndef _SIPINT_H
+ #define _SIPINT_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include "sip.h"
+ 
+ 
+ #ifdef __cplusplus

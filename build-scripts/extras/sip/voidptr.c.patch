@@ -1,0 +1,15 @@
+--- siplib/voidptr.c.orig	Thu Jul 05 10:54:58 2018
++++ siplib/voidptr.c	Fri Jul 20 10:26:56 2018
+@@ -15,11 +15,11 @@
+  * SIP is supplied WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  */
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <stddef.h>
+ #include <string.h>
+ 
+ #include "sipint.h"

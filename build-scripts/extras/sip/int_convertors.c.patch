@@ -1,0 +1,15 @@
+--- siplib/int_convertors.c.orig	Thu Jul 05 10:54:58 2018
++++ siplib/int_convertors.c	Fri Jul 20 10:49:41 2018
+@@ -33,11 +33,11 @@
+  * computed.  This may cause new exceptions to be raised but is justified in
+  * that the value that was being used bore no relation to the original value.
+  */
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include <limits.h>
+ 
+ #include "sipint.h"
+ 

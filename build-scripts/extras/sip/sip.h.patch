@@ -1,0 +1,15 @@
+--- siplib/sip.h.orig	Thu Jul 05 10:55:26 2018
++++ siplib/sip.h	Fri Jul 20 10:25:09 2018
+@@ -27,11 +27,11 @@
+  * might as well too.
+  */
+ #undef slots
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ /*
+  * There is a mis-feature somewhere with the Borland compiler.  This works
+  * around it.
+  */
