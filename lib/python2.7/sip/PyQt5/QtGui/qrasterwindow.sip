@@ -2,7 +2,7 @@
 //
 // This file is part of the QtGui Python extension module.
 //
-// Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt5.
 // 
@@ -30,6 +30,9 @@ class QRasterWindow : QPaintDeviceWindow
 
 public:
     explicit QRasterWindow(QWindow *parent /TransferThis/ = 0);
+%If (Qt_5_9_0 -)
+    virtual ~QRasterWindow();
+%End
 
 protected:
     virtual int metric(QPaintDevice::PaintDeviceMetric metric) const;

@@ -102,9 +102,9 @@ cd %3
 @echo Prefix = %QT_ROOT:\=/% >> %QT_CONF_FILE%
 
 @if "%_buildtype%" == "debug" ( set DEBUG_ARGS= -u --destdir=%PYTHONHOME%\msvc-site-packages\debug )
-@echo Running configure.py --confirm-license --qsci-api --no-designer-plugin %DEBUG_ARGS%
+@echo Running configure.py --verbose --confirm-license --qsci-api --no-designer-plugin --disable=QtNfc --disable=QtQuick --disable=QtQml --disable=QtQuickWidgets %DEBUG_ARGS%
 @echo %QT_ROOT%
-@call python configure.py --verbose --confirm-license --qsci-api --no-designer-plugin --sip=%PYTHONHOME%\sip.exe %DEBUG_ARGS%
+@call python configure.py --verbose --confirm-license --qsci-api --no-designer-plugin --disable=QtNfc --disable=QtQuick --disable=QtQml --disable=QtQuickWidgets %DEBUG_ARGS%
 
 REM :: jom seems to have an issue with parallel builds
 @call nmake

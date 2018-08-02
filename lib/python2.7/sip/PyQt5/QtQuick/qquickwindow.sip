@@ -2,7 +2,7 @@
 //
 // This file is part of the QtQuick Python extension module.
 //
-// Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt5.
 // 
@@ -259,6 +259,24 @@ public:
 %End
 %If (Qt_5_8_0 -)
     QSGImageNode *createImageNode() const /Factory/;
+%End
+%If (Qt_5_9_0 -)
+    static QString sceneGraphBackend();
+%End
+%If (Qt_5_10_0 -)
+
+    enum TextRenderType
+    {
+        QtTextRendering,
+        NativeTextRendering,
+    };
+
+%End
+%If (Qt_5_10_0 -)
+    static QQuickWindow::TextRenderType textRenderType();
+%End
+%If (Qt_5_10_0 -)
+    static void setTextRenderType(QQuickWindow::TextRenderType renderType);
 %End
 
 private:

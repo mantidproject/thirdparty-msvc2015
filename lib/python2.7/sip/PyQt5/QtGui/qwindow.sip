@@ -2,7 +2,7 @@
 //
 // This file is part of the QtGui Python extension module.
 //
-// Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt5.
 // 
@@ -223,6 +223,20 @@ signals:
 %End
 %If (Qt_5_1_0 -)
     void opacityChanged(qreal opacity);
+%End
+
+public:
+%If (Qt_5_9_0 -)
+    QWindow *parent(QWindow::AncestorMode mode) const;
+%End
+%If (Qt_5_9_0 -)
+    void setFlag(Qt::WindowType, bool on = true);
+%End
+%If (Qt_5_10_0 -)
+    Qt::WindowStates windowStates() const;
+%End
+%If (Qt_5_10_0 -)
+    void setWindowStates(Qt::WindowStates states);
 %End
 
 private:

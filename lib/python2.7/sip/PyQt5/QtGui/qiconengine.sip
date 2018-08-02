@@ -2,7 +2,7 @@
 //
 // This file is part of the QtGui Python extension module.
 //
-// Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt5.
 // 
@@ -51,6 +51,9 @@ public:
 %If (Qt_5_7_0 -)
         IsNullHook,
 %End
+%If (Qt_5_9_0 -)
+        ScaledPixmapHook,
+%End
     };
 
     struct AvailableSizesArgument
@@ -68,5 +71,24 @@ public:
     virtual QString iconName() const;
 %If (Qt_5_7_0 -)
     bool isNull() const;
+%End
+%If (Qt_5_9_0 -)
+    QPixmap scaledPixmap(const QSize &size, QIcon::Mode mode, QIcon::State state, qreal scale);
+%End
+%If (Qt_5_9_0 -)
+
+    struct ScaledPixmapArgument
+    {
+%TypeHeaderCode
+#include <qiconengine.h>
+%End
+
+        QSize size;
+        QIcon::Mode mode;
+        QIcon::State state;
+        qreal scale;
+        QPixmap pixmap;
+    };
+
 %End
 };

@@ -2,7 +2,7 @@
 //
 // This file is part of the QtNetwork Python extension module.
 //
-// Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt5.
 // 
@@ -116,5 +116,34 @@ public:
 protected slots:
 %If (Qt_5_2_0 -)
     QStringList supportedSchemesImplementation() const;
+%End
+
+public:
+%If (Qt_5_9_0 -)
+    void clearConnectionCache();
+%End
+%If (Qt_5_9_0 -)
+    void setStrictTransportSecurityEnabled(bool enabled);
+%End
+%If (Qt_5_9_0 -)
+    bool isStrictTransportSecurityEnabled() const;
+%End
+%If (Qt_5_9_0 -)
+    void addStrictTransportSecurityHosts(const QVector<QHstsPolicy> &knownHosts);
+%End
+%If (Qt_5_9_0 -)
+    QVector<QHstsPolicy> strictTransportSecurityHosts() const;
+%End
+%If (Qt_5_9_0 -)
+    void setRedirectPolicy(QNetworkRequest::RedirectPolicy policy);
+%End
+%If (Qt_5_9_0 -)
+    QNetworkRequest::RedirectPolicy redirectPolicy() const;
+%End
+%If (Qt_5_10_0 -)
+    void enableStrictTransportSecurityStore(bool enabled, const QString &storeDir = QString());
+%End
+%If (Qt_5_10_0 -)
+    bool isStrictTransportSecurityStoreEnabled() const;
 %End
 };

@@ -2,7 +2,7 @@
 //
 // This file is part of the QtNetwork Python extension module.
 //
-// Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt5.
 // 
@@ -75,6 +75,12 @@ public:
 %If (Qt_5_8_0 -)
         HTTP2WasUsedAttribute,
 %End
+%If (Qt_5_9_0 -)
+        OriginalContentLengthAttribute,
+%End
+%If (Qt_5_9_0 -)
+        RedirectPolicyAttribute,
+%End
         User,
         UserMax,
     };
@@ -131,5 +137,16 @@ public:
 %End
 %If (Qt_5_6_0 -)
     void setMaximumRedirectsAllowed(int maximumRedirectsAllowed);
+%End
+%If (Qt_5_9_0 -)
+
+    enum RedirectPolicy
+    {
+        ManualRedirectPolicy,
+        NoLessSafeRedirectPolicy,
+        SameOriginRedirectPolicy,
+        UserVerifiedRedirectPolicy,
+    };
+
 %End
 };

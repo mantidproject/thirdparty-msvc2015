@@ -2,7 +2,7 @@
 //
 // This file is part of the QtQuick Python extension module.
 //
-// Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt5.
 // 
@@ -35,6 +35,9 @@ public:
         Software,
         OpenGL,
         Direct3D12,
+%If (Qt_5_9_0 -)
+        OpenVG,
+%End
     };
 
     enum Resource
