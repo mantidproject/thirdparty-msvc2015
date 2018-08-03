@@ -43,6 +43,8 @@
 #include <QtWidgets/qtwidgetsglobal.h>
 #include <QtWidgets/qframe.h>
 
+QT_REQUIRE_CONFIG(label);
+
 QT_BEGIN_NAMESPACE
 
 
@@ -74,7 +76,7 @@ public:
 #ifndef QT_NO_PICTURE
     const QPicture *picture() const;
 #endif
-#ifndef QT_NO_MOVIE
+#if QT_CONFIG(movie)
     QMovie *movie() const;
 #endif
 
@@ -120,7 +122,7 @@ public Q_SLOTS:
 #ifndef QT_NO_PICTURE
     void setPicture(const QPicture &);
 #endif
-#ifndef QT_NO_MOVIE
+#if QT_CONFIG(movie)
     void setMovie(QMovie *movie);
 #endif
     void setNum(int);
@@ -150,7 +152,7 @@ protected:
 private:
     Q_DISABLE_COPY(QLabel)
     Q_DECLARE_PRIVATE(QLabel)
-#ifndef QT_NO_MOVIE
+#if QT_CONFIG(movie)
     Q_PRIVATE_SLOT(d_func(), void _q_movieUpdated(const QRect&))
     Q_PRIVATE_SLOT(d_func(), void _q_movieResized(const QSize&))
 #endif

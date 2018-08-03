@@ -55,6 +55,10 @@
 
 #include <QtCore/qobject_impl.h>
 
+#if QT_HAS_INCLUDE(<chrono>)
+#  include <chrono>
+#endif
+
 QT_BEGIN_NAMESPACE
 
 
@@ -102,7 +106,8 @@ public:
     uint sendChildEvents : 1;
     uint receiveChildEvents : 1;
     uint isWindow : 1; //for QWindow
-    uint unused : 25;
+    uint deleteLaterCalled : 1;
+    uint unused : 24;
     int postedEvents;
     QDynamicMetaObjectData *metaObject;
     QMetaObject *dynamicMetaObject() const;
@@ -150,6 +155,13 @@ public:
     void moveToThread(QThread *thread);
 
     int startTimer(int interval, Qt::TimerType timerType = Qt::CoarseTimer);
+#if QT_HAS_INCLUDE(<chrono>) || defined(Q_QDOC)
+    Q_ALWAYS_INLINE
+    int startTimer(std::chrono::milliseconds time, Qt::TimerType timerType = Qt::CoarseTimer)
+    {
+        return startTimer(int(time.count()), timerType);
+    }
+#endif
     void killTimer(int id);
 
     template<typename T>
@@ -250,7 +262,7 @@ public:
 
     //connect to a function pointer  (not a member)
     template <typename Func1, typename Func2>
-    static inline typename QtPrivate::QEnableIf<int(QtPrivate::FunctionPointer<Func2>::ArgumentCount) >= 0, QMetaObject::Connection>::Type
+    static inline typename std::enable_if<int(QtPrivate::FunctionPointer<Func2>::ArgumentCount) >= 0, QMetaObject::Connection>::type
             connect(const typename QtPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal, Func2 slot)
     {
         return connect(sender, signal, sender, slot, Qt::DirectConnection);
@@ -258,8 +270,8 @@ public:
 
     //connect to a function pointer  (not a member)
     template <typename Func1, typename Func2>
-    static inline typename QtPrivate::QEnableIf<int(QtPrivate::FunctionPointer<Func2>::ArgumentCount) >= 0 &&
-                                                !QtPrivate::FunctionPointer<Func2>::IsPointerToMemberFunction, QMetaObject::Connection>::Type
+    static inline typename std::enable_if<int(QtPrivate::FunctionPointer<Func2>::ArgumentCount) >= 0 &&
+                                          !QtPrivate::FunctionPointer<Func2>::IsPointerToMemberFunction, QMetaObject::Connection>::type
             connect(const typename QtPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal, const QObject *context, Func2 slot,
                     Qt::ConnectionType type = Qt::AutoConnection)
     {
@@ -290,15 +302,15 @@ public:
 
     //connect to a functor
     template <typename Func1, typename Func2>
-    static inline typename QtPrivate::QEnableIf<QtPrivate::FunctionPointer<Func2>::ArgumentCount == -1, QMetaObject::Connection>::Type
+    static inline typename std::enable_if<QtPrivate::FunctionPointer<Func2>::ArgumentCount == -1, QMetaObject::Connection>::type
             connect(const typename QtPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal, Func2 slot)
     {
-        return connect(sender, signal, sender, slot, Qt::DirectConnection);
+        return connect(sender, signal, sender, std::move(slot), Qt::DirectConnection);
     }
 
     //connect to a functor, with a "context" object defining in which event loop is going to be executed
     template <typename Func1, typename Func2>
-    static inline typename QtPrivate::QEnableIf<QtPrivate::FunctionPointer<Func2>::ArgumentCount == -1, QMetaObject::Connection>::Type
+    static inline typename std::enable_if<QtPrivate::FunctionPointer<Func2>::ArgumentCount == -1, QMetaObject::Connection>::type
             connect(const typename QtPrivate::FunctionPointer<Func1>::Object *sender, Func1 signal, const QObject *context, Func2 slot,
                     Qt::ConnectionType type = Qt::AutoConnection)
     {
@@ -323,7 +335,7 @@ public:
         return connectImpl(sender, reinterpret_cast<void **>(&signal), context, Q_NULLPTR,
                            new QtPrivate::QFunctorSlotObject<Func2, SlotArgumentCount,
                                 typename QtPrivate::List_Left<typename SignalType::Arguments, SlotArgumentCount>::Value,
-                                typename SignalType::ReturnType>(slot),
+                                typename SignalType::ReturnType>(std::move(slot)),
                            type, types, &SignalType::Object::staticMetaObject);
     }
 #endif //Q_QDOC
@@ -375,8 +387,12 @@ public:
 #endif //Q_QDOC
 
 
-    void dumpObjectTree();
-    void dumpObjectInfo();
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    void dumpObjectTree(); // ### Qt 6: remove
+    void dumpObjectInfo(); // ### Qt 6: remove
+#endif
+    void dumpObjectTree() const;
+    void dumpObjectInfo() const;
 
 #ifndef QT_NO_PROPERTIES
     bool setProperty(const char *name, const QVariant &value);

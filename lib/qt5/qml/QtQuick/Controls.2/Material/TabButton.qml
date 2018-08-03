@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -34,10 +34,12 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
-import QtQuick.Templates 2.1 as T
-import QtQuick.Controls.Material 2.1
-import QtQuick.Controls.Material.impl 2.1
+import QtQuick 2.10
+import QtQuick.Templates 2.3 as T
+import QtQuick.Controls 2.3
+import QtQuick.Controls.impl 2.3
+import QtQuick.Controls.Material 2.3
+import QtQuick.Controls.Material.impl 2.3
 
 T.TabButton {
     id: control
@@ -49,14 +51,21 @@ T.TabButton {
     baselineOffset: contentItem.y + contentItem.baselineOffset
 
     padding: 12
+    spacing: 6
 
-    contentItem: Text {
+    icon.width: 24
+    icon.height: 24
+    icon.color: !enabled ? Material.hintTextColor : down || checked ? Material.accentColor : Material.foreground
+
+    contentItem: IconLabel {
+        spacing: control.spacing
+        mirrored: control.mirrored
+        display: control.display
+
+        icon: control.icon
         text: control.text
         font: control.font
-        elide: Text.ElideRight
         color: !control.enabled ? control.Material.hintTextColor : control.down || control.checked ? control.Material.accentColor : control.Material.foreground
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
     }
 
     background: Ripple {

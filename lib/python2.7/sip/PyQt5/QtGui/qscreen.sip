@@ -2,7 +2,7 @@
 //
 // This file is part of the QtGui Python extension module.
 //
-// Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt5.
 // 
@@ -75,6 +75,17 @@ signals:
     void virtualGeometryChanged(const QRect &rect);
 %If (Qt_5_4_0 -)
     void availableGeometryChanged(const QRect &geometry);
+%End
+
+public:
+%If (Qt_5_9_0 -)
+    QString manufacturer() const;
+%End
+%If (Qt_5_9_0 -)
+    QString model() const;
+%End
+%If (Qt_5_9_0 -)
+    QString serialNumber() const;
 %End
 
 private:

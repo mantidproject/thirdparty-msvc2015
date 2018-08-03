@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
-import QtQuick.Controls 2.1
-import QtQuick.Controls.impl 2.1
-import QtQuick.Templates 2.1 as T
+import QtQuick 2.10
+import QtQuick.Controls 2.3
+import QtQuick.Controls.impl 2.3
+import QtQuick.Templates 2.3 as T
 
 T.MenuSeparator {
     id: control
@@ -49,11 +49,9 @@ T.MenuSeparator {
     topPadding: padding + 4
     bottomPadding: padding + 4
 
-    //! [contentItem]
     contentItem: Rectangle {
         implicitWidth: 188
         implicitHeight: 1
-        color: Default.separatorColor
+        color: control.palette.mid
     }
-    //! [contentItem]
 }

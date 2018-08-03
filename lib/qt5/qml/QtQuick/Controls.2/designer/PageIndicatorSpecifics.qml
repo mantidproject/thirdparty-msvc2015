@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -43,7 +43,7 @@ Column {
 
     Section {
         width: parent.width
-        caption: qsTr("Indicator")
+        caption: qsTr("PageIndicator")
 
         SectionLayout {
             Label {
@@ -77,6 +77,10 @@ Column {
     }
 
     ControlSection {
+        width: parent.width
+    }
+
+    FontSection {
         width: parent.width
     }
 

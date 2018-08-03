@@ -64,6 +64,7 @@ class Q_GUI_EXPORT QStyleHints : public QObject
     Q_PROPERTY(bool setFocusOnTouchRelease READ setFocusOnTouchRelease STORED false CONSTANT FINAL)
     Q_PROPERTY(bool showIsFullScreen READ showIsFullScreen STORED false CONSTANT FINAL)
     Q_PROPERTY(bool showIsMaximized READ showIsMaximized STORED false CONSTANT FINAL)
+    Q_PROPERTY(bool showShortcutsInContextMenus READ showShortcutsInContextMenus STORED false CONSTANT FINAL)
     Q_PROPERTY(int startDragDistance READ startDragDistance NOTIFY startDragDistanceChanged FINAL)
     Q_PROPERTY(int startDragTime READ startDragTime NOTIFY startDragTimeChanged FINAL)
     Q_PROPERTY(int startDragVelocity READ startDragVelocity STORED false CONSTANT FINAL)
@@ -71,6 +72,7 @@ class Q_GUI_EXPORT QStyleHints : public QObject
     Q_PROPERTY(Qt::TabFocusBehavior tabFocusBehavior READ tabFocusBehavior NOTIFY tabFocusBehaviorChanged FINAL)
     Q_PROPERTY(bool singleClickActivation READ singleClickActivation STORED false CONSTANT FINAL)
     Q_PROPERTY(bool useHoverEffects READ useHoverEffects WRITE setUseHoverEffects NOTIFY useHoverEffectsChanged FINAL)
+    Q_PROPERTY(int wheelScrollLines READ wheelScrollLines NOTIFY wheelScrollLinesChanged FINAL)
 
 public:
     void setMouseDoubleClickInterval(int mouseDoubleClickInterval);
@@ -89,6 +91,7 @@ public:
     int cursorFlashTime() const;
     bool showIsFullScreen() const;
     bool showIsMaximized() const;
+    bool showShortcutsInContextMenus() const;
     int passwordMaskDelay() const;
     QChar passwordMaskCharacter() const;
     qreal fontSmoothingGamma() const;
@@ -99,6 +102,8 @@ public:
     bool singleClickActivation() const;
     bool useHoverEffects() const;
     void setUseHoverEffects(bool useHoverEffects);
+    int wheelScrollLines() const;
+    void setWheelScrollLines(int scrollLines);
 
 Q_SIGNALS:
     void cursorFlashTimeChanged(int cursorFlashTime);
@@ -109,6 +114,7 @@ Q_SIGNALS:
     void startDragTimeChanged(int startDragTime);
     void tabFocusBehaviorChanged(Qt::TabFocusBehavior tabFocusBehavior);
     void useHoverEffectsChanged(bool useHoverEffects);
+    void wheelScrollLinesChanged(int scrollLines);
 
 private:
     friend class QGuiApplication;

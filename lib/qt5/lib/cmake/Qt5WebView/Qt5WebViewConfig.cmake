@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt5WebView_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt5WebView_VERSION instead.
-set(Qt5WebView_VERSION_STRING 5.8.0)
+set(Qt5WebView_VERSION_STRING 5.10.1)
 
 set(Qt5WebView_LIBRARIES Qt5::WebView)
 
@@ -49,8 +49,8 @@ if (NOT TARGET Qt5::WebView)
 
     set(_Qt5WebView_OWN_INCLUDE_DIRS "${_qt5WebView_install_prefix}/include/" "${_qt5WebView_install_prefix}/include/QtWebView")
     set(Qt5WebView_PRIVATE_INCLUDE_DIRS
-        "${_qt5WebView_install_prefix}/include/QtWebView/5.8.0"
-        "${_qt5WebView_install_prefix}/include/QtWebView/5.8.0/QtWebView"
+        "${_qt5WebView_install_prefix}/include/QtWebView/5.10.1"
+        "${_qt5WebView_install_prefix}/include/QtWebView/5.10.1/QtWebView"
     )
 
     foreach(_dir ${_Qt5WebView_OWN_INCLUDE_DIRS})
@@ -73,6 +73,8 @@ if (NOT TARGET Qt5::WebView)
     set(_Qt5WebView_MODULE_DEPENDENCIES "")
 
 
+    set(Qt5WebView_OWN_PRIVATE_INCLUDE_DIRS ${Qt5WebView_PRIVATE_INCLUDE_DIRS})
+
     set(_Qt5WebView_FIND_DEPENDENCIES_REQUIRED)
     if (Qt5WebView_FIND_REQUIRED)
         set(_Qt5WebView_FIND_DEPENDENCIES_REQUIRED REQUIRED)
@@ -91,7 +93,7 @@ if (NOT TARGET Qt5::WebView)
     foreach(_module_dep ${_Qt5WebView_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt5WebView_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt5WebView_FIND_VERSION_EXACT}
                 ${_Qt5WebView_DEPENDENCIES_FIND_QUIET}
                 ${_Qt5WebView_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -124,6 +126,30 @@ if (NOT TARGET Qt5::WebView)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt5WebView_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::WebView PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_WEBVIEW_LIB)
+
+    set(_Qt5WebView_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt5WebView_PRIVATE_DIR ${Qt5WebView_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt5WebView_PRIVATE_DIR})
+            set(_Qt5WebView_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt5WebView_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::WebViewPrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::WebViewPrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt5WebView_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt5WebView_PRIVATEDEPS)
+        foreach(dep ${_Qt5WebView_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt5WebView_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::WebViewPrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::WebView ${_Qt5WebView_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_WebView_target_properties(RELEASE "Qt5WebView.dll" "Qt5WebView.lib" )
 

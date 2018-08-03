@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt53DRender_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt53DRender_VERSION instead.
-set(Qt53DRender_VERSION_STRING 5.8.0)
+set(Qt53DRender_VERSION_STRING 5.10.1)
 
 set(Qt53DRender_LIBRARIES Qt5::3DRender)
 
@@ -49,8 +49,8 @@ if (NOT TARGET Qt5::3DRender)
 
     set(_Qt53DRender_OWN_INCLUDE_DIRS "${_qt53DRender_install_prefix}/include/" "${_qt53DRender_install_prefix}/include/Qt3DRender")
     set(Qt53DRender_PRIVATE_INCLUDE_DIRS
-        "${_qt53DRender_install_prefix}/include/Qt3DRender/5.8.0"
-        "${_qt53DRender_install_prefix}/include/Qt3DRender/5.8.0/Qt3DRender"
+        "${_qt53DRender_install_prefix}/include/Qt3DRender/5.10.1"
+        "${_qt53DRender_install_prefix}/include/Qt3DRender/5.10.1/Qt3DRender"
     )
 
     foreach(_dir ${_Qt53DRender_OWN_INCLUDE_DIRS})
@@ -73,6 +73,8 @@ if (NOT TARGET Qt5::3DRender)
     set(_Qt53DRender_MODULE_DEPENDENCIES "3DCore;Gui;Core")
 
 
+    set(Qt53DRender_OWN_PRIVATE_INCLUDE_DIRS ${Qt53DRender_PRIVATE_INCLUDE_DIRS})
+
     set(_Qt53DRender_FIND_DEPENDENCIES_REQUIRED)
     if (Qt53DRender_FIND_REQUIRED)
         set(_Qt53DRender_FIND_DEPENDENCIES_REQUIRED REQUIRED)
@@ -91,7 +93,7 @@ if (NOT TARGET Qt5::3DRender)
     foreach(_module_dep ${_Qt53DRender_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt53DRender_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt53DRender_FIND_VERSION_EXACT}
                 ${_Qt53DRender_DEPENDENCIES_FIND_QUIET}
                 ${_Qt53DRender_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -124,6 +126,30 @@ if (NOT TARGET Qt5::3DRender)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt53DRender_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::3DRender PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_3DRENDER_LIB)
+
+    set(_Qt53DRender_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt53DRender_PRIVATE_DIR ${Qt53DRender_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt53DRender_PRIVATE_DIR})
+            set(_Qt53DRender_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt53DRender_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::3DRenderPrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::3DRenderPrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt53DRender_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt53DRender_PRIVATEDEPS)
+        foreach(dep ${_Qt53DRender_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt53DRender_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::3DRenderPrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::3DRender ${_Qt53DRender_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_3DRender_target_properties(RELEASE "Qt53DRender.dll" "Qt53DRender.lib" )
 

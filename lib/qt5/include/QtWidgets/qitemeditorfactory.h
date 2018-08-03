@@ -46,10 +46,9 @@
 #include <QtCore/qhash.h>
 #include <QtCore/qvariant.h>
 
+QT_REQUIRE_CONFIG(itemviews);
+
 QT_BEGIN_NAMESPACE
-
-
-#ifndef QT_NO_ITEMVIEWS
 
 class QWidget;
 
@@ -81,8 +80,8 @@ public:
     inline QStandardItemEditorCreator()
         : propertyName(T::staticMetaObject.userProperty().name())
     {}
-    inline QWidget *createWidget(QWidget *parent) const { return new T(parent); }
-    inline QByteArray valuePropertyName() const { return propertyName; }
+    inline QWidget *createWidget(QWidget *parent) const override { return new T(parent); }
+    inline QByteArray valuePropertyName() const override { return propertyName; }
 
 private:
     QByteArray propertyName;
@@ -110,8 +109,6 @@ public:
 private:
     QHash<int, QItemEditorCreatorBase *> creatorMap;
 };
-
-#endif // QT_NO_ITEMVIEWS
 
 QT_END_NAMESPACE
 

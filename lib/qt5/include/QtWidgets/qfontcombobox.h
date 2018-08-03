@@ -44,17 +44,15 @@
 #include <QtWidgets/qcombobox.h>
 #include <QtGui/qfontdatabase.h>
 
-#ifndef QT_NO_FONTCOMBOBOX
+QT_REQUIRE_CONFIG(fontcombobox);
 
 QT_BEGIN_NAMESPACE
-
 
 class QFontComboBoxPrivate;
 
 class Q_WIDGETS_EXPORT QFontComboBox : public QComboBox
 {
     Q_OBJECT
-    Q_FLAGS(FontFilters)
     Q_PROPERTY(QFontDatabase::WritingSystem writingSystem READ writingSystem WRITE setWritingSystem)
     Q_PROPERTY(FontFilters fontFilters READ fontFilters WRITE setFontFilters)
     Q_PROPERTY(QFont currentFont READ currentFont WRITE setCurrentFont NOTIFY currentFontChanged)
@@ -74,6 +72,7 @@ public:
         ProportionalFonts = 0x8
     };
     Q_DECLARE_FLAGS(FontFilters, FontFilter)
+    Q_FLAG(FontFilters)
 
     void setFontFilters(FontFilters filters);
     FontFilters fontFilters() const;
@@ -101,5 +100,4 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(QFontComboBox::FontFilters)
 
 QT_END_NAMESPACE
 
-#endif // QT_NO_FONTCOMBOBOX
 #endif

@@ -56,6 +56,7 @@ class QSGTexture;
 class QInputMethodEvent;
 class QQuickWindowPrivate;
 class QQuickWindowAttached;
+class QOpenGLContext;
 class QOpenGLFramebufferObject;
 class QQmlIncubationController;
 class QInputMethodEvent;
@@ -99,6 +100,12 @@ public:
     };
     Q_ENUM(SceneGraphError)
 
+    enum TextRenderType {
+        QtTextRendering,
+        NativeTextRendering
+    };
+    Q_ENUM(TextRenderType)
+
     explicit QQuickWindow(QWindow *parent = Q_NULLPTR);
     explicit QQuickWindow(QQuickRenderControl *renderControl);
 
@@ -111,22 +118,24 @@ public:
 
     QQuickItem *mouseGrabberItem() const;
 
-    bool sendEvent(QQuickItem *, QEvent *);
+#if QT_DEPRECATED_SINCE(5, 8)
+    QT_DEPRECATED bool sendEvent(QQuickItem *, QEvent *);
+#endif
 
     QImage grabWindow();
-#ifndef QT_NO_OPENGL
+#if QT_CONFIG(opengl)
     void setRenderTarget(QOpenGLFramebufferObject *fbo);
     QOpenGLFramebufferObject *renderTarget() const;
 #endif
     void setRenderTarget(uint fboId, const QSize &size);
     uint renderTargetId() const;
     QSize renderTargetSize() const;
-#ifndef QT_NO_OPENGL
+#if QT_CONFIG(opengl)
     void resetOpenGLState();
 #endif
     QQmlIncubationController *incubationController() const;
 
-#ifndef QT_NO_ACCESSIBILITY
+#if QT_CONFIG(accessibility)
     QAccessibleInterface *accessibleRoot() const Q_DECL_OVERRIDE;
 #endif
 
@@ -161,10 +170,14 @@ public:
 
     static void setSceneGraphBackend(QSGRendererInterface::GraphicsApi api);
     static void setSceneGraphBackend(const QString &backend);
+    static QString sceneGraphBackend();
 
     QSGRectangleNode *createRectangleNode() const;
     QSGImageNode *createImageNode() const;
     QSGNinePatchNode *createNinePatchNode() const;
+
+    static TextRenderType textRenderType();
+    static void setTextRenderType(TextRenderType renderType);
 
 Q_SIGNALS:
     void frameSwapped();
@@ -208,7 +221,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *) Q_DECL_OVERRIDE;
     void mouseDoubleClickEvent(QMouseEvent *) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *) Q_DECL_OVERRIDE;
-#ifndef QT_NO_WHEELEVENT
+#if QT_CONFIG(wheelevent)
     void wheelEvent(QWheelEvent *) Q_DECL_OVERRIDE;
 #endif
 
@@ -219,7 +232,7 @@ private Q_SLOTS:
     void handleScreenChanged(QScreen *screen);
     void setTransientParent_helper(QQuickWindow *window);
     void runJobsAfterSwap();
-
+    void handleApplicationStateChanged(Qt::ApplicationState state);
 private:
     friend class QQuickItem;
     friend class QQuickWidget;
@@ -227,6 +240,10 @@ private:
     friend class QQuickAnimatorController;
     Q_DISABLE_COPY(QQuickWindow)
 };
+
+#ifndef QT_NO_DEBUG_STREAM
+QDebug Q_QUICK_EXPORT operator<<(QDebug debug, const QQuickWindow *item);
+#endif
 
 QT_END_NAMESPACE
 

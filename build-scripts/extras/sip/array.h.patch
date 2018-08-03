@@ -1,0 +1,15 @@
+--- siplib/array.h.orig	Thu Jul 05 10:54:58 2018
++++ siplib/array.h	Fri Jul 20 10:22:33 2018
+@@ -19,11 +19,11 @@
+ 
+ #ifndef _ARRAY_H
+ #define _ARRAY_H
+ 
+ 
+-#include <Python.h>
++#include <wrappython.h>
+ 
+ #include "sipint.h"
+ 
+ 
+ #ifdef __cplusplus

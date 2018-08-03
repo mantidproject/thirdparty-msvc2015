@@ -1,7 +1,7 @@
 /*
  * The SIP module interface.
  *
- * Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+ * Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
  *
  * This file is part of SIP.
  *
@@ -54,8 +54,8 @@ extern "C" {
 /*
  * Define the SIP version number.
  */
-#define SIP_VERSION         0x041303
-#define SIP_VERSION_STR     "4.19.3"
+#define SIP_VERSION         0x04130c
+#define SIP_VERSION_STR     "4.19.12"
 
 
 /*
@@ -67,6 +67,22 @@ extern "C" {
  * minor number set * to 0.
  *
  * History:
+ *
+ * 12.5 Replaced the sipConvertFromSliceObject() macro with
+ *      sip_api_convert_from_slice_object() in the public API.
+ *
+ * 12.4 Added sip_api_instance_destroyed_ex() to the private API.
+ *
+ * 12.3 Added SIP_TYPE_SCOPED_ENUM to the sipTypeDef flags.
+ *      Added sip_api_convert_to_enum() to the public API.
+ *      Added sip_api_convert_to_bool() to the public API.
+ *      Added sip_api_long_as_char(), sip_api_long_as_signed_char(),
+ *      sip_api_long_as_unsigned_char(), sip_api_long_as_short(),
+ *      sip_api_long_as_unsigned_short(), sip_api_long_as_int(),
+ *      sip_api_long_as_unsigned_int(), sip_api_long_as_long(),
+ *      sip_api_long_as_unsigned_long(), sip_api_long_as_long_long(),
+ *      sip_api_long_as_unsigned_long_long() to the public API.
+ *      Deprecated sip_api_can_convert_to_enum().
  *
  * 12.2 Added sip_api_print_object() to the public API.
  *      Renamed sip_api_common_dtor() to sip_api_instance_destroyed() and added
@@ -252,11 +268,7 @@ extern "C" {
  * 0.0  Original version.
  */
 #define SIP_API_MAJOR_NR    12
-#define SIP_API_MINOR_NR    2
-
-
-/* The name of the sip module. */
-#define SIP_MODULE_NAME     "sip"
+#define SIP_API_MINOR_NR    5
 
 
 /*
@@ -292,6 +304,7 @@ typedef unsigned int uint;
 
 #if PY_MAJOR_VERSION >= 3
 
+#define SIPLong_Check       PyLong_Check
 #define SIPLong_FromLong    PyLong_FromLong
 #define SIPLong_AsLong      PyLong_AsLong
 
@@ -313,6 +326,7 @@ typedef unsigned int uint;
 
 #else
 
+#define SIPLong_Check       PyInt_Check
 #define SIPLong_FromLong    PyInt_FromLong
 #define SIPLong_AsLong      PyInt_AsLong
 
@@ -474,7 +488,7 @@ typedef PyObject *(*sipConvertFromFunc)(void *, PyObject *);
 typedef void (*sipVirtErrorHandlerFunc)(sipSimpleWrapper *, sip_gilstate_t);
 typedef int (*sipVirtHandlerFunc)(sip_gilstate_t, sipVirtErrorHandlerFunc,
         sipSimpleWrapper *, PyObject *, ...);
-typedef void (*sipAssignFunc)(void *, SIP_SSIZE_T, const void *);
+typedef void (*sipAssignFunc)(void *, SIP_SSIZE_T, void *);
 typedef void *(*sipArrayFunc)(SIP_SSIZE_T);
 typedef void *(*sipCopyFunc)(const void *, SIP_SSIZE_T);
 typedef void (*sipReleaseFunc)(void *, int);
@@ -1447,6 +1461,8 @@ typedef struct _sipCharInstanceDef {
 
 /*
  * The information describing a string instance to be added to a dictionary.
+ * This is also used as a hack to add (or fix) other types rather than add a
+ * new table type and so requiring a new major version of the API.
  */
 typedef struct _sipStringInstanceDef {
     /* The string name. */
@@ -1455,7 +1471,10 @@ typedef struct _sipStringInstanceDef {
     /* The string value. */
     const char *si_val;
 
-    /* The encoding used, either 'A', 'L', '8' or 'N'. */
+    /*
+     * The encoding used, either 'A', 'L', '8' or 'N'.  'w' and 'W' are also
+     * used to support the fix for wchar_t.
+     */
     char si_encoding;
 } sipStringInstanceDef;
 
@@ -1660,7 +1679,15 @@ typedef struct _sipAPIDef {
             PyObject *transferObj, int flags, int *statep, int *iserrp);
     void *(*api_force_convert_to_type)(PyObject *pyObj, const sipTypeDef *td,
             PyObject *transferObj, int flags, int *statep, int *iserrp);
+
+    /*
+     * The following are deprecated parts of the public API.
+     */
     int (*api_can_convert_to_enum)(PyObject *pyObj, const sipTypeDef *td);
+
+    /*
+     * The following are part of the public API.
+     */
     void (*api_release_type)(void *cpp, const sipTypeDef *td, int state);
     PyObject *(*api_convert_from_type)(void *cpp, const sipTypeDef *td,
             PyObject *transferObj);
@@ -1842,6 +1869,36 @@ typedef struct _sipAPIDef {
     void (*api_print_object)(PyObject *o);
     int (*api_register_event_handler)(sipEventType type, const sipTypeDef *td,
             void *handler);
+    int (*api_convert_to_enum)(PyObject *obj, const sipTypeDef *td);
+    int (*api_convert_to_bool)(PyObject *obj);
+    int (*api_enable_overflow_checking)(int enable);
+    char (*api_long_as_char)(PyObject *o);
+    signed char (*api_long_as_signed_char)(PyObject *o);
+    unsigned char (*api_long_as_unsigned_char)(PyObject *o);
+    short (*api_long_as_short)(PyObject *o);
+    unsigned short (*api_long_as_unsigned_short)(PyObject *o);
+    int (*api_long_as_int)(PyObject *o);
+    unsigned int (*api_long_as_unsigned_int)(PyObject *o);
+    long (*api_long_as_long)(PyObject *o);
+#if defined(HAVE_LONG_LONG)
+    PY_LONG_LONG (*api_long_as_long_long)(PyObject *o);
+    unsigned PY_LONG_LONG (*api_long_as_unsigned_long_long)(PyObject *o);
+#else
+    void *api_long_as_long_long;
+    void *api_long_as_unsigned_long_long;
+#endif
+
+    /*
+     * The following are not part of the public API.
+     */
+    void (*api_instance_destroyed_ex)(sipSimpleWrapper **sipSelfp);
+
+    /*
+     * The following are part of the public API.
+     */
+    int (*api_convert_from_slice_object)(PyObject *slice, SIP_SSIZE_T length,
+            SIP_SSIZE_T *start, SIP_SSIZE_T *stop, SIP_SSIZE_T *step,
+            SIP_SSIZE_T *slicelength);
 } sipAPIDef;
 
 
@@ -1938,6 +1995,7 @@ typedef struct _sipQtAPI {
 #define SIP_TYPE_NAMESPACE  0x0001  /* If the type is a C++ namespace. */
 #define SIP_TYPE_MAPPED     0x0002  /* If the type is a mapped type. */
 #define SIP_TYPE_ENUM       0x0003  /* If the type is a named enum. */
+#define SIP_TYPE_SCOPED_ENUM    0x0004  /* If the type is a scoped enum. */
 #define SIP_TYPE_ABSTRACT   0x0008  /* If the type is abstract. */
 #define SIP_TYPE_SCC        0x0010  /* If the type is subject to sub-class convertors. */
 #define SIP_TYPE_ALLOW_NONE 0x0020  /* If the type can handle None. */
@@ -1954,23 +2012,17 @@ typedef struct _sipQtAPI {
 #define sipTypeIsNamespace(td)  (((td)->td_flags & SIP_TYPE_TYPE_MASK) == SIP_TYPE_NAMESPACE)
 #define sipTypeIsMapped(td) (((td)->td_flags & SIP_TYPE_TYPE_MASK) == SIP_TYPE_MAPPED)
 #define sipTypeIsEnum(td)   (((td)->td_flags & SIP_TYPE_TYPE_MASK) == SIP_TYPE_ENUM)
+#define sipTypeIsScopedEnum(td) (((td)->td_flags & SIP_TYPE_TYPE_MASK) == SIP_TYPE_SCOPED_ENUM)
 #define sipTypeAsPyTypeObject(td)   ((td)->u.td_py_type)
 #define sipTypeName(td)     sipNameFromPool((td)->td_module, (td)->td_cname)
 #define sipTypePluginData(td)   ((td)->td_plugin_data)
+
 
 /*
  * Note that this was never actually documented as being part of the public
  * API.  It is now deprecated.  sipIsUserType() should be used instead.
  */
 #define sipIsExactWrappedType(wt)   (sipTypeAsPyTypeObject((wt)->wt_td) == (PyTypeObject *)(wt))
-
-#if PY_VERSION_HEX >= 0x03020000
-#define sipConvertFromSliceObject   PySlice_GetIndicesEx
-#else
-#define sipConvertFromSliceObject(o, len, start, stop, step, slen) \
-        PySlice_GetIndicesEx((PySliceObject *)(o), (len), (start), (stop), \
-                (step), (slen))
-#endif
 
 
 /*

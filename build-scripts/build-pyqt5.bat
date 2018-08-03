@@ -9,11 +9,12 @@
 @call %~dp0cmds\common-setup.cmd
 @set PYQT5_EXTRAS_DIR=%~dp0extras\pyqt5
 @set INCLUDE=%INSTALL_PREFIX%\include;%INCLUDE%
+@set RCPATH="C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64"
 @set LIB=%INSTALL_PREFIX%\lib;%LIB%
 @set QT_ROOT=%INSTALL_PREFIX%\lib\qt5
 @set PYTHONHOME=%INSTALL_PREFIX%\lib\python2.7
-@set PATH_NO_QT=%INSTALL_PREFIX%\bin;%PYTHONHOME%;D:\Builds\jom;%PATH%
-@set PATH=%QT_ROOT%\bin;%PATH_NO_QT%
+@set PATH_NO_QT=%INSTALL_PREFIX%\bin;%PYTHONHOME%;C:\Builds\jom;%PATH%
+@set PATH=%QT_ROOT%\bin;%PATH_NO_QT%;%RCPATH%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Clean any old build
@@ -34,10 +35,10 @@ if exist %PYTHONHOME%\Lib\site-packages\PyQt5 (
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Use two build directories as the build is inplace
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set QMAKESPEC=%QT_ROOT%\mkspecs\win32-msvc2015
-@set SRC_PKG_URL="https://downloads.sourceforge.net/project/pyqt/PyQt5/PyQt-5.8.2/PyQt5_gpl-5.8.2.zip"
-@set SRC_PKG=PyQt5_gpl-5.8.2.zip
-@set EXTRACTED_SRC=PyQt5_gpl-5.8.2
+@set QMAKESPEC=%QT_ROOT%\mkspecs\win32-msvc
+@set SRC_PKG_URL="https://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-5.10.1/PyQt5_gpl-5.10.1.zip"
+@set SRC_PKG=PyQt5_gpl-5.10.1.zip
+@set EXTRACTED_SRC=PyQt5_gpl-5.10.1
 call download-file.cmd %SRC_PKG% %SRC_PKG_URL%
 
 :: debug build first so that release exes for pyrcc etc are installed over the debug ones
@@ -101,8 +102,9 @@ cd %3
 @echo Prefix = %QT_ROOT:\=/% >> %QT_CONF_FILE%
 
 @if "%_buildtype%" == "debug" ( set DEBUG_ARGS= -u --destdir=%PYTHONHOME%\msvc-site-packages\debug )
-@echo Running configure.py --confirm-license --qsci-api --no-designer-plugin %DEBUG_ARGS%
-@call python configure.py --confirm-license --qsci-api --no-designer-plugin %DEBUG_ARGS%
+@echo Running configure.py --verbose --confirm-license --qsci-api --no-designer-plugin --disable=QtNfc --disable=QtQuick --disable=QtQml --disable=QtQuickWidgets %DEBUG_ARGS%
+@echo %QT_ROOT%
+@call python configure.py --verbose --confirm-license --qsci-api --no-designer-plugin --disable=QtNfc --disable=QtQuick --disable=QtQml --disable=QtQuickWidgets %DEBUG_ARGS%
 
 REM :: jom seems to have an issue with parallel builds
 @call nmake

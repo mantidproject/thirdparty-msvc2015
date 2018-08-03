@@ -44,7 +44,7 @@
 #include <QtWidgets/qwidget.h>
 #include <QtPrintSupport/qprinter.h>
 
-#ifndef QT_NO_PRINTPREVIEWWIDGET
+QT_REQUIRE_CONFIG(printpreviewwidget);
 
 QT_BEGIN_NAMESPACE
 
@@ -69,9 +69,9 @@ public:
         FitInView
     };
 
-    explicit QPrintPreviewWidget(QPrinter *printer, QWidget *parent = Q_NULLPTR,
+    explicit QPrintPreviewWidget(QPrinter *printer, QWidget *parent = nullptr,
                                  Qt::WindowFlags flags = Qt::WindowFlags());
-    explicit QPrintPreviewWidget(QWidget *parent = Q_NULLPTR, Qt::WindowFlags flags = Qt::WindowFlags());
+    explicit QPrintPreviewWidget(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
     ~QPrintPreviewWidget();
 
     qreal zoomFactor() const;
@@ -114,5 +114,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT_NO_PRINTPREVIEWWIDGET
 #endif // QPRINTPREVIEWWIDGET_H

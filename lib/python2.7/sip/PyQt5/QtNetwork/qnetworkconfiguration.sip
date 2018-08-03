@@ -2,7 +2,7 @@
 //
 // This file is part of the QtNetwork Python extension module.
 //
-// Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt5.
 // 
@@ -98,4 +98,10 @@ public:
     QString name() const;
     bool isValid() const;
     void swap(QNetworkConfiguration &other /Constrained/);
+%If (Qt_5_9_0 -)
+    int connectTimeout() const;
+%End
+%If (Qt_5_9_0 -)
+    bool setConnectTimeout(int timeout);
+%End
 };

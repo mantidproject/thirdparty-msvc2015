@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
-import QtQuick.Controls 2.1
-import QtQuick.Controls.impl 2.1
-import QtQuick.Templates 2.1 as T
+import QtQuick 2.10
+import QtQuick.Controls 2.3
+import QtQuick.Controls.impl 2.3
+import QtQuick.Templates 2.3 as T
 
 T.TextField {
     id: control
@@ -52,13 +52,12 @@ T.TextField {
     padding: 6
     leftPadding: padding + 4
 
-    opacity: enabled ? 1 : 0.2
-    color: Default.textColor
-    selectionColor: Default.textSelectionColor
-    selectedTextColor: color
+    color: control.palette.text
+    selectionColor: control.palette.highlight
+    selectedTextColor: control.palette.highlightedText
     verticalAlignment: TextInput.AlignVCenter
 
-    Text {
+    PlaceholderText {
         id: placeholder
         x: control.leftPadding
         y: control.topPadding
@@ -67,8 +66,8 @@ T.TextField {
 
         text: control.placeholderText
         font: control.font
-        color: Default.textDisabledColor
-        horizontalAlignment: control.horizontalAlignment
+        opacity: 0.5
+        color: control.palette.text
         verticalAlignment: control.verticalAlignment
         visible: !control.length && !control.preeditText && (!control.activeFocus || control.horizontalAlignment !== Qt.AlignHCenter)
         elide: Text.ElideRight
@@ -78,7 +77,7 @@ T.TextField {
         implicitWidth: 200
         implicitHeight: 40
         border.width: control.activeFocus ? 2 : 1
-        color: control.enabled ? Default.backgroundColor : Default.disabledDarkColor
-        border.color: control.activeFocus ? Default.focusColor : (control.enabled ? Default.disabledLightColor : "transparent")
+        color: control.palette.base
+        border.color: control.activeFocus ? control.palette.highlight : control.palette.mid
     }
 }

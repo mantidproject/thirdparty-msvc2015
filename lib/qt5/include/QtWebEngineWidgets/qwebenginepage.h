@@ -44,6 +44,7 @@
 #include <QtWebEngineWidgets/qwebenginecertificateerror.h>
 #include <QtWebEngineWidgets/qwebenginedownloaditem.h>
 #include <QtWebEngineCore/qwebenginecallback.h>
+#include <QtWebEngineCore/qwebenginehttprequest.h>
 
 #include <QtCore/qobject.h>
 #include <QtCore/qurl.h>
@@ -54,9 +55,8 @@
 
 QT_BEGIN_NAMESPACE
 class QMenu;
-#ifndef QT_NO_PRINTER
 class QPrinter;
-#endif
+
 class QWebChannel;
 class QWebEngineContextMenuData;
 class QWebEngineFullScreenRequest;
@@ -128,8 +128,25 @@ public:
         SavePage,
         OpenLinkInNewBackgroundTab,
         ViewSource,
+
+        ToggleBold,
+        ToggleItalic,
+        ToggleUnderline,
+        ToggleStrikethrough,
+
+        AlignLeft,
+        AlignCenter,
+        AlignRight,
+        AlignJustified,
+        Indent,
+        Outdent,
+
+        InsertOrderedList,
+        InsertUnorderedList,
+
         WebActionCount
     };
+    Q_ENUM(WebAction)
 
     enum FindFlag {
         FindBackward = 1,
@@ -143,12 +160,14 @@ public:
         WebDialog,
         WebBrowserBackgroundTab
     };
+    Q_ENUM(WebWindowType)
 
     enum PermissionPolicy {
         PermissionUnknown,
         PermissionGrantedByUser,
         PermissionDeniedByUser
     };
+    Q_ENUM(PermissionPolicy)
 
     // must match WebContentsAdapterClient::NavigationType
     enum NavigationType {
@@ -159,6 +178,7 @@ public:
         NavigationTypeReload,
         NavigationTypeOther
     };
+    Q_ENUM(NavigationType)
 
     enum Feature {
 #ifndef Q_QDOC
@@ -168,8 +188,11 @@ public:
         MediaAudioCapture = 2,
         MediaVideoCapture,
         MediaAudioVideoCapture,
-        MouseLock
+        MouseLock,
+        DesktopVideoCapture,
+        DesktopAudioVideoCapture
     };
+    Q_ENUM(Feature)
 
     // Ex-QWebFrame enum
 
@@ -177,6 +200,7 @@ public:
         FileSelectOpen,
         FileSelectOpenMultiple,
     };
+    Q_ENUM(FileSelectionMode)
 
     // must match WebContentsAdapterClient::JavaScriptConsoleMessageLevel
     enum JavaScriptConsoleMessageLevel {
@@ -184,6 +208,7 @@ public:
         WarningMessageLevel,
         ErrorMessageLevel
     };
+    Q_ENUM(JavaScriptConsoleMessageLevel)
 
     // must match WebContentsAdapterClient::RenderProcessTerminationStatus
     enum RenderProcessTerminationStatus {
@@ -192,6 +217,7 @@ public:
         CrashedTerminationStatus,
         KilledTerminationStatus
     };
+    Q_ENUM(RenderProcessTerminationStatus)
 
     explicit QWebEnginePage(QObject *parent = Q_NULLPTR);
     QWebEnginePage(QWebEngineProfile *profile, QObject *parent = Q_NULLPTR);
@@ -224,8 +250,9 @@ public:
 
     void setFeaturePermission(const QUrl &securityOrigin, Feature feature, PermissionPolicy policy);
 
-    // Ex-QWebFrame methods
     void load(const QUrl &url);
+    void load(const QWebEngineHttpRequest &request);
+    void download(const QUrl &url, const QString &filename = QString());
     void setHtml(const QString &html, const QUrl &baseUrl = QUrl());
     void setContent(const QByteArray &data, const QString &mimeType = QString(), const QUrl &baseUrl = QUrl());
 
@@ -282,13 +309,11 @@ public:
     void printToPdf(const QWebEngineCallback<const QByteArray&> &resultCallback, const QPageLayout &layout = QPageLayout(QPageSize(QPageSize::A4), QPageLayout::Portrait, QMarginsF()));
 #endif
 
-#ifndef QT_NO_PRINTER
 #ifdef Q_QDOC
     void print(QPrinter *printer, FunctorOrLambda resultCallback);
 #else
     void print(QPrinter *printer, const QWebEngineCallback<bool> &resultCallback);
 #endif // QDOC
-#endif // QT_NO_PRINTER
 
     const QWebEngineContextMenuData &contextMenuData() const;
 
@@ -321,6 +346,8 @@ Q_SIGNALS:
     void contentsSizeChanged(const QSizeF &size);
     void audioMutedChanged(bool muted);
     void recentlyAudibleChanged(bool recentlyAudible);
+
+    void pdfPrintingFinished(const QString &filePath, bool success);
 
 protected:
     virtual QWebEnginePage *createWindow(WebWindowType type);

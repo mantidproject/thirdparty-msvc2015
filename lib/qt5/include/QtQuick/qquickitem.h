@@ -153,7 +153,7 @@ class Q_QUICK_EXPORT QQuickItem : public QObject, public QQmlParserStatus
 public:
     enum Flag {
         ItemClipsChildrenToShape  = 0x01,
-#ifndef QT_NO_IM
+#if QT_CONFIG(im)
         ItemAcceptsInputMethod    = 0x02,
 #endif
         ItemIsFocusScope          = 0x04,
@@ -173,7 +173,8 @@ public:
         ItemActiveFocusHasChanged, // value.boolValue
         ItemRotationHasChanged,    // value.realValue
         ItemAntialiasingHasChanged, // value.boolValue
-        ItemDevicePixelRatioHasChanged // value.realValue
+        ItemDevicePixelRatioHasChanged, // value.realValue
+        ItemEnabledHasChanged      // value.boolValue
     };
 
     union ItemChangeData {
@@ -237,6 +238,7 @@ public:
     void setImplicitHeight(qreal);
     qreal implicitHeight() const;
 
+    QSizeF size() const;
     void setSize(const QSizeF &size);
 
     TransformOrigin transformOrigin() const;
@@ -291,8 +293,10 @@ public:
     void setAcceptedMouseButtons(Qt::MouseButtons buttons);
     bool acceptHoverEvents() const;
     void setAcceptHoverEvents(bool enabled);
+    bool acceptTouchEvents() const;
+    void setAcceptTouchEvents(bool accept);
 
-#ifndef QT_NO_CURSOR
+#if QT_CONFIG(cursor)
     QCursor cursor() const;
     void setCursor(const QCursor &cursor);
     void unsetCursor();
@@ -340,7 +344,7 @@ public:
     Q_REVISION(1) Q_INVOKABLE QQuickItem *nextItemInFocusChain(bool forward = true);
     Q_INVOKABLE QQuickItem *childAt(qreal x, qreal y) const;
 
-#ifndef QT_NO_IM
+#if QT_CONFIG(im)
     virtual QVariant inputMethodQuery(Qt::InputMethodQuery query) const;
 #endif
 
@@ -393,7 +397,7 @@ protected:
     bool isComponentComplete() const;
     virtual void itemChange(ItemChange, const ItemChangeData &);
 
-#ifndef QT_NO_IM
+#if QT_CONFIG(im)
     void updateInputMethod(Qt::InputMethodQueries queries = Qt::ImQueryInput);
 #endif
 
@@ -406,7 +410,7 @@ protected:
 
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);
-#ifndef QT_NO_IM
+#if QT_CONFIG(im)
     virtual void inputMethodEvent(QInputMethodEvent *);
 #endif
     virtual void focusInEvent(QFocusEvent *);
@@ -417,14 +421,14 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
     virtual void mouseUngrabEvent(); // XXX todo - params?
     virtual void touchUngrabEvent();
-#ifndef QT_NO_WHEELEVENT
+#if QT_CONFIG(wheelevent)
     virtual void wheelEvent(QWheelEvent *event);
 #endif
     virtual void touchEvent(QTouchEvent *event);
     virtual void hoverEnterEvent(QHoverEvent *event);
     virtual void hoverMoveEvent(QHoverEvent *event);
     virtual void hoverLeaveEvent(QHoverEvent *event);
-#ifndef QT_NO_DRAGANDDROP
+#if QT_CONFIG(draganddrop)
     virtual void dragEnterEvent(QDragEnterEvent *);
     virtual void dragMoveEvent(QDragMoveEvent *);
     virtual void dragLeaveEvent(QDragLeaveEvent *);
@@ -447,6 +451,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_resourceObjectDeleted(QObject *))
     Q_PRIVATE_SLOT(d_func(), quint64 _q_createJSWrapper(QV4::ExecutionEngine *))
 
+    friend class QQuickEventPoint;
     friend class QQuickWindow;
     friend class QQuickWindowPrivate;
     friend class QSGRenderer;

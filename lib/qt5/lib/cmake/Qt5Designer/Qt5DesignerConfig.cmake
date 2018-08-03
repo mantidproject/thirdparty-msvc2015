@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt5Designer_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt5Designer_VERSION instead.
-set(Qt5Designer_VERSION_STRING 5.8.0)
+set(Qt5Designer_VERSION_STRING 5.10.1)
 
 set(Qt5Designer_LIBRARIES Qt5::Designer)
 
@@ -49,8 +49,8 @@ if (NOT TARGET Qt5::Designer)
 
     set(_Qt5Designer_OWN_INCLUDE_DIRS "${_qt5Designer_install_prefix}/include/" "${_qt5Designer_install_prefix}/include/QtDesigner")
     set(Qt5Designer_PRIVATE_INCLUDE_DIRS
-        "${_qt5Designer_install_prefix}/include/QtDesigner/5.8.0"
-        "${_qt5Designer_install_prefix}/include/QtDesigner/5.8.0/QtDesigner"
+        "${_qt5Designer_install_prefix}/include/QtDesigner/5.10.1"
+        "${_qt5Designer_install_prefix}/include/QtDesigner/5.10.1/QtDesigner"
     )
 
     foreach(_dir ${_Qt5Designer_OWN_INCLUDE_DIRS})
@@ -73,6 +73,8 @@ if (NOT TARGET Qt5::Designer)
     set(_Qt5Designer_MODULE_DEPENDENCIES "UiPlugin;Widgets;Gui;Xml;Core")
 
 
+    set(Qt5Designer_OWN_PRIVATE_INCLUDE_DIRS ${Qt5Designer_PRIVATE_INCLUDE_DIRS})
+
     set(_Qt5Designer_FIND_DEPENDENCIES_REQUIRED)
     if (Qt5Designer_FIND_REQUIRED)
         set(_Qt5Designer_FIND_DEPENDENCIES_REQUIRED REQUIRED)
@@ -91,7 +93,7 @@ if (NOT TARGET Qt5::Designer)
     foreach(_module_dep ${_Qt5Designer_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt5Designer_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt5Designer_FIND_VERSION_EXACT}
                 ${_Qt5Designer_DEPENDENCIES_FIND_QUIET}
                 ${_Qt5Designer_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -124,6 +126,30 @@ if (NOT TARGET Qt5::Designer)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt5Designer_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::Designer PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_DESIGNER_LIB)
+
+    set(_Qt5Designer_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt5Designer_PRIVATE_DIR ${Qt5Designer_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt5Designer_PRIVATE_DIR})
+            set(_Qt5Designer_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt5Designer_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::DesignerPrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::DesignerPrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt5Designer_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt5Designer_PRIVATEDEPS)
+        foreach(dep ${_Qt5Designer_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt5Designer_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::DesignerPrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::Designer ${_Qt5Designer_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_Designer_target_properties(RELEASE "Qt5Designer.dll" "Qt5Designer.lib" )
 

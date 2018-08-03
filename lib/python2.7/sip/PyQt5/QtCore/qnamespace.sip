@@ -2,7 +2,7 @@
 //
 // This file is part of the QtCore Python extension module.
 //
-// Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt5.
 // 
@@ -355,6 +355,9 @@ namespace Qt
         WA_MacNoShadow,
 %If (Qt_5_4_0 -)
         WA_AlwaysStackOnTop,
+%End
+%If (Qt_5_9_0 -)
+        WA_TabletTracking,
 %End
     };
 
@@ -1331,6 +1334,18 @@ namespace Qt
 %If (Qt_5_8_0 -)
         AA_DontCheckOpenGLContextThreadAffinity,
 %End
+%If (Qt_5_9_0 -)
+        AA_DisableShaderDiskCache,
+%End
+%If (Qt_5_10_0 -)
+        AA_DontShowShortcutsInContextMenus,
+%End
+%If (Qt_5_10_0 -)
+        AA_CompressTabletEvents,
+%End
+%If (Qt_5_10_0 -)
+        AA_DisableWindowContextHelpButton,
+%End
     };
 
     enum ItemSelectionMode
@@ -1651,6 +1666,15 @@ namespace Qt
         EnterKeySearch,
         EnterKeyNext,
         EnterKeyPrevious,
+    };
+
+%End
+%If (Qt_5_9_0 -)
+
+    enum ChecksumType
+    {
+        ChecksumIso3309,
+        ChecksumItuV41,
     };
 
 %End

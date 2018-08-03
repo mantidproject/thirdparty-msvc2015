@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
-import QtQuick.Controls 2.1
-import QtQuick.Controls.impl 2.1
-import QtQuick.Templates 2.1 as T
+import QtQuick 2.10
+import QtQuick.Controls 2.3
+import QtQuick.Controls.impl 2.3
+import QtQuick.Templates 2.3 as T
 
 T.ScrollIndicator {
     id: control
@@ -50,19 +50,17 @@ T.ScrollIndicator {
     padding: 2
 
     contentItem: Rectangle {
-        id: indicator
-
         implicitWidth: 2
         implicitHeight: 2
 
-        color: Default.scrollBarColor
+        color: control.palette.mid
         visible: control.size < 1.0
         opacity: 0.0
 
         states: State {
             name: "active"
             when: control.active
-            PropertyChanges { target: indicator; opacity: 0.75 }
+            PropertyChanges { target: control.contentItem; opacity: 0.75 }
         }
 
         transitions: [
@@ -70,7 +68,7 @@ T.ScrollIndicator {
                 from: "active"
                 SequentialAnimation {
                     PauseAnimation { duration: 450 }
-                    NumberAnimation { target: indicator; duration: 200; property: "opacity"; to: 0.0 }
+                    NumberAnimation { target: control.contentItem; duration: 200; property: "opacity"; to: 0.0 }
                 }
             }
         ]

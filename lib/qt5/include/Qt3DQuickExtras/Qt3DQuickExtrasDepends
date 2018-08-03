@@ -8,4 +8,5 @@
 #include <Qt3DQuick/Qt3DQuick>
 #include <Qt3DRender/Qt3DRender>
 #include <Qt3DLogic/Qt3DLogic>
+#include <Qt3DExtras/Qt3DExtras>
 #endif

@@ -42,8 +42,8 @@
 
 #include <QtScxml/qscxmlexecutablecontent.h>
 
-#include <QVariant>
-#include <QVector>
+#include <QtCore/qvariant.h>
+#include <QtCore/qvector.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -97,5 +97,7 @@ protected:
 };
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(QScxmlDataModel *)
 
 #endif // QSCXMLDATAMODEL_H

@@ -2,7 +2,7 @@
 //
 // This file is part of the QtWidgets Python extension module.
 //
-// Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt5.
 // 
@@ -56,7 +56,14 @@ public:
     void setToolTip(const QString &tip);
     static bool isSystemTrayAvailable();
     static bool supportsMessages();
+
+public slots:
     void showMessage(const QString &title, const QString &msg, QSystemTrayIcon::MessageIcon icon = QSystemTrayIcon::Information, int msecs = 10000);
+%If (Qt_5_9_0 -)
+    void showMessage(const QString &title, const QString &msg, const QIcon &icon, int msecs = 10000);
+%End
+
+public:
     bool isVisible() const;
 
 public slots:

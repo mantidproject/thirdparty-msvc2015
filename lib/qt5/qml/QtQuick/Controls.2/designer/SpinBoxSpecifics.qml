@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -43,7 +43,7 @@ Column {
 
     Section {
         width: parent.width
-        caption: qsTr("Spin Box")
+        caption: qsTr("SpinBox")
 
         SectionLayout {
             Label {
@@ -101,10 +101,26 @@ Column {
                     Layout.fillWidth: true
                 }
             }
+
+            Label {
+                text: qsTr("Editable")
+                tooltip: qsTr("Whether the spinbox is editable.")
+            }
+            SecondColumnLayout {
+                CheckBox {
+                    text: backendValues.editable.valueToString
+                    backendValue: backendValues.editable
+                    Layout.fillWidth: true
+                }
+            }
         }
     }
 
     ControlSection {
+        width: parent.width
+    }
+
+    FontSection {
         width: parent.width
     }
 

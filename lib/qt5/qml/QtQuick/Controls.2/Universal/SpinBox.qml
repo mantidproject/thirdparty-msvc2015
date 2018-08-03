@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -34,9 +34,11 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
-import QtQuick.Templates 2.1 as T
-import QtQuick.Controls.Universal 2.1
+import QtQuick 2.10
+import QtQuick.Templates 2.3 as T
+import QtQuick.Controls 2.3
+import QtQuick.Controls.impl 2.3
+import QtQuick.Controls.Universal 2.3
 
 T.SpinBox {
     id: control
@@ -79,7 +81,7 @@ T.SpinBox {
 
         readOnly: !control.editable
         validator: control.validator
-        inputMethodHints: Qt.ImhFormattedNumbersOnly
+        inputMethodHints: control.inputMethodHints
     }
 
     up.indicator: Item {
@@ -99,14 +101,12 @@ T.SpinBox {
             opacity: control.activeFocus && !control.up.pressed ? 0.4 : 1.0
         }
 
-        Image {
+        ColorImage {
             x: (parent.width - width) / 2
             y: (parent.height - height) / 2
-            source: "image://universal/" + (control.mirrored ? "left" : "right") + "arrow/"
-                    + (!enabled ? control.Universal.chromeDisabledLowColor :
-                                  control.activeFocus ? control.Universal.chromeBlackHighColor : control.Universal.baseHighColor)
-            sourceSize.width: width
-            sourceSize.height: height
+            color: !enabled ? control.Universal.chromeDisabledLowColor :
+                              control.activeFocus ? control.Universal.chromeBlackHighColor : control.Universal.baseHighColor
+            source: "qrc:/qt-project.org/imports/QtQuick/Controls.2/Universal/images/" + (control.mirrored ? "left" : "right") + "arrow.png"
         }
     }
 
@@ -127,14 +127,12 @@ T.SpinBox {
             opacity: control.activeFocus && !control.down.pressed ? 0.4 : 1.0
         }
 
-        Image {
+        ColorImage {
             x: (parent.width - width) / 2
             y: (parent.height - height) / 2
-            source: "image://universal/" + (control.mirrored ? "right" : "left") + "arrow/"
-                    + (!enabled ? control.Universal.chromeDisabledLowColor :
-                                  control.activeFocus ? control.Universal.chromeBlackHighColor : control.Universal.baseHighColor)
-            sourceSize.width: width
-            sourceSize.height: height
+            color: !enabled ? control.Universal.chromeDisabledLowColor :
+                              control.activeFocus ? control.Universal.chromeBlackHighColor : control.Universal.baseHighColor
+            source: "qrc:/qt-project.org/imports/QtQuick/Controls.2/Universal/images/" + (control.mirrored ? "right" : "left") + "arrow.png"
         }
     }
 

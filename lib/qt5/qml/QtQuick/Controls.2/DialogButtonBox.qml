@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
-import QtQuick.Templates 2.1 as T
+import QtQuick 2.10
+import QtQuick.Templates 2.3 as T
 
 T.DialogButtonBox {
     id: control
@@ -69,5 +69,6 @@ T.DialogButtonBox {
         x: 1; y: 1
         width: parent.width - 2
         height: parent.height - 2
+        color: control.palette.window
     }
 }

@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt5Scxml_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt5Scxml_VERSION instead.
-set(Qt5Scxml_VERSION_STRING 5.8.0)
+set(Qt5Scxml_VERSION_STRING 5.10.1)
 
 set(Qt5Scxml_LIBRARIES Qt5::Scxml)
 
@@ -49,8 +49,8 @@ if (NOT TARGET Qt5::Scxml)
 
     set(_Qt5Scxml_OWN_INCLUDE_DIRS "${_qt5Scxml_install_prefix}/include/" "${_qt5Scxml_install_prefix}/include/QtScxml")
     set(Qt5Scxml_PRIVATE_INCLUDE_DIRS
-        "${_qt5Scxml_install_prefix}/include/QtScxml/5.8.0"
-        "${_qt5Scxml_install_prefix}/include/QtScxml/5.8.0/QtScxml"
+        "${_qt5Scxml_install_prefix}/include/QtScxml/5.10.1"
+        "${_qt5Scxml_install_prefix}/include/QtScxml/5.10.1/QtScxml"
     )
 
     foreach(_dir ${_Qt5Scxml_OWN_INCLUDE_DIRS})
@@ -73,6 +73,8 @@ if (NOT TARGET Qt5::Scxml)
     set(_Qt5Scxml_MODULE_DEPENDENCIES "Qml;Core")
 
 
+    set(Qt5Scxml_OWN_PRIVATE_INCLUDE_DIRS ${Qt5Scxml_PRIVATE_INCLUDE_DIRS})
+
     set(_Qt5Scxml_FIND_DEPENDENCIES_REQUIRED)
     if (Qt5Scxml_FIND_REQUIRED)
         set(_Qt5Scxml_FIND_DEPENDENCIES_REQUIRED REQUIRED)
@@ -91,7 +93,7 @@ if (NOT TARGET Qt5::Scxml)
     foreach(_module_dep ${_Qt5Scxml_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt5Scxml_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt5Scxml_FIND_VERSION_EXACT}
                 ${_Qt5Scxml_DEPENDENCIES_FIND_QUIET}
                 ${_Qt5Scxml_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -124,6 +126,30 @@ if (NOT TARGET Qt5::Scxml)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt5Scxml_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::Scxml PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_SCXML_LIB)
+
+    set(_Qt5Scxml_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt5Scxml_PRIVATE_DIR ${Qt5Scxml_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt5Scxml_PRIVATE_DIR})
+            set(_Qt5Scxml_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt5Scxml_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::ScxmlPrivate INTERFACE IMPORTED)
+        set_property(TARGET Qt5::ScxmlPrivate PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt5Scxml_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt5Scxml_PRIVATEDEPS)
+        foreach(dep ${_Qt5Scxml_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt5Scxml_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::ScxmlPrivate PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::Scxml ${_Qt5Scxml_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_Scxml_target_properties(RELEASE "Qt5Scxml.dll" "Qt5Scxml.lib" )
 

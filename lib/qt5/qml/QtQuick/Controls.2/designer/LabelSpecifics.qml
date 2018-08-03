@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -46,6 +46,30 @@ Column {
         showIsWrapping: true
         showFormatProperty: true
         showVerticalAlignment: true
+    }
+
+    Section {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        caption: qsTr("Text Color")
+
+        ColorEditor {
+            caption: qsTr("Text Color")
+            backendValue: backendValues.color
+            supportGradient: false
+        }
+    }
+
+    Section {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        caption: qsTr("Style Color")
+
+        ColorEditor {
+            caption: qsTr("Style Color")
+            backendValue: backendValues.styleColor
+            supportGradient: false
+        }
     }
 
     FontSection {

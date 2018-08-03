@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
-import QtQuick.Templates 2.1 as T
-import QtQuick.Controls 2.1
-import QtQuick.Controls.impl 2.1
+import QtQuick 2.10
+import QtQuick.Templates 2.3 as T
+import QtQuick.Controls 2.3
+import QtQuick.Controls.impl 2.3
 
 T.Switch {
     id: control
@@ -52,22 +52,42 @@ T.Switch {
     padding: 6
     spacing: 6
 
-    indicator: SwitchIndicator {
+    indicator: PaddedRectangle {
+        implicitWidth: 56
+        implicitHeight: 28
+
         x: text ? (control.mirrored ? control.width - width - control.rightPadding : control.leftPadding) : control.leftPadding + (control.availableWidth - width) / 2
         y: control.topPadding + (control.availableHeight - height) / 2
-        control: control
+
+        radius: 8
+        leftPadding: 0
+        rightPadding: 0
+        padding: (height - 16) / 2
+        color: control.checked ? control.palette.dark : control.palette.midlight
+
+        Rectangle {
+            x: Math.max(0, Math.min(parent.width - width, control.visualPosition * parent.width - (width / 2)))
+            y: (parent.height - height) / 2
+            width: 28
+            height: 28
+            radius: 16
+            color: control.down ? control.palette.light : control.palette.window
+            border.width: control.visualFocus ? 2 : 1
+            border.color: control.visualFocus ? control.palette.highlight : control.enabled ? control.palette.mid : control.palette.midlight
+
+            Behavior on x {
+                enabled: !control.down
+                SmoothedAnimation { velocity: 200 }
+            }
+        }
     }
 
-    contentItem: Text {
+    contentItem: CheckLabel {
         leftPadding: control.indicator && !control.mirrored ? control.indicator.width + control.spacing : 0
         rightPadding: control.indicator && control.mirrored ? control.indicator.width + control.spacing : 0
 
         text: control.text
         font: control.font
-        color: control.enabled ? Default.textDarkColor : Default.textDisabledColor
-        elide: Text.ElideRight
-        visible: control.text
-        horizontalAlignment: Text.AlignLeft
-        verticalAlignment: Text.AlignVCenter
+        color: control.palette.windowText
     }
 }

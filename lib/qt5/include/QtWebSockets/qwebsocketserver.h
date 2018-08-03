@@ -54,6 +54,7 @@
 
 QT_BEGIN_NAMESPACE
 
+class QTcpSocket;
 class QWebSocketServerPrivate;
 class QWebSocket;
 class QWebSocketCorsAuthenticator;
@@ -64,15 +65,14 @@ class Q_WEBSOCKETS_EXPORT QWebSocketServer : public QObject
     Q_DISABLE_COPY(QWebSocketServer)
     Q_DECLARE_PRIVATE(QWebSocketServer)
 
-    Q_ENUMS(SslMode)
-
 public:
     enum SslMode {
 #ifndef QT_NO_SSL
-        SecureMode,
+        SecureMode = 0,
 #endif
-        NonSecureMode
+        NonSecureMode = 1
     };
+    Q_ENUM(SslMode)
 
     explicit QWebSocketServer(const QString &serverName, SslMode secureMode,
                               QObject *parent = Q_NULLPTR);
@@ -117,6 +117,8 @@ public:
 #endif
 
     QList<QWebSocketProtocol::Version> supportedVersions() const;
+
+    void handleConnection(QTcpSocket *socket) const;
 
 Q_SIGNALS:
     void acceptError(QAbstractSocket::SocketError socketError);

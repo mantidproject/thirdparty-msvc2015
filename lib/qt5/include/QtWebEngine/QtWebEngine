@@ -3,5 +3,6 @@
 #include <QtWebEngine/QtWebEngineDepends>
 #include "qtwebengineglobal.h"
 #include "qquickwebengineprofile.h"
+#include "qquickwebenginescript.h"
 #include "qtwebengineversion.h"
 #endif

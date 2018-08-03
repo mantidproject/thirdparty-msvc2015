@@ -2,7 +2,7 @@
 //
 // This file is part of the QtQml Python extension module.
 //
-// Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt5.
 // 
@@ -33,7 +33,12 @@ public:
     QQmlApplicationEngine(const QUrl &url, QObject *parent /TransferThis/ = 0) /ReleaseGIL/;
     QQmlApplicationEngine(const QString &filePath, QObject *parent /TransferThis/ = 0) /ReleaseGIL/;
     virtual ~QQmlApplicationEngine();
+%If (Qt_5_9_0 -)
+    QList<QObject *> rootObjects() const;
+%End
+%If (- Qt_5_9_0)
     QList<QObject *> rootObjects();
+%End
 
 public slots:
     void load(const QUrl &url) /ReleaseGIL/;

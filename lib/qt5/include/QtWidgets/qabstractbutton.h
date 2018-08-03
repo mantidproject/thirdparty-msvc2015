@@ -45,6 +45,8 @@
 #include <QtGui/qkeysequence.h>
 #include <QtWidgets/qwidget.h>
 
+QT_REQUIRE_CONFIG(abstractbutton);
+
 QT_BEGIN_NAMESPACE
 
 
@@ -106,7 +108,7 @@ public:
     void setAutoExclusive(bool);
     bool autoExclusive() const;
 
-#ifndef QT_NO_BUTTONGROUP
+#if QT_CONFIG(buttongroup)
     QButtonGroup *group() const;
 #endif
 

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
-import QtQuick.Controls 2.1
-import QtQuick.Controls.impl 2.1
-import QtQuick.Templates 2.1 as T
+import QtQuick 2.10
+import QtQuick.Controls 2.3
+import QtQuick.Controls.impl 2.3
+import QtQuick.Templates 2.3 as T
 
 T.PageIndicator {
     id: control
@@ -55,7 +55,7 @@ T.PageIndicator {
         implicitHeight: 8
 
         radius: width / 2
-        color: Default.pageIndicatorColor
+        color: control.palette.dark
 
         opacity: index === currentIndex ? 0.95 : pressed ? 0.7 : 0.45
         Behavior on opacity { OpacityAnimator { duration: 100 } }

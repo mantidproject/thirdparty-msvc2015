@@ -2,7 +2,7 @@
 //
 // This file is part of the QtCore Python extension module.
 //
-// Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt5.
 // 
@@ -527,8 +527,18 @@ callable.
     void setParent(QObject * /TransferThis/);
     void installEventFilter(QObject *);
     void removeEventFilter(QObject *);
+%If (Qt_5_9_0 -)
+    void dumpObjectInfo() const;
+%End
+%If (- Qt_5_9_0)
     void dumpObjectInfo();
+%End
+%If (Qt_5_9_0 -)
+    void dumpObjectTree() const;
+%End
+%If (- Qt_5_9_0)
     void dumpObjectTree();
+%End
     QList<QByteArray> dynamicPropertyNames() const;
     bool setProperty(const char *name, const QVariant &value);
     QVariant property(const char *name) const;

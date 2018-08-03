@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2016 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Quick Controls 2 module of the Qt Toolkit.
@@ -34,11 +34,11 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.8
-import QtQuick.Window 2.2
-import QtQuick.Controls 2.1
-import QtQuick.Controls.impl 2.1
-import QtQuick.Templates 2.1 as T
+import QtQuick 2.10
+import QtQuick.Window 2.3
+import QtQuick.Controls 2.3
+import QtQuick.Controls.impl 2.3
+import QtQuick.Templates 2.3 as T
 
 T.ComboBox {
     id: control
@@ -50,75 +50,84 @@ T.ComboBox {
                                       indicator ? indicator.implicitHeight : 0) + topPadding + bottomPadding)
     baselineOffset: contentItem.y + contentItem.baselineOffset
 
-    spacing: 8
-    padding: 6
-    leftPadding: padding + 6
-    rightPadding: padding + 6
+    leftPadding: padding + (!control.mirrored || !indicator || !indicator.visible ? 0 : indicator.width + spacing)
+    rightPadding: padding + (control.mirrored || !indicator || !indicator.visible ? 0 : indicator.width + spacing)
 
     delegate: ItemDelegate {
-        width: control.popup.width
+        width: parent.width
         text: control.textRole ? (Array.isArray(control.model) ? modelData[control.textRole] : model[control.textRole]) : modelData
         font.weight: control.currentIndex === index ? Font.DemiBold : Font.Normal
-        highlighted: control.highlightedIndex == index
+        highlighted: control.highlightedIndex === index
         hoverEnabled: control.hoverEnabled
     }
 
-    indicator: Image {
-        x: control.mirrored ? control.leftPadding : control.width - width - control.rightPadding
+    indicator: ColorImage {
+        x: control.mirrored ? control.padding : control.width - width - control.padding
         y: control.topPadding + (control.availableHeight - height) / 2
-        source: "image://default/double-arrow/" + (control.visualFocus ? Default.focusColor : Default.textColor)
-        sourceSize.width: width
-        sourceSize.height: height
+        color: control.palette.dark
+        defaultColor: "#353637"
+        source: "qrc:/qt-project.org/imports/QtQuick/Controls.2/images/double-arrow.png"
         opacity: enabled ? 1 : 0.3
     }
 
-    contentItem: Text {
-        leftPadding: control.mirrored && control.indicator ? control.indicator.width + control.spacing : 0
-        rightPadding: !control.mirrored && control.indicator ? control.indicator.width + control.spacing : 0
+    contentItem: T.TextField {
+        leftPadding: !control.mirrored ? 12 : control.editable && activeFocus ? 3 : 1
+        rightPadding: control.mirrored ? 12 : control.editable && activeFocus ? 3 : 1
+        topPadding: 6 - control.padding
+        bottomPadding: 6 - control.padding
 
-        text: control.displayText
+        text: control.editable ? control.editText : control.displayText
+
+        enabled: control.editable
+        autoScroll: control.editable
+        readOnly: control.down
+        inputMethodHints: control.inputMethodHints
+        validator: control.validator
+
         font: control.font
-        color: control.visualFocus ? Default.focusColor : Default.textColor
-        horizontalAlignment: Text.AlignLeft
+        color: control.editable ? control.palette.text : control.palette.buttonText
+        selectionColor: control.palette.highlight
+        selectedTextColor: control.palette.highlightedText
         verticalAlignment: Text.AlignVCenter
-        elide: Text.ElideRight
-        opacity: enabled ? 1 : 0.3
+
+        background: Rectangle {
+            visible: control.enabled && control.editable && !control.flat
+            border.width: parent && parent.activeFocus ? 2 : 1
+            border.color: parent && parent.activeFocus ? control.palette.highlight : control.palette.button
+            color: control.palette.base
+        }
     }
 
     background: Rectangle {
-        implicitWidth: 120
+        implicitWidth: 140
         implicitHeight: 40
 
-        color: control.visualFocus ? (control.pressed ? Default.focusPressedColor : Default.focusLightColor) :
-            (control.pressed || popup.visible ? Default.buttonPressedColor : Default.buttonColor)
-        border.color: Default.focusColor
-        border.width: control.visualFocus ? 2 : 0
-        visible: !control.flat || control.pressed
+        color: control.down ? control.palette.mid : control.palette.button
+        border.color: control.palette.highlight
+        border.width: !control.editable && control.visualFocus ? 2 : 0
+        visible: !control.flat || control.down
     }
 
     popup: T.Popup {
-        y: control.height - (control.visualFocus ? 0 : 1)
+        y: control.height
         width: control.width
-        implicitHeight: contentItem.implicitHeight
+        height: Math.min(contentItem.implicitHeight, control.Window.height - topMargin - bottomMargin)
         topMargin: 6
         bottomMargin: 6
 
         contentItem: ListView {
-            id: listview
             clip: true
             implicitHeight: contentHeight
-            model: control.popup.visible ? control.delegateModel : null
+            model: control.delegateModel
             currentIndex: control.highlightedIndex
-            highlightRangeMode: ListView.ApplyRange
             highlightMoveDuration: 0
 
             Rectangle {
                 z: 10
-                parent: listview
-                width: listview.width
-                height: listview.height
+                width: parent.width
+                height: parent.height
                 color: "transparent"
-                border.color: Default.frameLightColor
+                border.color: control.palette.mid
             }
 
             T.ScrollIndicator.vertical: ScrollIndicator { }

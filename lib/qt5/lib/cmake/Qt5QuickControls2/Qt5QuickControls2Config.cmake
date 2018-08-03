@@ -6,7 +6,7 @@ endif()
 get_filename_component(_qt5QuickControls2_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../" ABSOLUTE)
 
 # For backwards compatibility only. Use Qt5QuickControls2_VERSION instead.
-set(Qt5QuickControls2_VERSION_STRING 5.8.0)
+set(Qt5QuickControls2_VERSION_STRING 5.10.1)
 
 set(Qt5QuickControls2_LIBRARIES Qt5::QuickControls2)
 
@@ -49,8 +49,8 @@ if (NOT TARGET Qt5::QuickControls2)
 
     set(_Qt5QuickControls2_OWN_INCLUDE_DIRS "${_qt5QuickControls2_install_prefix}/include/" "${_qt5QuickControls2_install_prefix}/include/QtQuickControls2")
     set(Qt5QuickControls2_PRIVATE_INCLUDE_DIRS
-        "${_qt5QuickControls2_install_prefix}/include/QtQuickControls2/5.8.0"
-        "${_qt5QuickControls2_install_prefix}/include/QtQuickControls2/5.8.0/QtQuickControls2"
+        "${_qt5QuickControls2_install_prefix}/include/QtQuickControls2/5.10.1"
+        "${_qt5QuickControls2_install_prefix}/include/QtQuickControls2/5.10.1/QtQuickControls2"
     )
 
     foreach(_dir ${_Qt5QuickControls2_OWN_INCLUDE_DIRS})
@@ -73,6 +73,8 @@ if (NOT TARGET Qt5::QuickControls2)
     set(_Qt5QuickControls2_MODULE_DEPENDENCIES "Quick;Gui;Core")
 
 
+    set(Qt5QuickControls2_OWN_PRIVATE_INCLUDE_DIRS ${Qt5QuickControls2_PRIVATE_INCLUDE_DIRS})
+
     set(_Qt5QuickControls2_FIND_DEPENDENCIES_REQUIRED)
     if (Qt5QuickControls2_FIND_REQUIRED)
         set(_Qt5QuickControls2_FIND_DEPENDENCIES_REQUIRED REQUIRED)
@@ -91,7 +93,7 @@ if (NOT TARGET Qt5::QuickControls2)
     foreach(_module_dep ${_Qt5QuickControls2_MODULE_DEPENDENCIES})
         if (NOT Qt5${_module_dep}_FOUND)
             find_package(Qt5${_module_dep}
-                5.8.0 ${_Qt5QuickControls2_FIND_VERSION_EXACT}
+                5.10.1 ${_Qt5QuickControls2_FIND_VERSION_EXACT}
                 ${_Qt5QuickControls2_DEPENDENCIES_FIND_QUIET}
                 ${_Qt5QuickControls2_FIND_DEPENDENCIES_REQUIRED}
                 PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
@@ -124,6 +126,30 @@ if (NOT TARGET Qt5::QuickControls2)
       INTERFACE_INCLUDE_DIRECTORIES ${_Qt5QuickControls2_OWN_INCLUDE_DIRS})
     set_property(TARGET Qt5::QuickControls2 PROPERTY
       INTERFACE_COMPILE_DEFINITIONS QT_QUICKCONTROLS2_LIB)
+
+    set(_Qt5QuickControls2_PRIVATE_DIRS_EXIST TRUE)
+    foreach (_Qt5QuickControls2_PRIVATE_DIR ${Qt5QuickControls2_OWN_PRIVATE_INCLUDE_DIRS})
+        if (NOT EXISTS ${_Qt5QuickControls2_PRIVATE_DIR})
+            set(_Qt5QuickControls2_PRIVATE_DIRS_EXIST FALSE)
+        endif()
+    endforeach()
+
+    if (_Qt5QuickControls2_PRIVATE_DIRS_EXIST
+        AND NOT CMAKE_VERSION VERSION_LESS 3.0.0 )
+        add_library(Qt5::QuickControls2Private INTERFACE IMPORTED)
+        set_property(TARGET Qt5::QuickControls2Private PROPERTY
+            INTERFACE_INCLUDE_DIRECTORIES ${Qt5QuickControls2_OWN_PRIVATE_INCLUDE_DIRS}
+        )
+        set(_Qt5QuickControls2_PRIVATEDEPS)
+        foreach(dep ${_Qt5QuickControls2_LIB_DEPENDENCIES})
+            if (TARGET ${dep}Private)
+                list(APPEND _Qt5QuickControls2_PRIVATEDEPS ${dep}Private)
+            endif()
+        endforeach()
+        set_property(TARGET Qt5::QuickControls2Private PROPERTY
+            INTERFACE_LINK_LIBRARIES Qt5::QuickControls2 ${_Qt5QuickControls2_PRIVATEDEPS}
+        )
+    endif()
 
     _populate_QuickControls2_target_properties(RELEASE "Qt5QuickControls2.dll" "Qt5QuickControls2.lib" )
 

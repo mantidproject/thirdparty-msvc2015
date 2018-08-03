@@ -2,7 +2,7 @@
 //
 // This file is part of the QtWebEngineCore Python extension module.
 //
-// Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt5.
 // 
@@ -26,7 +26,7 @@
 %Import QtNetwork/QtNetworkmod.sip
 
 %Copying
-Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
 
 This file is part of PyQt5.
 
@@ -47,6 +47,7 @@ WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 %DefaultSupertype sip.simplewrapper
 
 %Include qwebenginecookiestore.sip
+%Include qwebenginehttprequest.sip
 %Include qwebengineurlrequestinfo.sip
 %Include qwebengineurlrequestinterceptor.sip
 %Include qwebengineurlrequestjob.sip

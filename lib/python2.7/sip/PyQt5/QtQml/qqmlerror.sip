@@ -2,7 +2,7 @@
 //
 // This file is part of the QtQml Python extension module.
 //
-// Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt5.
 // 
@@ -45,5 +45,11 @@ public:
 %End
 %If (Qt_5_2_0 -)
     void setObject(QObject *);
+%End
+%If (Qt_5_9_0 -)
+    QtMsgType messageType() const;
+%End
+%If (Qt_5_9_0 -)
+    void setMessageType(QtMsgType messageType);
 %End
 };

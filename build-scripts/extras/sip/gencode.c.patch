@@ -1,0 +1,41 @@
+--- sipgen/gencode.c.orig	Thu Jul 05 10:54:58 2018
++++ sipgen/gencode.c	Fri Jul 20 10:28:15 2018
+@@ -1135,11 +1135,11 @@
+ 
+     declareLimitedAPI(py_debug, NULL, fp);
+ 
+     prcode(fp,
+ "\n"
+-"#include <Python.h>\n"
++"#include <wrappython.h>\n"
+ "\n"
+ "\n"
+ "static void sip_import_component_module(PyObject *d, const char *name)\n"
+ "{\n"
+ "    PyObject *mod;\n"
+@@ -1238,11 +1238,11 @@
+     fp = createCompilationUnit(pt->module, cppfile,
+             "Consolidated module code.");
+ 
+     prcode(fp,
+ "\n"
+-"#include <Python.h>\n"
++"#include <wrappython.h>\n"
+ "#include <string.h>\n"
+ "#include <sip.h>\n"
+         );
+ 
+     generateNameCache(pt, fp);
+@@ -1409,11 +1409,11 @@
+     cppfile = concat(codeDir, "/sip", pt->module->name, "cmodule.c", NULL);
+     fp = createCompilationUnit(pt->module, cppfile, "Component module code.");
+ 
+     prcode(fp,
+ "\n"
+-"#include <Python.h>\n"
++"#include <wrappython.h>\n"
+         );
+ 
+     generateModInitStart(pt->module, TRUE, fp);
+ 
+     prcode(fp,

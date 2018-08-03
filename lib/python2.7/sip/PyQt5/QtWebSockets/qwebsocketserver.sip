@@ -2,7 +2,7 @@
 //
 // This file is part of the QtWebSockets Python extension module.
 //
-// Copyright (c) 2017 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2018 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of PyQt5.
 // 
@@ -68,6 +68,9 @@ public:
     QList<QWebSocketProtocol::Version> supportedVersions() const;
 %If (Qt_5_4_0 -)
     QUrl serverUrl() const;
+%End
+%If (Qt_5_9_0 -)
+    void handleConnection(QTcpSocket *socket) const;
 %End
 
 signals:
