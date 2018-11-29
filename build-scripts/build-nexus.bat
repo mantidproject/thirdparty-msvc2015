@@ -80,14 +80,11 @@ if not exist %INSTALL_PREFIX%\include\nexus mkdir %INSTALL_PREFIX%\include\nexus
 @xcopy %LOCAL_INSTALL_PREFIX%\include\nexus\* %INSTALL_PREFIX%\include\nexus /Y /I
 @xcopy %LOCAL_INSTALL_PREFIX%\include\nexus\napi.h %INSTALL_PREFIX%\include /Y /I
 @xcopy %LOCAL_INSTALL_PREFIX%\include\nexus\napiu.h %INSTALL_PREFIX%\include /Y /I
-@xcopy %LOCAL_INSTALL_PREFIX%\bin\NeXus.dll %INSTALL_PREFIX%\bin\libNeXus-0.dll /Y
-@xcopy %LOCAL_INSTALL_PREFIX%\bin\NeXusD.dll %INSTALL_PREFIX%\bin\libNeXus-0D.dll /Y
-@xcopy %LOCAL_INSTALL_PREFIX%\bin\NeXusCPP.dll %INSTALL_PREFIX%\bin\libNeXusCPP-0.dll /Y
-@xcopy %LOCAL_INSTALL_PREFIX%\bin\NeXusCPPD.dll %INSTALL_PREFIX%\bin\libNeXusCPP-0D.dll /Y
-@xcopy %LOCAL_INSTALL_PREFIX%\lib\NeXus.lib %INSTALL_PREFIX%\lib\libNeXus-0.lib /Y
-@xcopy %LOCAL_INSTALL_PREFIX%\lib\NeXusD.lib %INSTALL_PREFIX%\lib\libNeXus-0D.lib /Y
-@xcopy %LOCAL_INSTALL_PREFIX%\lib\NeXusCPP.lib %INSTALL_PREFIX%\lib\libNeXusCPP-0.lib /Y
-@xcopy %LOCAL_INSTALL_PREFIX%\lib\NeXusCPPD.lib %INSTALL_PREFIX%\lib\libNeXusCPP-0D.lib /Y
+@xcopy %LOCAL_INSTALL_PREFIX%\bin\libNeXus-0*.dll %INSTALL_PREFIX%\bin /Y
+@xcopy %LOCAL_INSTALL_PREFIX%\bin\libNeXusCPP-0*.dll %INSTALL_PREFIX%\bin /Y
+@xcopy %LOCAL_INSTALL_PREFIX%\lib\libNeXus-0*.lib %INSTALL_PREFIX%\lib /Y
+@xcopy %LOCAL_INSTALL_PREFIX%\lib\libNeXusCPP-0*.lib %INSTALL_PREFIX%\lib /Y
+
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Install Python bindings
