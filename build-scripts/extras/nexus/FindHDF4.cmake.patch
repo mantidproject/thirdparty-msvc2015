@@ -1,16 +1,202 @@
---- cmake_include/FindHDF4.cmake.orig	Wed Oct 14 15:09:38 2015
-+++ cmake_include/FindHDF4.cmake	Wed Oct 14 15:09:15 2015
-@@ -33,10 +33,10 @@
- if (WIN32)
- #    set(HDF4_SEARCH_DEFAULT "C:/InstallKits/HDF4.2.6_win_x64")
- 	set(HDF4_SEARCH_DEFAULT "C:/Program Files/HDF Group/HDF4/4.2.7")
--	set(HD_NAMES hdf hdfdll hd427m hd426m hd425m )
--	set(HM_NAMES mfhdf mfhdfdll hm427m hm426m hm425m )
-+	set(HD_NAMES libhdf hdfdll hd427m hd426m hd425m )
-+	set(HM_NAMES libmfhdf mfhdfdll hm427m hm426m hm425m )
- 	set(JPEG_NAMES libjpeg jpeg )
--	set(XDR_NAMES xdr )
-+	set(XDR_NAMES libxdr )
- 	find_library(HDF4_HD_LIBRARY NAMES ${HD_NAMES} HINTS ${HDF4_SEARCH} ENV HDF4_ROOT PATHS ${HDF4_SEARCH_DEFAULT} PATH_SUFFIXES dll bin lib DOC "location of hd dll" NO_SYSTEM_ENVIRONMENT_PATH)
- 	find_library(HDF4_HM_LIBRARY NAMES ${HM_NAMES} HINTS ${HDF4_SEARCH} ENV HDF4_ROOT PATHS ${HDF4_SEARCH_DEFAULT} PATH_SUFFIXES dll bin lib DOC "location of hm dll" NO_SYSTEM_ENVIRONMENT_PATH)
- 	find_library(JPEG_LIBRARY NAMES ${JPEG_NAMES} HINTS ${HDF4_SEARCH} ENV HDF4_ROOT PATHS ${HDF4_SEARCH_DEFAULT} PATH_SUFFIXES dll bin lib DOC "location of jpeg dll" NO_SYSTEM_ENVIRONMENT_PATH)
+--- cmake_include/FindHDF4.cmake.orig	Mon Aug 15 09:24:48 2016
++++ cmake_include/FindHDF4.cmake	Thu Nov 29 11:10:54 2018
+@@ -1,97 +1,102 @@
+-## Process this file with cmake
+-#=============================================================================
+-#  NeXus - Neutron & X-ray Common Data Format
+-#
+-#  CMakeLists for building the NeXus library and applications.
+-#
+-#  Copyright (C) 2011 Stephen Rankin
+-#
+-#  This library is free software; you can redistribute it and/or modify it
+-#  under the terms of the GNU Lesser General Public License as published by the
+-#  Free Software Foundation; either version 2 of the License, or (at your
+-#  option) any later version.
+-#
+-#  This library is distributed in the hope that it will be useful, but WITHOUT
+-#  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+-#  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
+-#  for more details.
+-#
+-#  You should have received a copy of the GNU Lesser General Public License
+-#  along with this library; if not, write to the Free Software Foundation,
+-#  Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+-#
+-#  For further information, see <http://www.nexusformat.org>
+-#
+-#
+-#=============================================================================
+-
+-
+-#------------------------------------------------------------------------------
+-# find the runtime binaries of the HDF4 library
+-#------------------------------------------------------------------------------
+-find_library(HDF4_DF_LIBRARY NAMES df hdf
+-             HINTS ENV HDF4_ROOT 
+-             PATH_SUFFIXES hdf)
+-             
+-
+-if(HDF4_DF_LIBRARY MATCHES HDF4_DF_LIBRARY-NOTFOUND)
+-    message(FATAL_ERROR "Could not find HDF4 DF library!")
+-else()
+-    get_filename_component(HDF4_LIBRARY_DIRS ${HDF4_DF_LIBRARY} PATH)
+-    message(STATUS "Found HDF4 DF library: ${HDF4_DF_LIBRARY}")
+-    message(STATUS "HDF4 libary path: ${HDF4_LIBRARY_DIRS}")
+-endif()
+-
+-find_library(HDF4_MFHDF_LIBRARY NAMES mfhdf 
+-             HINTS ENV HDF4_ROOT
+-             PATH_SUFFIXES hdf)
+-
+-if(HDF4_MFHDF_LIBRARY MATCHES HDF4_MFHDF_LIBRARY-NOTFOUND)
+-    message(FATAL_ERROR "Could not find HDF5 MFHDF library!")
+-else()
+-    message(STATUS "Found HDF4 MFHDF library: ${HDF4_MFHDF_LIBRARY}")
+-endif()
+-
+-
+-#------------------------------------------------------------------------------
+-# find the HDF4 header file
+-#------------------------------------------------------------------------------
+-find_path(HDF4_INCLUDE_DIRS mfhdf.h 
+-          HINTS ENV HDF4_ROOT 
+-          PATH_SUFFIXES hdf)
+-          
+-if(HDF4_INCLUDE_DIRS MATCHES HDF4_INCLUDE_DIRS-NOTFOUND)
+-    message(FATAL_ERROR "Could not find HDF4 header files")
+-else()
+-    message(STATUS "Found HDF4 header files in: ${HDF4_INCLUDE_DIRS}")
+-endif()
+-
+-#------------------------------------------------------------------------------
+-# search for additional packages required to link against HDF4
+-#------------------------------------------------------------------------------
+-find_package(JPEG REQUIRED)
+-
+-#------------------------------------------------------------------------------
+-# add libraries to the link list for NAPI
+-#------------------------------------------------------------------------------
+-get_filename_component(LIB_EXT ${HDF4_DF_LIBRARY} EXT)
+-if(LIB_EXT MATCHES .a)
+-    message(STATUS "HDF4 DF library is static")
+-    list(APPEND NAPI_LINK_LIBS "-Wl,-whole-archive" ${HDF4_DF_LIBRARY} "-Wl,-no-whole-archive")
+-else()
+-    list(APPEND NAPI_LINK_LIBS ${HDF4_DF_LIBRARY})
+-endif()
+-
+-
+-get_filename_component(LIB_EXT ${HDF4_MFHDF_LIBRARY} EXT)
+-if(LIB_EXT MATCHES .a)
+-    message(STATUS "HDF4 MFHDF library is static")
+-    list(APPEND NAPI_LINK_LIBS "-Wl,-whole-archive" ${HDF4_MFHDF_LIBRARY} "-Wl,-no-whole-archive")
+-else()
+-    list(APPEND NAPI_LINK_LIBS ${HDF4_MFHDF_LIBRARY})
+-endif()
+-
+-list(APPEND NAPI_LINK_LIBS jpeg)
+-
+-include_directories ( SYSTEM ${HDF4_INCLUDE_DIRS} )
+-link_directories(${HDF4_LIBRARY_DIRS})
++## Process this file with cmake
++#=============================================================================
++#  NeXus - Neutron & X-ray Common Data Format
++#
++#  CMakeLists for building the NeXus library and applications.
++#
++#  Copyright (C) 2011 Stephen Rankin
++#
++#  This library is free software; you can redistribute it and/or modify it
++#  under the terms of the GNU Lesser General Public License as published by the
++#  Free Software Foundation; either version 2 of the License, or (at your
++#  option) any later version.
++#
++#  This library is distributed in the hope that it will be useful, but WITHOUT
++#  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++#  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
++#  for more details.
++#
++#  You should have received a copy of the GNU Lesser General Public License
++#  along with this library; if not, write to the Free Software Foundation,
++#  Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++#
++#  For further information, see <http://www.nexusformat.org>
++#
++#
++#=============================================================================
++
++
++#------------------------------------------------------------------------------
++# find the runtime binaries of the HDF4 library
++#------------------------------------------------------------------------------
++find_library(HDF4_DF_LIBRARY NAMES df libhdf
++             HINTS ENV HDF4_ROOT 
++             PATH_SUFFIXES hdf)
++             
++
++if(HDF4_DF_LIBRARY MATCHES HDF4_DF_LIBRARY-NOTFOUND)
++    message(FATAL_ERROR "Could not find HDF4 DF library!")
++else()
++    get_filename_component(HDF4_LIBRARY_DIRS ${HDF4_DF_LIBRARY} PATH)
++    message(STATUS "Found HDF4 DF library: ${HDF4_DF_LIBRARY}")
++    message(STATUS "HDF4 libary path: ${HDF4_LIBRARY_DIRS}")
++endif()
++
++find_library(HDF4_MFHDF_LIBRARY NAMES libmfhdf 
++             HINTS ENV HDF4_ROOT
++             PATH_SUFFIXES hdf)
++
++if(HDF4_MFHDF_LIBRARY MATCHES HDF4_MFHDF_LIBRARY-NOTFOUND)
++    message(FATAL_ERROR "Could not find HDF5 MFHDF library!")
++else()
++    message(STATUS "Found HDF4 MFHDF library: ${HDF4_MFHDF_LIBRARY}")
++endif()
++
++
++#------------------------------------------------------------------------------
++# find the HDF4 header file
++#------------------------------------------------------------------------------
++find_path(HDF4_INCLUDE_DIRS mfhdf.h 
++          HINTS ENV HDF4_ROOT 
++          PATH_SUFFIXES hdf)
++          
++if(HDF4_INCLUDE_DIRS MATCHES HDF4_INCLUDE_DIRS-NOTFOUND)
++    message(FATAL_ERROR "Could not find HDF4 header files")
++else()
++    message(STATUS "Found HDF4 header files in: ${HDF4_INCLUDE_DIRS}")
++endif()
++
++#------------------------------------------------------------------------------
++# search for additional packages required to link against HDF4
++#------------------------------------------------------------------------------
++find_package(JPEG REQUIRED)
++
++#------------------------------------------------------------------------------
++# add libraries to the link list for NAPI
++#------------------------------------------------------------------------------
++get_filename_component(LIB_EXT ${HDF4_DF_LIBRARY} EXT)
++if(LIB_EXT MATCHES .a)
++    message(STATUS "HDF4 DF library is static")
++    list(APPEND NAPI_LINK_LIBS "-Wl,-whole-archive" ${HDF4_DF_LIBRARY} "-Wl,-no-whole-archive")
++else()
++    list(APPEND NAPI_LINK_LIBS ${HDF4_DF_LIBRARY})
++endif()
++
++
++get_filename_component(LIB_EXT ${HDF4_MFHDF_LIBRARY} EXT)
++if(LIB_EXT MATCHES .a)
++    message(STATUS "HDF4 MFHDF library is static")
++    list(APPEND NAPI_LINK_LIBS "-Wl,-whole-archive" ${HDF4_MFHDF_LIBRARY} "-Wl,-no-whole-archive")
++else()
++    list(APPEND NAPI_LINK_LIBS ${HDF4_MFHDF_LIBRARY})
++endif()
++
++list(APPEND NAPI_LINK_LIBS libjpeg)
++list(APPEND NAPI_LINK_LIBS libxdr)
++
++if(WIN32)
++ list(APPEND NAPI_LINK_LIBS Ws2_32)
++endif()
++
++include_directories ( SYSTEM ${HDF4_INCLUDE_DIRS} )
++link_directories(${HDF4_LIBRARY_DIRS})
