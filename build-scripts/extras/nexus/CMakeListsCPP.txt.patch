@@ -1,0 +1,28 @@
+--- bindings/cpp/CMakeLists.txt.orig	Mon Aug 15 09:24:48 2016
++++ bindings/cpp/CMakeLists.txt	Fri Nov 30 13:54:34 2018
+@@ -38,11 +38,11 @@
+ #------------------------------------------------------------------------------
+ add_library (NeXus_CPP_Shared_Library SHARED ${HEADERS} ${SOURCES})
+ target_link_libraries(NeXus_CPP_Shared_Library NeXus_Shared_Library)
+ target_include_directories(NeXus_CPP_Shared_Library PUBLIC ${CMAKE_CURRENT_BINARY_DIR} )
+ set_target_properties(NeXus_CPP_Shared_Library PROPERTIES
+-                      OUTPUT_NAME NeXusCPP
++                      OUTPUT_NAME libNeXusCPP-0
+                       VERSION "${ABI_VERSION}"
+                       SOVERSION ${ABI_CURRENT})
+ 
+ generate_export_header(NeXus_CPP_Shared_Library 
+                        BASE_NAME NEXUS_CPP
+@@ -50,11 +50,11 @@
+                        EXPORT_MACRO_NAME NXDLL_EXPORT)
+ 
+ #------------------------------------------------------------------------------
+ add_library (NeXus_CPP_Static_Library STATIC ${HEADERS} ${SOURCES})
+ set_target_properties(NeXus_CPP_Static_Library PROPERTIES
+-                      OUTPUT_NAME NeXusCPP${STATIC_LIBRARY_SUFFIX}
++                      OUTPUT_NAME libNeXusCPP${STATIC_LIBRARY_SUFFIX}-0
+                       COMPILE_FLAGS -DNEXUS_CPP_STATIC_DEFINE)
+ target_include_directories(NeXus_CPP_Static_Library PUBLIC ${CMAKE_CURRENT_BINARY_DIR} )
+ target_link_libraries(NeXus_CPP_Static_Library NeXus_Static_Library)
+ 
+ 

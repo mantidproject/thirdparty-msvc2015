@@ -1,0 +1,25 @@
+--- src/CMakeLists.txt.orig	Mon Aug 15 09:24:48 2016
++++ src/CMakeLists.txt	Fri Nov 30 13:54:55 2018
+@@ -79,20 +79,20 @@
+ # building the static library
+ #------------------------------------------------------------------------------
+ add_library (NeXus_Static_Library STATIC ${NAPISRC})
+ 
+ set_target_properties(NeXus_Static_Library PROPERTIES 
+-                      OUTPUT_NAME NeXus${STATIC_LIBRARY_SUFFIX})
++                      OUTPUT_NAME libNeXus${STATIC_LIBRARY_SUFFIX}-0)
+ 
+ target_link_libraries(NeXus_Static_Library ${NAPI_LINK_LIBS})
+ #------------------------------------------------------------------------------
+ # building the shared library
+ #------------------------------------------------------------------------------
+ add_library (NeXus_Shared_Library SHARED ${NAPISRC})
+ 
+ set_target_properties(NeXus_Shared_Library PROPERTIES 
+-                      OUTPUT_NAME NeXus
++                      OUTPUT_NAME libNeXus-0
+                       VERSION ${ABI_VERSION}
+                       SOVERSION ${ABI_CURRENT})
+ if(MSVC)
+ set_target_properties(NeXus_Shared_Library PROPERTIES LINK_FLAGS 
+                            "/DEF:\"${CMAKE_CURRENT_SOURCE_DIR}/NeXus.def\"")

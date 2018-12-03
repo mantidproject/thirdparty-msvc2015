@@ -62,13 +62,17 @@ if not exist config\cmake_ext_mod\ConfigureChecks.cmake.orig patch -p0 --input=%
 if not exist %NXS_SRC_ROOT% call download-and-extract.cmd %BUILD_DIR%\%NXS_PKG% %NXS_PKG_URL%
 
 cd %NXS_SRC_ROOT%
+if not exist src/CMakeLists.txt.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\CMakeListsC.txt.patch --backup
+if not exist src/NeXus.def.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\NeXus.def.patch --backup
 if not exist bindings/cpp/NeXusFile.cpp.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\NeXusFile.cpp.patch --backup
+if not exist bindings/cpp/CMakeLists.txt.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\CMakeListsCPP.txt.patch --backup
 if not exist cmake_include\FindHDF4.cmake.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\FindHDF4.cmake.patch --backup
 
 :: HDF libraries. Scripts require an environment variable
 @set HDF4_ROOT=%LOCAL_INSTALL_UNIX%
 @set HDF5_ROOT=%INSTALL_PREFIX_UNIX%
-@call cmake-configure.cmd %NXS_SRC_ROOT%\ -C%NEXUS_EXTRAS_DIR%\nexus.cmake "-DCMAKE_INSTALL_PREFIX=%LOCAL_INSTALL_UNIX%" "-DENABLE_CXX=ON" "-DENABLE_HDF4=ON" "-DCMAKE_DEBUG_POSTFIX=D"
+
+@call cmake-configure.cmd %NXS_SRC_ROOT%\ -C%NEXUS_EXTRAS_DIR%\nexus.cmake "-DCMAKE_INSTALL_PREFIX=%LOCAL_INSTALL_UNIX%" "-DENABLE_CXX=ON" "-DENABLE_HDF4=ON" "-DENABLE_MXML=OFF" "-DCMAKE_DEBUG_POSTFIX=D" "-DZLIB_INCLUDE_DIR=%INSTALL_PREFIX_UNIX%/include" "-DZLIB_LIBRARY=optimized;%INSTALL_PREFIX_UNIX%/lib/zlib.lib;debug;%INSTALL_PREFIX_UNIX%/lib/zlib_D.lib"
 @call build-release-and-debug.cmd %NXS_SRC_ROOT%\build\src\NeXus_Shared_Library.vcxproj %NXS_SRC_ROOT%\build\src\INSTALL.vcxproj
 @call build-release-and-debug.cmd %NXS_SRC_ROOT%\build\bindings\cpp\NeXus_CPP_Shared_Library.vcxproj %NXS_SRC_ROOT%\build\bindings\cpp\INSTALL.vcxproj
 @call build-release-and-debug.cmd %NXS_SRC_ROOT%\build\include\INSTALL.vcxproj
