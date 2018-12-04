@@ -1,10 +1,10 @@
 from __future__ import division, absolute_import, print_function
 
 import sys
+import pytest
+
 from numpy.core import arange
-from numpy.testing import (
-    run_module_suite, assert_, assert_equal, dec
-    )
+from numpy.testing import assert_, assert_equal, assert_raises_regex
 from numpy.lib import deprecate
 import numpy.lib.utils as utils
 
@@ -14,7 +14,7 @@ else:
     from StringIO import StringIO
 
 
-@dec.skipif(sys.flags.optimize == 2)
+@pytest.mark.skipif(sys.flags.optimize == 2, reason="Python running -OO")
 def test_lookfor():
     out = StringIO()
     utils.lookfor('eigenvalue', module='numpy', output=out,
@@ -62,5 +62,6 @@ def test_byte_bounds():
     assert_equal(high - low, a.size * a.itemsize)
 
 
-if __name__ == "__main__":
-    run_module_suite()
+def test_assert_raises_regex_context_manager():
+    with assert_raises_regex(ValueError, 'no deprecation warning'):
+        raise ValueError('no deprecation warning')

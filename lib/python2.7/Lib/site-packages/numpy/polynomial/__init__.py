@@ -22,6 +22,6 @@ from .hermite import Hermite
 from .hermite_e import HermiteE
 from .laguerre import Laguerre
 
-from numpy.testing import Tester
-test = Tester().test
-bench = Tester().bench
+from numpy.testing._private.pytesttester import PytestTester
+test = PytestTester(__name__)
+del PytestTester
