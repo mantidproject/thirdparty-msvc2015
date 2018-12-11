@@ -6,22 +6,7 @@
 #include <utility>
 #include <vector>
 #include "napi.h"
-
-#ifdef _WIN32
-
-#ifndef _MSC_VER 
-#  define NXDLL_EXPORT
-#else
-#  if IN_NEXUS_CPP_LIBRARY
-#    define NXDLL_EXPORT __declspec(dllexport)
-#  else
-#    define NXDLL_EXPORT __declspec(dllimport)
-#  endif
-#endif /* _MSC_VER */
-
-#else /* _WIN32 */
-#  define NXDLL_EXPORT 
-#endif /* _WIN32 */
+#include "NeXusExport.hpp"
 
 /**
  * \file NeXusFile.hpp Definition of the NeXus C++ API.
@@ -100,6 +85,8 @@ namespace NeXus {
     unsigned length;
     /** The name of the attribute. */
     std::string name;
+    /** The dimensions of the attribute. */
+    std::vector<int> dims;
   };
 
   /**
@@ -129,7 +116,7 @@ namespace NeXus {
      * This is a deprecated function.
      * \param com The compression type.
      */
-    void compress(NXcompression comp);
+    void compress(NXcompression comp) NEXUS_DEPRECATED_FUNCTION;
 
     /**
      * Initialize the pending group search to start again.
@@ -482,6 +469,23 @@ namespace NeXus {
      * Put the supplied data as an attribute into the currently open data.
      *
      * \param name Name of the attribute to add.
+     * \param array The attribute value.
+     */
+    void putAttr(const std::string& name, const std::vector<std::string>& array);
+
+    /**
+     * Put the supplied data as an attribute into the currently open data.
+     *
+     * \param name Name of the attribute to add.
+     * \param array The attribute value.
+     */
+    template <typename NumT>
+    void putAttr(const std::string& name, const std::vector<NumT>& array);
+
+    /**
+     * Put the supplied data as an attribute into the currently open data.
+     *
+     * \param name Name of the attribute to add.
      * \param value The attribute value.
      * \tparam NumT numeric data type of \a value
      */
@@ -508,8 +512,8 @@ namespace NeXus {
      * \copydoc NeXus::File::putSlab(void* data, std::vector<int64_t>& start,
      *                                std::vector<int64_t>& size)
      */
-    void putSlab(void* data, std::vector<int>& start,
-                 std::vector<int>& size);
+    void putSlab(const void* data, const std::vector<int>& start,
+                 const std::vector<int>& size);
 
     /**
      * Insert an array as part of a data in the final file.
@@ -518,16 +522,16 @@ namespace NeXus {
      * \param start The starting index to insert the data.
      * \param size The size of the array to put in the file.
      */
-    void putSlab(void* data, std::vector<int64_t>& start,
-                 std::vector<int64_t>& size);
+    void putSlab(const void* data, const std::vector<int64_t>& start,
+                 const std::vector<int64_t>& size);
 
     /**
      * \copydoc NeXus::File::putSlab(std::vector<NumT>& data, std::vector<int64_t>&,
      *                               std::vector<int64_t>&)
      */
     template <typename NumT>
-    void putSlab(std::vector<NumT>& data, std::vector<int>& start,
-                 std::vector<int>& size);
+    void putSlab(const std::vector<NumT>& data, const std::vector<int>& start,
+                 const std::vector<int>& size);
 
     /**
      * Insert an array as part of a data in the final file.
@@ -538,14 +542,14 @@ namespace NeXus {
      * \tparam NumT numeric data type of \a data
      */
     template <typename NumT>
-    void putSlab(std::vector<NumT>& data, std::vector<int64_t>& start,
-                 std::vector<int64_t>& size);
+    void putSlab(const std::vector<NumT>& data, const std::vector<int64_t>& start,
+                 const std::vector<int64_t>& size);
 
     /**
      * \copydoc NeXus::File::putSlab(std::vector<NumT>&, int64_t, int64_t)
      */
     template <typename NumT>
-    void putSlab(std::vector<NumT>& data, int start, int size);
+    void putSlab(const std::vector<NumT>& data, int start, int size);
 
     /**
      * Insert a number as part of a data in the final file.
@@ -556,7 +560,7 @@ namespace NeXus {
      * \tparam NumT numeric data type of \a data
      */
     template <typename NumT>
-    void putSlab(std::vector<NumT>& data, int64_t start, int64_t size);
+    void putSlab(const std::vector<NumT>& data, int64_t start, int64_t size);
 
     /**
      * \return The id of the data used for linking.
@@ -761,6 +765,15 @@ namespace NeXus {
      * \return The value of the attribute.
      */
     std::string getStrAttr(const AttrInfo & info);
+
+    /**
+     * Get the value of a string array attribute.
+     *
+     * \param info Which attribute to read.
+     *
+     * \param array The values of the attribute.
+     */
+    void getAttr(const std::string& name, std::vector<std::string>& array);
 
     /**
      * \return The id of the group used for linking.

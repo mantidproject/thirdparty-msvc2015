@@ -1,0 +1,35 @@
+--- bindings/cpp/NeXusFile.cpp.orig	Mon Aug 15 09:24:48 2016
++++ bindings/cpp/NeXusFile.cpp	Wed Nov 28 14:09:10 2018
+@@ -1238,17 +1238,15 @@
+   if (name.empty()) {
+     throw Exception("Supplied empty name to getAttr");
+   }
+ 
+   // get attrInfo
+-  char attr_name[name.size()+1];
+-  strcpy(attr_name, name.c_str());
+-
++  std::vector<char> attr_name(name.begin(), name.end());
+   int type;
+   int rank;
+   int dim[NX_MAXRANK];
+-  NXstatus status = NXgetattrainfo(this->m_file_id, attr_name, &rank, dim, &type);
++  NXstatus status = NXgetattrainfo(this->m_file_id, attr_name.data(), &rank, dim, &type);
+   if (status != NX_OK) {
+     throw Exception("Attribute \"" + name + "\" not found");
+   }
+ 
+   if (rank != 2 || type != NX_CHAR) {
+@@ -1256,11 +1254,11 @@
+   }
+ 
+   // read data
+   std::string sep(", ");
+   char* char_data = new char[dim[0] * (dim[1] + sep.size())];
+-  status = NXgetattra(this->m_file_id, attr_name, char_data);
++  status = NXgetattra(this->m_file_id, attr_name.data(), char_data);
+ 
+   // split data to strings
+   std::string data(char_data);
+ 
+   std::size_t start = 0;

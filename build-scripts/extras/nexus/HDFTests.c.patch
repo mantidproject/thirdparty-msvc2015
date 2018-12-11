@@ -1,6 +1,8 @@
---- config\cmake_ext_mod\HDFTests.c.orig	Thu May 28 17:02:03 2015
-+++ config\cmake_ext_mod\HDFTests.c	Wed Oct  7 11:37:28 2015
-@@ -213,7 +213,7 @@
+--- config/cmake_ext_mod/HDFTests.c.orig	Wed Nov 28 13:12:31 2018
++++ config/cmake_ext_mod/HDFTests.c	Wed Nov 28 13:24:16 2018
+@@ -20,11 +20,11 @@
+ #include <stdlib.h>
+ #include <string.h>
  
  int main(void)
  {
@@ -9,3 +11,5 @@
    char *s = malloc(128);
    char **currentArg = NULL;
    LL_TYPE x = (LL_TYPE)1048576 * (LL_TYPE)1048576;
+   for (currentArg = llwidthArgs; *currentArg != NULL; currentArg++)
+     {
