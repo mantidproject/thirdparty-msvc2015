@@ -1,5 +1,9 @@
 """Terminal management for exposing terminals to a web interface using Tornado.
 """
+# Copyright (c) Jupyter Development Team
+# Copyright (c) 2014, Ramalingam Saravanan <sarava@sarava.net>
+# Distributed under the terms of the Simplified BSD License.
+
 from __future__ import absolute_import, print_function
 
 import sys
@@ -15,7 +19,11 @@ import logging
 import os
 import signal
 
-from ptyprocess import PtyProcessUnicode
+try:
+    from ptyprocess import PtyProcessUnicode
+except ImportError:
+    from winpty import PtyProcess as PtyProcessUnicode
+
 from tornado import gen
 from tornado.ioloop import IOLoop
 
@@ -55,7 +63,15 @@ class PtyWithClients(object):
             self.ptyproc.setwinsize(minrows, mincols)
 
     def kill(self, sig=signal.SIGTERM):
+        """Send a signal to the process in the pty"""
         self.ptyproc.kill(sig)
+
+    def killpg(self, sig=signal.SIGTERM):
+        """Send a signal to the process group of the process in the pty"""
+        if os.name == 'nt':
+            return self.ptyproc.kill(sig)
+        pgid = os.getpgid(self.ptyproc.pid)
+        os.killpg(pgid, sig)
     
     @gen.coroutine
     def terminate(self, force=False):
@@ -63,29 +79,23 @@ class PtyWithClients(object):
         SIGHUP and SIGINT. If "force" is True then moves onto SIGKILL. This
         returns True if the child was terminated. This returns False if the
         child could not be terminated. '''
-        
+        if os.name == 'nt':
+            signals = [signal.SIGINT, signal.SIGTERM]
+        else:
+            signals = [signal.SIGHUP, signal.SIGCONT, signal.SIGINT,
+                       signal.SIGTERM]
+
         loop = IOLoop.current()
         sleep = lambda : gen.Task(loop.add_timeout, loop.time() + self.ptyproc.delayafterterminate)
 
         if not self.ptyproc.isalive():
             raise gen.Return(True)
         try:
-            self.kill(signal.SIGHUP)
-            yield sleep()
-            if not self.ptyproc.isalive():
-                raise gen.Return(True)
-            self.kill(signal.SIGCONT)
-            yield sleep()
-            if not self.ptyproc.isalive():
-                raise gen.Return(True)
-            self.kill(signal.SIGINT)
-            yield sleep()
-            if not self.ptyproc.isalive():
-                raise gen.Return(True)
-            self.kill(signal.SIGTERM)
-            yield sleep()
-            if not self.ptyproc.isalive():
-                raise gen.Return(True)
+            for sig in signals:
+                self.kill(sig)
+                yield sleep()
+                if not self.ptyproc.isalive():
+                    raise gen.Return(True)
             if force:
                 self.kill(signal.SIGKILL)
                 yield sleep()
@@ -262,7 +272,13 @@ class UniqueTermManager(TermManagerBase):
         """Send terminal SIGHUP when client disconnects."""
         self.log.info("Websocket closed, sending SIGHUP to terminal.")
         if websocket.terminal:
-            websocket.terminal.kill(signal.SIGHUP)
+            if os.name == 'nt':
+                websocket.terminal.kill()
+                # Immediately call the pty reader to process
+                # the eof and free up space
+                self.pty_read(websocket.terminal.ptyproc.fd)
+                return
+            websocket.terminal.killpg(signal.SIGHUP)
 
 
 class NamedTermManager(TermManagerBase):
@@ -309,8 +325,8 @@ class NamedTermManager(TermManagerBase):
 
     def kill(self, name, sig=signal.SIGTERM):
         term = self.terminals[name]
-        term.kill()   # This should lead to an EOF
-    
+        term.kill(sig)   # This should lead to an EOF
+
     @gen.coroutine
     def terminate(self, name, force=False):
         term = self.terminals[name]

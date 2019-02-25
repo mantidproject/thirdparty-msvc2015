@@ -1,6 +1,8 @@
-#
 # basic_tests.py -- Basic unit tests for Terminado
-#
+
+# Copyright (c) Jupyter Development Team
+# Copyright (c) 2014, Ramalingam Saravanan <sarava@sarava.net>
+# Distributed under the terms of the Simplified BSD License.
 
 from __future__ import absolute_import, print_function
 
@@ -15,6 +17,8 @@ import datetime
 import logging
 import json
 import os
+import re
+
 
 #
 # The timeout we use to assume no more messages are coming
@@ -81,7 +85,11 @@ class TestTermClient(object):
         yield self.read_stdout()                          # Clear out any pending
         self.write_stdin("echo $$\r")
         (stdout, extra) = yield self.read_stdout()
-        pid = int(stdout.split('\n')[1])
+        if os.name == 'nt':
+            match = re.search(r'echo \$\$\x1b\[0K\r\n(\d+)', stdout)
+            pid = int(match.groups()[0])
+        else:
+            pid = int(stdout.split('\n')[1])
         raise tornado.gen.Return(pid)
 
     def close(self):
@@ -160,10 +168,13 @@ class CommonTests(TermTestCase):
         for url in self.test_urls:
             tm = yield self.get_term_client(url)
             yield tm.read_all_msg()
-            tm.write_stdin("whoami\r")
+            tm.write_stdin("whoami\n")
             (stdout, other) = yield tm.read_stdout()
-            self.assertEqual(stdout[:6], "whoami")
-            self.assertEqual(other, [])
+            if os.name == 'nt':
+                assert 'whoami' in stdout
+            else:
+                assert stdout.startswith('who')
+            assert other == []
             tm.close()
 
 class NamedTermTests(TermTestCase):
@@ -230,7 +241,7 @@ class UniqueTermTests(TermTestCase):
         # Should be able to open back up to MAX_TERMS
         tm = yield self.get_term_client("/unique")
         msg = yield tm.read_msg()
-        self.assertEquals(msg[0], 'setup')        
+        self.assertEquals(msg[0], 'setup')
 
 if __name__ == '__main__':
     unittest.main()
