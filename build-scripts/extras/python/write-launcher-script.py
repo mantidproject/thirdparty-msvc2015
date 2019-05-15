@@ -130,23 +130,21 @@ def get_entry_points(entry_points_file):
     
     would return ["pip = pip:main"]
     """
-    def parse_spec_line():
-        spec_re = re.compile(r'')
-    
+
     # open with universal line endings
     f = open(entry_points_file, 'rU')
     specs = []
-    console_section = False
+    script_section = False
     for line in f:
         line = line.strip()
         if line == "":
-          continue
-        if line.startswith("["):
-            console_section = False
-            if "console_scripts" in line:
-                console_section = True
             continue
-        if not console_section:
+        if line.startswith("["):
+            script_section = False
+            if "console_scripts" or "gui_scripts" in line:
+                script_section = True
+            continue
+        if not script_section:
           continue
         match = ENTRY_RE.match(line)
         if match:
