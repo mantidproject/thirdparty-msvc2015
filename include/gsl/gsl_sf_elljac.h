@@ -22,16 +22,6 @@
 #ifndef __GSL_SF_ELLJAC_H__
 #define __GSL_SF_ELLJAC_H__
 
-#if !defined( GSL_FUN )
-#  if !defined( GSL_DLL )
-#    define GSL_FUN extern
-#  elif defined( BUILD_GSL_DLL )
-#    define GSL_FUN extern __declspec(dllexport)
-#  else
-#    define GSL_FUN extern __declspec(dllimport)
-#  endif
-#endif
-
 #undef __BEGIN_DECLS
 #undef __END_DECLS
 #ifdef __cplusplus
@@ -50,7 +40,7 @@ __BEGIN_DECLS
  *
  * exceptions: GSL_EDOM
  */
-GSL_FUN int gsl_sf_elljac_e(double u, double m, double * sn, double * cn, double * dn);
+int gsl_sf_elljac_e(double u, double m, double * sn, double * cn, double * dn);
 
 
 __END_DECLS

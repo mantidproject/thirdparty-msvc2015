@@ -23,16 +23,6 @@
 #ifndef __GSL_MULTIMIN_H__
 #define __GSL_MULTIMIN_H__
 
-#if !defined( GSL_FUN )
-#  if !defined( GSL_DLL )
-#    define GSL_FUN extern
-#  elif defined( BUILD_GSL_DLL )
-#    define GSL_FUN extern __declspec(dllexport)
-#  else
-#    define GSL_FUN extern __declspec(dllimport)
-#  endif
-#endif
-
 #include <stdlib.h>
 #include <gsl/gsl_types.h>
 #include <gsl/gsl_math.h>
@@ -82,7 +72,7 @@ typedef struct gsl_multimin_function_fdf_struct gsl_multimin_function_fdf;
 #define GSL_MULTIMIN_FN_EVAL_DF(F,x,g) (*((F)->df))(x,(F)->params,(g))
 #define GSL_MULTIMIN_FN_EVAL_F_DF(F,x,y,g) (*((F)->fdf))(x,(F)->params,(y),(g))
 
-GSL_FUN int gsl_multimin_diff (const gsl_multimin_function * f,
+int gsl_multimin_diff (const gsl_multimin_function * f,
                        const gsl_vector * x, gsl_vector * g);
 
 /* minimization of non-differentiable functions */
@@ -119,40 +109,40 @@ typedef struct
 }
 gsl_multimin_fminimizer;
 
-GSL_FUN gsl_multimin_fminimizer *
+gsl_multimin_fminimizer *
 gsl_multimin_fminimizer_alloc(const gsl_multimin_fminimizer_type *T,
                               size_t n);
 
-GSL_FUN int 
+int 
 gsl_multimin_fminimizer_set (gsl_multimin_fminimizer * s,
                              gsl_multimin_function * f,
                              const gsl_vector * x,
                              const gsl_vector * step_size);
 
-GSL_FUN void
+void
 gsl_multimin_fminimizer_free(gsl_multimin_fminimizer *s);
 
-GSL_FUN const char * 
+const char * 
 gsl_multimin_fminimizer_name (const gsl_multimin_fminimizer * s);
 
-GSL_FUN int
+int
 gsl_multimin_fminimizer_iterate(gsl_multimin_fminimizer *s);
 
-GSL_FUN gsl_vector * 
+gsl_vector * 
 gsl_multimin_fminimizer_x (const gsl_multimin_fminimizer * s);
 
-GSL_FUN double 
+double 
 gsl_multimin_fminimizer_minimum (const gsl_multimin_fminimizer * s);
 
-GSL_FUN double
+double
 gsl_multimin_fminimizer_size (const gsl_multimin_fminimizer * s);
 
 /* Convergence test functions */
 
-GSL_FUN int
+int
 gsl_multimin_test_gradient(const gsl_vector * g, double epsabs);
 
-GSL_FUN int
+int
 gsl_multimin_test_size(const double size, double epsabs);
 
 /* minimisation of differentiable functions */
@@ -188,38 +178,38 @@ typedef struct
 }
 gsl_multimin_fdfminimizer;
 
-GSL_FUN gsl_multimin_fdfminimizer *
+gsl_multimin_fdfminimizer *
 gsl_multimin_fdfminimizer_alloc(const gsl_multimin_fdfminimizer_type *T,
                                 size_t n);
 
-GSL_FUN int 
+int 
 gsl_multimin_fdfminimizer_set (gsl_multimin_fdfminimizer * s,
                                gsl_multimin_function_fdf *fdf,
                                const gsl_vector * x,
                                double step_size, double tol);
 
-GSL_FUN void
+void
 gsl_multimin_fdfminimizer_free(gsl_multimin_fdfminimizer *s);
 
-GSL_FUN const char * 
+const char * 
 gsl_multimin_fdfminimizer_name (const gsl_multimin_fdfminimizer * s);
 
-GSL_FUN int
+int
 gsl_multimin_fdfminimizer_iterate(gsl_multimin_fdfminimizer *s);
 
-GSL_FUN int
+int
 gsl_multimin_fdfminimizer_restart(gsl_multimin_fdfminimizer *s);
 
-GSL_FUN gsl_vector * 
+gsl_vector * 
 gsl_multimin_fdfminimizer_x (const gsl_multimin_fdfminimizer * s);
 
-GSL_FUN gsl_vector * 
+gsl_vector * 
 gsl_multimin_fdfminimizer_dx (const gsl_multimin_fdfminimizer * s);
 
-GSL_FUN gsl_vector * 
+gsl_vector * 
 gsl_multimin_fdfminimizer_gradient (const gsl_multimin_fdfminimizer * s);
 
-GSL_FUN double 
+double 
 gsl_multimin_fdfminimizer_minimum (const gsl_multimin_fdfminimizer * s);
 
 GSL_VAR const gsl_multimin_fdfminimizer_type *gsl_multimin_fdfminimizer_steepest_descent;

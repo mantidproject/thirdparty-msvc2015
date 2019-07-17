@@ -20,16 +20,6 @@
 #ifndef __GSL_FFT_COMPLEX_H__
 #define __GSL_FFT_COMPLEX_H__
 
-#if !defined( GSL_FUN )
-#  if !defined( GSL_DLL )
-#    define GSL_FUN extern
-#  elif defined( BUILD_GSL_DLL )
-#    define GSL_FUN extern __declspec(dllexport)
-#  else
-#    define GSL_FUN extern __declspec(dllimport)
-#  endif
-#endif
-
 #include <stddef.h>
 
 #include <gsl/gsl_math.h>
@@ -51,36 +41,36 @@ __BEGIN_DECLS
 /*  Power of 2 routines  */
 
 
-GSL_FUN int gsl_fft_complex_radix2_forward (gsl_complex_packed_array data,
+int gsl_fft_complex_radix2_forward (gsl_complex_packed_array data,
                                     const size_t stride,
                                     const size_t n);
 
-GSL_FUN int gsl_fft_complex_radix2_backward (gsl_complex_packed_array data,
+int gsl_fft_complex_radix2_backward (gsl_complex_packed_array data,
                                      const size_t stride,
                                      const size_t n);
 
-GSL_FUN int gsl_fft_complex_radix2_inverse (gsl_complex_packed_array data,
+int gsl_fft_complex_radix2_inverse (gsl_complex_packed_array data,
                                     const size_t stride,
                                     const size_t n);
 
-GSL_FUN int gsl_fft_complex_radix2_transform (gsl_complex_packed_array data,
+int gsl_fft_complex_radix2_transform (gsl_complex_packed_array data,
                                       const size_t stride,
                                       const size_t n,
                                       const gsl_fft_direction sign);
 
-GSL_FUN int gsl_fft_complex_radix2_dif_forward (gsl_complex_packed_array data,
+int gsl_fft_complex_radix2_dif_forward (gsl_complex_packed_array data,
                                         const size_t stride,
                                         const size_t n);
 
-GSL_FUN int gsl_fft_complex_radix2_dif_backward (gsl_complex_packed_array data,
+int gsl_fft_complex_radix2_dif_backward (gsl_complex_packed_array data,
                                          const size_t stride,
                                          const size_t n);
 
-GSL_FUN int gsl_fft_complex_radix2_dif_inverse (gsl_complex_packed_array data,
+int gsl_fft_complex_radix2_dif_inverse (gsl_complex_packed_array data,
                                         const size_t stride,
                                         const size_t n);
 
-GSL_FUN int gsl_fft_complex_radix2_dif_transform (gsl_complex_packed_array data,
+int gsl_fft_complex_radix2_dif_transform (gsl_complex_packed_array data,
                                           const size_t stride,
                                           const size_t n,
                                           const gsl_fft_direction sign);
@@ -105,37 +95,37 @@ typedef struct
 gsl_fft_complex_workspace;
 
 
-GSL_FUN gsl_fft_complex_wavetable *gsl_fft_complex_wavetable_alloc (size_t n);
+gsl_fft_complex_wavetable *gsl_fft_complex_wavetable_alloc (size_t n);
 
-GSL_FUN void gsl_fft_complex_wavetable_free (gsl_fft_complex_wavetable * wavetable);
+void gsl_fft_complex_wavetable_free (gsl_fft_complex_wavetable * wavetable);
 
-GSL_FUN gsl_fft_complex_workspace *gsl_fft_complex_workspace_alloc (size_t n);
+gsl_fft_complex_workspace *gsl_fft_complex_workspace_alloc (size_t n);
 
-GSL_FUN void gsl_fft_complex_workspace_free (gsl_fft_complex_workspace * workspace);
+void gsl_fft_complex_workspace_free (gsl_fft_complex_workspace * workspace);
 
-GSL_FUN int gsl_fft_complex_memcpy (gsl_fft_complex_wavetable * dest,
+int gsl_fft_complex_memcpy (gsl_fft_complex_wavetable * dest,
                             gsl_fft_complex_wavetable * src);
 
 
-GSL_FUN int gsl_fft_complex_forward (gsl_complex_packed_array data,
+int gsl_fft_complex_forward (gsl_complex_packed_array data,
                              const size_t stride,
                              const size_t n,
                              const gsl_fft_complex_wavetable * wavetable,
                              gsl_fft_complex_workspace * work);
 
-GSL_FUN int gsl_fft_complex_backward (gsl_complex_packed_array data,
+int gsl_fft_complex_backward (gsl_complex_packed_array data,
                               const size_t stride,
                               const size_t n,
                               const gsl_fft_complex_wavetable * wavetable,
                               gsl_fft_complex_workspace * work);
 
-GSL_FUN int gsl_fft_complex_inverse (gsl_complex_packed_array data,
+int gsl_fft_complex_inverse (gsl_complex_packed_array data,
                              const size_t stride,
                              const size_t n,
                              const gsl_fft_complex_wavetable * wavetable,
                              gsl_fft_complex_workspace * work);
 
-GSL_FUN int gsl_fft_complex_transform (gsl_complex_packed_array data,
+int gsl_fft_complex_transform (gsl_complex_packed_array data,
                                const size_t stride, const size_t n,
                                const gsl_fft_complex_wavetable * wavetable,
                                gsl_fft_complex_workspace * work,

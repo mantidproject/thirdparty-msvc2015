@@ -22,16 +22,6 @@
 #ifndef __GSL_SF_RESULT_H__
 #define __GSL_SF_RESULT_H__
 
-#if !defined( GSL_FUN )
-#  if !defined( GSL_DLL )
-#    define GSL_FUN extern
-#  elif defined( BUILD_GSL_DLL )
-#    define GSL_FUN extern __declspec(dllexport)
-#  else
-#    define GSL_FUN extern __declspec(dllimport)
-#  endif
-#endif
-
 #undef __BEGIN_DECLS
 #undef __END_DECLS
 #ifdef __cplusplus
@@ -61,7 +51,7 @@ struct gsl_sf_result_e10_struct {
 typedef struct gsl_sf_result_e10_struct gsl_sf_result_e10;
 
 
-GSL_FUN int gsl_sf_result_smash_e(const gsl_sf_result_e10 * re, gsl_sf_result * r);
+int gsl_sf_result_smash_e(const gsl_sf_result_e10 * re, gsl_sf_result * r);
 
 
 __END_DECLS

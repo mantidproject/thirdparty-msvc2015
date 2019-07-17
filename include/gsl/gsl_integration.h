@@ -19,16 +19,6 @@
 
 #ifndef __GSL_INTEGRATION_H__
 #define __GSL_INTEGRATION_H__
-
-#if !defined( GSL_FUN )
-#  if !defined( GSL_DLL )
-#    define GSL_FUN extern
-#  elif defined( BUILD_GSL_DLL )
-#    define GSL_FUN extern __declspec(dllexport)
-#  else
-#    define GSL_FUN extern __declspec(dllimport)
-#  endif
-#endif
 #include <stdlib.h>
 #include <gsl/gsl_math.h>
 
@@ -62,10 +52,10 @@ typedef struct
   }
 gsl_integration_workspace;
 
-GSL_FUN gsl_integration_workspace *
+gsl_integration_workspace *
   gsl_integration_workspace_alloc (const size_t n);
 
-GSL_FUN void
+void
   gsl_integration_workspace_free (gsl_integration_workspace * w);
 
 
@@ -84,14 +74,14 @@ typedef struct
 }
 gsl_integration_qaws_table;
 
-GSL_FUN gsl_integration_qaws_table * 
+gsl_integration_qaws_table * 
 gsl_integration_qaws_table_alloc (double alpha, double beta, int mu, int nu);
 
-GSL_FUN int
+int
 gsl_integration_qaws_table_set (gsl_integration_qaws_table * t,
                                 double alpha, double beta, int mu, int nu);
 
-GSL_FUN void
+void
 gsl_integration_qaws_table_free (gsl_integration_qaws_table * t);
 
 /* Workspace for QAWO integrator */
@@ -109,21 +99,21 @@ typedef struct
 }
 gsl_integration_qawo_table;
 
-GSL_FUN gsl_integration_qawo_table * 
+gsl_integration_qawo_table * 
 gsl_integration_qawo_table_alloc (double omega, double L, 
                                   enum gsl_integration_qawo_enum sine,
                                   size_t n);
 
-GSL_FUN int
+int
 gsl_integration_qawo_table_set (gsl_integration_qawo_table * t,
                                 double omega, double L,
                                 enum gsl_integration_qawo_enum sine);
 
-GSL_FUN int
+int
 gsl_integration_qawo_table_set_length (gsl_integration_qawo_table * t,
                                        double L);
 
-GSL_FUN void
+void
 gsl_integration_qawo_table_free (gsl_integration_qawo_table * t);
 
 
@@ -134,31 +124,31 @@ typedef void gsl_integration_rule (const gsl_function * f,
                                    double *result, double *abserr,
                                    double *defabs, double *resabs);
 
-GSL_FUN void gsl_integration_qk15 (const gsl_function * f, double a, double b,
+void gsl_integration_qk15 (const gsl_function * f, double a, double b,
                            double *result, double *abserr,
                            double *resabs, double *resasc);
 
-GSL_FUN void gsl_integration_qk21 (const gsl_function * f, double a, double b,
+void gsl_integration_qk21 (const gsl_function * f, double a, double b,
                            double *result, double *abserr,
                            double *resabs, double *resasc);
 
-GSL_FUN void gsl_integration_qk31 (const gsl_function * f, double a, double b,
+void gsl_integration_qk31 (const gsl_function * f, double a, double b,
                            double *result, double *abserr,
                            double *resabs, double *resasc);
 
-GSL_FUN void gsl_integration_qk41 (const gsl_function * f, double a, double b,
+void gsl_integration_qk41 (const gsl_function * f, double a, double b,
                            double *result, double *abserr,
                            double *resabs, double *resasc);
 
-GSL_FUN void gsl_integration_qk51 (const gsl_function * f, double a, double b,
+void gsl_integration_qk51 (const gsl_function * f, double a, double b,
                            double *result, double *abserr,
                            double *resabs, double *resasc);
 
-GSL_FUN void gsl_integration_qk61 (const gsl_function * f, double a, double b,
+void gsl_integration_qk61 (const gsl_function * f, double a, double b,
                            double *result, double *abserr,
                            double *resabs, double *resasc);
 
-GSL_FUN void gsl_integration_qcheb (gsl_function * f, double a, double b, 
+void gsl_integration_qcheb (gsl_function * f, double a, double b, 
                             double *cheb12, double *cheb24);
 
 /* The low-level integration rules in QUADPACK are identified by small
@@ -174,7 +164,7 @@ enum
     GSL_INTEG_GAUSS61 = 6       /* 61 point Gauss-Kronrod rule */
   };
 
-GSL_FUN void 
+void 
 gsl_integration_qk (const int n, const double xgk[], 
                     const double wg[], const double wgk[],
                     double fv1[], double fv2[],
@@ -183,56 +173,56 @@ gsl_integration_qk (const int n, const double xgk[],
                     double * resabs, double * resasc);
 
 
-GSL_FUN int gsl_integration_qng (const gsl_function * f,
+int gsl_integration_qng (const gsl_function * f,
                          double a, double b,
                          double epsabs, double epsrel,
                          double *result, double *abserr,
                          size_t * neval);
 
-GSL_FUN int gsl_integration_qag (const gsl_function * f,
+int gsl_integration_qag (const gsl_function * f,
                          double a, double b,
                          double epsabs, double epsrel, size_t limit,
                          int key,
                          gsl_integration_workspace * workspace,
                          double *result, double *abserr);
 
-GSL_FUN int gsl_integration_qagi (gsl_function * f,
+int gsl_integration_qagi (gsl_function * f,
                           double epsabs, double epsrel, size_t limit,
                           gsl_integration_workspace * workspace,
                           double *result, double *abserr);
 
-GSL_FUN int gsl_integration_qagiu (gsl_function * f,
+int gsl_integration_qagiu (gsl_function * f,
                            double a,
                            double epsabs, double epsrel, size_t limit,
                            gsl_integration_workspace * workspace,
                            double *result, double *abserr);
 
-GSL_FUN int gsl_integration_qagil (gsl_function * f,
+int gsl_integration_qagil (gsl_function * f,
                            double b,
                            double epsabs, double epsrel, size_t limit,
                            gsl_integration_workspace * workspace,
                            double *result, double *abserr);
 
 
-GSL_FUN int gsl_integration_qags (const gsl_function * f,
+int gsl_integration_qags (const gsl_function * f,
                           double a, double b,
                           double epsabs, double epsrel, size_t limit,
                           gsl_integration_workspace * workspace,
                           double *result, double *abserr);
 
-GSL_FUN int gsl_integration_qagp (const gsl_function * f,
+int gsl_integration_qagp (const gsl_function * f,
                           double *pts, size_t npts,
                           double epsabs, double epsrel, size_t limit,
                           gsl_integration_workspace * workspace,
                           double *result, double *abserr);
 
-GSL_FUN int gsl_integration_qawc (gsl_function *f,
+int gsl_integration_qawc (gsl_function *f,
                           const double a, const double b, const double c,
                           const double epsabs, const double epsrel, const size_t limit,
                           gsl_integration_workspace * workspace,
                           double * result, double * abserr);
 
-GSL_FUN int gsl_integration_qaws (gsl_function * f,
+int gsl_integration_qaws (gsl_function * f,
                           const double a, const double b,
                           gsl_integration_qaws_table * t,
                           const double epsabs, const double epsrel,
@@ -240,7 +230,7 @@ GSL_FUN int gsl_integration_qaws (gsl_function * f,
                           gsl_integration_workspace * workspace,
                           double *result, double *abserr);
 
-GSL_FUN int gsl_integration_qawo (gsl_function * f,
+int gsl_integration_qawo (gsl_function * f,
                           const double a,
                           const double epsabs, const double epsrel,
                           const size_t limit,
@@ -248,7 +238,7 @@ GSL_FUN int gsl_integration_qawo (gsl_function * f,
                           gsl_integration_qawo_table * wf,
                           double *result, double *abserr);
 
-GSL_FUN int gsl_integration_qawf (gsl_function * f,
+int gsl_integration_qawf (gsl_function * f,
                           const double a,
                           const double epsabs,
                           const size_t limit,
@@ -269,15 +259,15 @@ typedef struct
 gsl_integration_glfixed_table;
 
 
-GSL_FUN gsl_integration_glfixed_table *
+gsl_integration_glfixed_table *
   gsl_integration_glfixed_table_alloc (size_t n);
 
-GSL_FUN void
+void
   gsl_integration_glfixed_table_free (gsl_integration_glfixed_table * t);
 
 /* Routine for fixed-order Gauss-Legendre integration */
 
-GSL_FUN double
+double
   gsl_integration_glfixed (const gsl_function *f,
                            double a,
                            double b,
@@ -285,7 +275,7 @@ GSL_FUN double
 
 /* Routine to retrieve the i-th Gauss-Legendre point and weight from t */
 
-GSL_FUN int
+int
   gsl_integration_glfixed_point (double a,
                                  double b,
                                  size_t i,
@@ -315,18 +305,74 @@ typedef struct
   size_t *heap;
 } gsl_integration_cquad_workspace;
 
-GSL_FUN gsl_integration_cquad_workspace *
+gsl_integration_cquad_workspace *
 gsl_integration_cquad_workspace_alloc (const size_t n);
 
-GSL_FUN void
+void
 gsl_integration_cquad_workspace_free (gsl_integration_cquad_workspace * w);
 
-GSL_FUN int
+int
 gsl_integration_cquad (const gsl_function * f, double a, double b,
-		       double epsabs, double epsrel,
-		       gsl_integration_cquad_workspace * ws,
-		       double *result, double *abserr, size_t * nevals);
+		                   double epsabs, double epsrel,
+		                   gsl_integration_cquad_workspace * ws,
+		                   double *result, double *abserr, size_t * nevals);
 
+/* IQPACK related structures and routines */
+
+typedef struct
+{
+  double alpha;
+  double beta;
+  double a;
+  double b;
+  double zemu;
+  double shft;
+  double slp;
+  double al;
+  double be;
+} gsl_integration_fixed_params;
+
+typedef struct
+{
+  int (*check)(const size_t n, const gsl_integration_fixed_params * params);
+  int (*init)(const size_t n, double * diag, double * subdiag, gsl_integration_fixed_params * params);
+} gsl_integration_fixed_type;
+
+typedef struct
+{
+  size_t n;        /* number of nodes/weights */
+  double *weights; /* quadrature weights */
+  double *x;       /* quadrature nodes */
+  double *diag;    /* diagonal of Jacobi matrix */
+  double *subdiag; /* subdiagonal of Jacobi matrix */
+  const gsl_integration_fixed_type * type;
+} gsl_integration_fixed_workspace;
+
+/* IQPACK integral types */
+GSL_VAR const gsl_integration_fixed_type * gsl_integration_fixed_legendre;
+GSL_VAR const gsl_integration_fixed_type * gsl_integration_fixed_chebyshev;
+GSL_VAR const gsl_integration_fixed_type * gsl_integration_fixed_gegenbauer;
+GSL_VAR const gsl_integration_fixed_type * gsl_integration_fixed_jacobi;
+GSL_VAR const gsl_integration_fixed_type * gsl_integration_fixed_laguerre;
+GSL_VAR const gsl_integration_fixed_type * gsl_integration_fixed_hermite;
+GSL_VAR const gsl_integration_fixed_type * gsl_integration_fixed_exponential;
+GSL_VAR const gsl_integration_fixed_type * gsl_integration_fixed_rational;
+GSL_VAR const gsl_integration_fixed_type * gsl_integration_fixed_chebyshev2;
+
+gsl_integration_fixed_workspace *
+gsl_integration_fixed_alloc(const gsl_integration_fixed_type * type, const size_t n,
+                            const double a, const double b, const double alpha, const double beta);
+
+void gsl_integration_fixed_free(gsl_integration_fixed_workspace * w);
+
+size_t gsl_integration_fixed_n(const gsl_integration_fixed_workspace * w);
+
+double *gsl_integration_fixed_nodes(const gsl_integration_fixed_workspace * w);
+
+double *gsl_integration_fixed_weights(const gsl_integration_fixed_workspace * w);
+
+int gsl_integration_fixed(const gsl_function * func, double * result,
+                          const gsl_integration_fixed_workspace * w);
 
 __END_DECLS
 

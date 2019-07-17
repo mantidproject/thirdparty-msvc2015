@@ -19,16 +19,6 @@
 
 #ifndef __GSL_POW_INT_H__
 #define __GSL_POW_INT_H__
-
-#if !defined( GSL_FUN )
-#  if !defined( GSL_DLL )
-#    define GSL_FUN extern
-#  elif defined( BUILD_GSL_DLL )
-#    define GSL_FUN extern __declspec(dllexport)
-#  else
-#    define GSL_FUN extern __declspec(dllimport)
-#  endif
-#endif
 #include <gsl/gsl_inline.h>
 
 #undef __BEGIN_DECLS
@@ -43,14 +33,14 @@
 
 __BEGIN_DECLS
 
-GSL_FUN INLINE_DECL double gsl_pow_2(const double x);
-GSL_FUN INLINE_DECL double gsl_pow_3(const double x);
-GSL_FUN INLINE_DECL double gsl_pow_4(const double x);
-GSL_FUN INLINE_DECL double gsl_pow_5(const double x);
-GSL_FUN INLINE_DECL double gsl_pow_6(const double x);
-GSL_FUN INLINE_DECL double gsl_pow_7(const double x);
-GSL_FUN INLINE_DECL double gsl_pow_8(const double x);
-GSL_FUN INLINE_DECL double gsl_pow_9(const double x);
+INLINE_DECL double gsl_pow_2(const double x);
+INLINE_DECL double gsl_pow_3(const double x);
+INLINE_DECL double gsl_pow_4(const double x);
+INLINE_DECL double gsl_pow_5(const double x);
+INLINE_DECL double gsl_pow_6(const double x);
+INLINE_DECL double gsl_pow_7(const double x);
+INLINE_DECL double gsl_pow_8(const double x);
+INLINE_DECL double gsl_pow_9(const double x);
 
 #ifdef HAVE_INLINE
 INLINE_FUN double gsl_pow_2(const double x) { return x*x;   }
@@ -63,8 +53,8 @@ INLINE_FUN double gsl_pow_8(const double x) { double x2 = x*x;   double x4 = x2*
 INLINE_FUN double gsl_pow_9(const double x) { double x3 = x*x*x; return x3*x3*x3; }
 #endif
 
-GSL_FUN double gsl_pow_int(double x, int n);
-GSL_FUN double gsl_pow_uint(double x, unsigned int n);
+double gsl_pow_int(double x, int n);
+double gsl_pow_uint(double x, unsigned int n);
 
 __END_DECLS
 

@@ -22,16 +22,6 @@
 #ifndef __GSL_SF_ERF_H__
 #define __GSL_SF_ERF_H__
 
-#if !defined( GSL_FUN )
-#  if !defined( GSL_DLL )
-#    define GSL_FUN extern
-#  elif defined( BUILD_GSL_DLL )
-#    define GSL_FUN extern __declspec(dllexport)
-#  else
-#    define GSL_FUN extern __declspec(dllimport)
-#  endif
-#endif
-
 #include <gsl/gsl_sf_result.h>
 
 #undef __BEGIN_DECLS
@@ -52,16 +42,16 @@ __BEGIN_DECLS
  *
  * exceptions: none
  */
-GSL_FUN int gsl_sf_erfc_e(double x, gsl_sf_result * result);
-GSL_FUN double gsl_sf_erfc(double x);
+int gsl_sf_erfc_e(double x, gsl_sf_result * result);
+double gsl_sf_erfc(double x);
 
 
 /* Log Complementary Error Function
  *
  * exceptions: none
  */
-GSL_FUN int gsl_sf_log_erfc_e(double x, gsl_sf_result * result);
-GSL_FUN double gsl_sf_log_erfc(double x);
+int gsl_sf_log_erfc_e(double x, gsl_sf_result * result);
+double gsl_sf_log_erfc(double x);
 
 
 /* Error Function
@@ -69,8 +59,8 @@ GSL_FUN double gsl_sf_log_erfc(double x);
  *
  * exceptions: none
  */
-GSL_FUN int gsl_sf_erf_e(double x, gsl_sf_result * result);
-GSL_FUN double gsl_sf_erf(double x);
+int gsl_sf_erf_e(double x, gsl_sf_result * result);
+double gsl_sf_erf(double x);
 
 
 /* Probability functions:
@@ -79,10 +69,10 @@ GSL_FUN double gsl_sf_erf(double x);
  *
  * exceptions: none
  */
-GSL_FUN int gsl_sf_erf_Z_e(double x, gsl_sf_result * result);
-GSL_FUN int gsl_sf_erf_Q_e(double x, gsl_sf_result * result);
-GSL_FUN double gsl_sf_erf_Z(double x);
-GSL_FUN double gsl_sf_erf_Q(double x);
+int gsl_sf_erf_Z_e(double x, gsl_sf_result * result);
+int gsl_sf_erf_Q_e(double x, gsl_sf_result * result);
+double gsl_sf_erf_Z(double x);
+double gsl_sf_erf_Q(double x);
 
 
 /* Hazard function, also known as the inverse Mill's ratio.
@@ -92,8 +82,8 @@ GSL_FUN double gsl_sf_erf_Q(double x);
  *
  * exceptions: GSL_EUNDRFLW
  */
-GSL_FUN int gsl_sf_hazard_e(double x, gsl_sf_result * result);
-GSL_FUN double gsl_sf_hazard(double x);
+int gsl_sf_hazard_e(double x, gsl_sf_result * result);
+double gsl_sf_hazard(double x);
 
 
 __END_DECLS
