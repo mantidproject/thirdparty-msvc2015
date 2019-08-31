@@ -19,16 +19,6 @@
 
 #ifndef __GSL_MESSAGE_H__
 #define __GSL_MESSAGE_H__
-
-#if !defined( GSL_FUN )
-#  if !defined( GSL_DLL )
-#    define GSL_FUN extern
-#  elif defined( BUILD_GSL_DLL )
-#    define GSL_FUN extern __declspec(dllexport)
-#  else
-#    define GSL_FUN extern __declspec(dllimport)
-#  endif
-#endif
 #include <gsl/gsl_types.h>
 
 #undef __BEGIN_DECLS
@@ -51,7 +41,7 @@ __BEGIN_DECLS
  * The messaging service can be completely turned off
  * by defining GSL_MESSAGING_OFF.  */
 
-GSL_FUN void gsl_message(const char * message, const char * file, int line,
+void gsl_message(const char * message, const char * file, int line,
                  unsigned int mask);
 
 #ifndef GSL_MESSAGE_MASK

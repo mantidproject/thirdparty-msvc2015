@@ -19,16 +19,6 @@
 
 #ifndef __GSL_SPLINE_H__
 #define __GSL_SPLINE_H__
-
-#if !defined( GSL_FUN )
-#  if !defined( GSL_DLL )
-#    define GSL_FUN extern
-#  elif defined( BUILD_GSL_DLL )
-#    define GSL_FUN extern __declspec(dllexport)
-#  else
-#    define GSL_FUN extern __declspec(dllimport)
-#  endif
-#endif
 #include <stdlib.h>
 #include <gsl/gsl_interp.h>
 
@@ -53,57 +43,57 @@ typedef struct {
   size_t  size;
 } gsl_spline;
 
-GSL_FUN gsl_spline *
+gsl_spline *
 gsl_spline_alloc(const gsl_interp_type * T, size_t size);
      
-GSL_FUN int
+int
 gsl_spline_init(gsl_spline * spline, const double xa[], const double ya[], size_t size);
 
-GSL_FUN const char * gsl_spline_name(const gsl_spline * spline);
-GSL_FUN unsigned int gsl_spline_min_size(const gsl_spline * spline);
+const char * gsl_spline_name(const gsl_spline * spline);
+unsigned int gsl_spline_min_size(const gsl_spline * spline);
 
 
-GSL_FUN int
+int
 gsl_spline_eval_e(const gsl_spline * spline, double x,
                   gsl_interp_accel * a, double * y);
 
-GSL_FUN double
+double
 gsl_spline_eval(const gsl_spline * spline, double x, gsl_interp_accel * a);
 
-GSL_FUN int
+int
 gsl_spline_eval_deriv_e(const gsl_spline * spline,
                         double x,
                         gsl_interp_accel * a,
                         double * y);
 
-GSL_FUN double
+double
 gsl_spline_eval_deriv(const gsl_spline * spline,
                       double x,
                       gsl_interp_accel * a);
 
-GSL_FUN int
+int
 gsl_spline_eval_deriv2_e(const gsl_spline * spline,
                          double x,
                          gsl_interp_accel * a,
                          double * y);
 
-GSL_FUN double
+double
 gsl_spline_eval_deriv2(const gsl_spline * spline,
                        double x,
                        gsl_interp_accel * a);
 
-GSL_FUN int
+int
 gsl_spline_eval_integ_e(const gsl_spline * spline,
                         double a, double b,
                         gsl_interp_accel * acc,
                         double * y);
 
-GSL_FUN double
+double
 gsl_spline_eval_integ(const gsl_spline * spline,
                       double a, double b,
                       gsl_interp_accel * acc);
 
-GSL_FUN void
+void
 gsl_spline_free(gsl_spline * spline);
 
 __END_DECLS

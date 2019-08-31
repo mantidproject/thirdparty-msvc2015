@@ -23,16 +23,6 @@
 #ifndef __GSL_SUM_H__
 #define __GSL_SUM_H__
 
-#if !defined( GSL_FUN )
-#  if !defined( GSL_DLL )
-#    define GSL_FUN extern
-#  elif defined( BUILD_GSL_DLL )
-#    define GSL_FUN extern __declspec(dllexport)
-#  else
-#    define GSL_FUN extern __declspec(dllimport)
-#  endif
-#endif
-
 #include <stdlib.h>
 
 #undef __BEGIN_DECLS
@@ -72,8 +62,8 @@ typedef struct
 }
 gsl_sum_levin_u_workspace;
 
-GSL_FUN gsl_sum_levin_u_workspace *gsl_sum_levin_u_alloc (size_t n);
-GSL_FUN void gsl_sum_levin_u_free (gsl_sum_levin_u_workspace * w);
+gsl_sum_levin_u_workspace *gsl_sum_levin_u_alloc (size_t n);
+void gsl_sum_levin_u_free (gsl_sum_levin_u_workspace * w);
 
 /* Basic Levin-u acceleration method.
  *
@@ -85,7 +75,7 @@ GSL_FUN void gsl_sum_levin_u_free (gsl_sum_levin_u_workspace * w);
  * See [Fessler et al., ACM TOMS 9, 346 (1983) and TOMS-602]
  */
 
-GSL_FUN int gsl_sum_levin_u_accel (const double *array,
+int gsl_sum_levin_u_accel (const double *array,
                            const size_t n,
                            gsl_sum_levin_u_workspace * w,
                            double *sum_accel, double *abserr);
@@ -103,7 +93,7 @@ GSL_FUN int gsl_sum_levin_u_accel (const double *array,
  * See [Fessler et al., ACM TOMS 9, 346 (1983) and TOMS-602] 
  */
 
-GSL_FUN int gsl_sum_levin_u_minmax (const double *array,
+int gsl_sum_levin_u_minmax (const double *array,
                             const size_t n,
                             const size_t min_terms,
                             const size_t max_terms,
@@ -122,7 +112,7 @@ GSL_FUN int gsl_sum_levin_u_minmax (const double *array,
  *   sum_plain = simple sum of series
  */
 
-GSL_FUN int
+int
 gsl_sum_levin_u_step (const double term,
                       const size_t n,
                       const size_t nmax,
@@ -147,22 +137,22 @@ typedef struct
 }
 gsl_sum_levin_utrunc_workspace;
 
-GSL_FUN gsl_sum_levin_utrunc_workspace *gsl_sum_levin_utrunc_alloc (size_t n);
-GSL_FUN void gsl_sum_levin_utrunc_free (gsl_sum_levin_utrunc_workspace * w);
+gsl_sum_levin_utrunc_workspace *gsl_sum_levin_utrunc_alloc (size_t n);
+void gsl_sum_levin_utrunc_free (gsl_sum_levin_utrunc_workspace * w);
 
-GSL_FUN int gsl_sum_levin_utrunc_accel (const double *array,
+int gsl_sum_levin_utrunc_accel (const double *array,
                                 const size_t n,
                                 gsl_sum_levin_utrunc_workspace * w,
                                 double *sum_accel, double *abserr_trunc);
 
-GSL_FUN int gsl_sum_levin_utrunc_minmax (const double *array,
+int gsl_sum_levin_utrunc_minmax (const double *array,
                                  const size_t n,
                                  const size_t min_terms,
                                  const size_t max_terms,
                                  gsl_sum_levin_utrunc_workspace * w,
                                  double *sum_accel, double *abserr_trunc);
 
-GSL_FUN int gsl_sum_levin_utrunc_step (const double term,
+int gsl_sum_levin_utrunc_step (const double term,
                                const size_t n,
                                gsl_sum_levin_utrunc_workspace * w, 
                                double *sum_accel);

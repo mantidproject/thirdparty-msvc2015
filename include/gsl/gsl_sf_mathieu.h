@@ -22,16 +22,6 @@
 #ifndef __GSL_SF_MATHIEU_H__
 #define __GSL_SF_MATHIEU_H__
 
-#if !defined( GSL_FUN )
-#  if !defined( GSL_DLL )
-#    define GSL_FUN extern
-#  elif defined( BUILD_GSL_DLL )
-#    define GSL_FUN extern __declspec(dllexport)
-#  else
-#    define GSL_FUN extern __declspec(dllimport)
-#  endif
-#endif
-
 #include <gsl/gsl_sf_result.h>
 #include <gsl/gsl_eigen.h>
 
@@ -72,42 +62,48 @@ typedef struct
 
 /* Compute an array of characteristic (eigen) values from the recurrence
    matrices for the Mathieu equations. */
-GSL_FUN int gsl_sf_mathieu_a_array(int order_min, int order_max, double qq, gsl_sf_mathieu_workspace *work, double result_array[]);
-GSL_FUN int gsl_sf_mathieu_b_array(int order_min, int order_max, double qq,  gsl_sf_mathieu_workspace *work, double result_array[]);
+int gsl_sf_mathieu_a_array(int order_min, int order_max, double qq, gsl_sf_mathieu_workspace *work, double result_array[]);
+int gsl_sf_mathieu_b_array(int order_min, int order_max, double qq,  gsl_sf_mathieu_workspace *work, double result_array[]);
 
 /* Compute the characteristic value for a Mathieu function of order n and
    type ntype. */
-GSL_FUN int gsl_sf_mathieu_a(int order, double qq, gsl_sf_result *result);
-GSL_FUN int gsl_sf_mathieu_b(int order, double qq, gsl_sf_result *result);
+int gsl_sf_mathieu_a_e(int order, double qq, gsl_sf_result *result);
+double gsl_sf_mathieu_a(int order, double qq);
+int gsl_sf_mathieu_b_e(int order, double qq, gsl_sf_result *result);
+double gsl_sf_mathieu_b(int order, double qq);
 
 /* Compute the Fourier coefficients for a Mathieu function. */
-GSL_FUN int gsl_sf_mathieu_a_coeff(int order, double qq, double aa, double coeff[]);
-GSL_FUN int gsl_sf_mathieu_b_coeff(int order, double qq, double aa, double coeff[]);
+int gsl_sf_mathieu_a_coeff(int order, double qq, double aa, double coeff[]);
+int gsl_sf_mathieu_b_coeff(int order, double qq, double aa, double coeff[]);
 
 /* Allocate computational storage space for eigenvalue solution. */
-GSL_FUN gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn,
+gsl_sf_mathieu_workspace *gsl_sf_mathieu_alloc(const size_t nn,
                                                const double qq);
-GSL_FUN void gsl_sf_mathieu_free(gsl_sf_mathieu_workspace *workspace);
+void gsl_sf_mathieu_free(gsl_sf_mathieu_workspace *workspace);
 
 /* Compute an angular Mathieu function. */
-GSL_FUN int gsl_sf_mathieu_ce(int order, double qq, double zz, gsl_sf_result *result);
-GSL_FUN int gsl_sf_mathieu_se(int order, double qq, double zz, gsl_sf_result *result);
-GSL_FUN int gsl_sf_mathieu_ce_array(int nmin, int nmax, double qq, double zz,
+int gsl_sf_mathieu_ce_e(int order, double qq, double zz, gsl_sf_result *result);
+double gsl_sf_mathieu_ce(int order, double qq, double zz);
+int gsl_sf_mathieu_se_e(int order, double qq, double zz, gsl_sf_result *result);
+double gsl_sf_mathieu_se(int order, double qq, double zz);
+int gsl_sf_mathieu_ce_array(int nmin, int nmax, double qq, double zz,
                             gsl_sf_mathieu_workspace *work,
                             double result_array[]);
-GSL_FUN int gsl_sf_mathieu_se_array(int nmin, int nmax, double qq, double zz,
+int gsl_sf_mathieu_se_array(int nmin, int nmax, double qq, double zz,
                             gsl_sf_mathieu_workspace *work,
                             double result_array[]);
 
 /* Compute a radial Mathieu function. */
-GSL_FUN int gsl_sf_mathieu_Mc(int kind, int order, double qq, double zz,
+int gsl_sf_mathieu_Mc_e(int kind, int order, double qq, double zz,
                       gsl_sf_result *result);
-GSL_FUN int gsl_sf_mathieu_Ms(int kind, int order, double qq, double zz,
+double gsl_sf_mathieu_Mc(int kind, int order, double qq, double zz);
+int gsl_sf_mathieu_Ms_e(int kind, int order, double qq, double zz,
                       gsl_sf_result *result);
-GSL_FUN int gsl_sf_mathieu_Mc_array(int kind, int nmin, int nmax, double qq,
+double gsl_sf_mathieu_Ms(int kind, int order, double qq, double zz);
+int gsl_sf_mathieu_Mc_array(int kind, int nmin, int nmax, double qq,
                             double zz, gsl_sf_mathieu_workspace *work,
                             double result_array[]);
-GSL_FUN int gsl_sf_mathieu_Ms_array(int kind, int nmin, int nmax, double qq,
+int gsl_sf_mathieu_Ms_array(int kind, int nmin, int nmax, double qq,
                             double zz, gsl_sf_mathieu_workspace *work,
                             double result_array[]);
 

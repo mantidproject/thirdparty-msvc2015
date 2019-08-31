@@ -22,16 +22,6 @@
 #ifndef __GSL_SF_SYNCHROTRON_H__
 #define __GSL_SF_SYNCHROTRON_H__
 
-#if !defined( GSL_FUN )
-#  if !defined( GSL_DLL )
-#    define GSL_FUN extern
-#  elif defined( BUILD_GSL_DLL )
-#    define GSL_FUN extern __declspec(dllexport)
-#  else
-#    define GSL_FUN extern __declspec(dllimport)
-#  endif
-#endif
-
 #include <gsl/gsl_sf_result.h>
 
 #undef __BEGIN_DECLS
@@ -52,8 +42,8 @@ __BEGIN_DECLS
  *
  * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
-GSL_FUN int     gsl_sf_synchrotron_1_e(const double x, gsl_sf_result * result);
-GSL_FUN double     gsl_sf_synchrotron_1(const double x);
+int     gsl_sf_synchrotron_1_e(const double x, gsl_sf_result * result);
+double     gsl_sf_synchrotron_1(const double x);
 
 
 /* Second synchroton function:
@@ -61,8 +51,8 @@ GSL_FUN double     gsl_sf_synchrotron_1(const double x);
  *
  * exceptions: GSL_EDOM, GSL_EUNDRFLW
  */
-GSL_FUN int     gsl_sf_synchrotron_2_e(const double x, gsl_sf_result * result);
-GSL_FUN double     gsl_sf_synchrotron_2(const double x);
+int     gsl_sf_synchrotron_2_e(const double x, gsl_sf_result * result);
+double     gsl_sf_synchrotron_2(const double x);
 
 
 __END_DECLS
