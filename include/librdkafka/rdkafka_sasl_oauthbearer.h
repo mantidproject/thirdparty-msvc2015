@@ -1,7 +1,7 @@
 /*
  * librdkafka - The Apache Kafka C/C++ library
  *
- * Copyright (c) 2016 Magnus Edenhill
+ * Copyright (c) 2019 Magnus Edenhill
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,27 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef _RDREGEX_H_
-#define _RDREGEX_H_
 
-typedef struct rd_regex_s rd_regex_t;
+#ifndef _RDKAFKA_SASL_OAUTHBEARER_H_
+#define _RDKAFKA_SASL_OAUTHBEARER_H_
 
-void rd_regex_destroy (rd_regex_t *re);
-rd_regex_t *rd_regex_comp (const char *pattern, char *errstr, size_t errstr_size);
-int rd_regex_exec (rd_regex_t *re, const char *str);
+void rd_kafka_oauthbearer_unsecured_token (rd_kafka_t *rk,
+                                           const char *oauthbearer_config,
+                                           void *opaque);
 
-int rd_regex_match (const char *pattern, const char *str,
-		    char *errstr, size_t errstr_size);
+rd_kafka_resp_err_t
+rd_kafka_oauthbearer_set_token0 (rd_kafka_t *rk,
+                                 const char *token_value,
+                                 int64_t md_lifetime_ms,
+                                 const char *md_principal_name,
+                                 const char **extensions,
+                                 size_t extension_size,
+                                 char *errstr, size_t errstr_size);
 
-#endif /* _RDREGEX_H_ */
+rd_kafka_resp_err_t
+rd_kafka_oauthbearer_set_token_failure0 (rd_kafka_t *rk, const char *errstr);
+
+int unittest_sasl_oauthbearer (void);
+
+
+#endif /* _RDKAFKA_SASL_OAUTHBEARER_H_ */

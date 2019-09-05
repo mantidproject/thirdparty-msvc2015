@@ -1,7 +1,7 @@
 /*
- * librd - Rapid Development C library
+ * librdkafka - The Apache Kafka C/C++ library
  *
- * Copyright (c) 2012, Magnus Edenhill
+ * Copyright (c) 2018 Magnus Edenhill
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -26,28 +26,29 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _RDTYPES_H_
-#define _RDTYPES_H_
+#ifndef _RDZSTD_H_
+#define _RDZSTD_H_
 
-#include <inttypes.h>
-
-
-/*
- * Fundamental types
+/**
+ * @brief Decompress ZSTD framed data.
+ *
+ * @returns allocated buffer in \p *outbuf, length in \p *outlenp on success.
  */
+rd_kafka_resp_err_t
+rd_kafka_zstd_decompress (rd_kafka_broker_t *rkb,
+                         char *inbuf, size_t inlen,
+                         void **outbuf, size_t *outlenp);
 
-
-/* Timestamp (microseconds).
- * Struct members with this type usually have the "ts_" prefix for
- * the internal monotonic clock timestamp, or "wts_" for wall clock timestamp.
+/**
+ * Allocate space for \p *outbuf and compress all \p iovlen buffers in \p iov.
+ * @param MessageSetSize indicates (at least) full uncompressed data size,
+ *                       possibly including MessageSet fields that will not
+ *                       be compressed.
+ *
+ * @returns allocated buffer in \p *outbuf, length in \p *outlenp.
  */
-typedef int64_t rd_ts_t;
+rd_kafka_resp_err_t
+rd_kafka_zstd_compress (rd_kafka_broker_t *rkb, int comp_level,
+                       rd_slice_t *slice, void **outbuf, size_t *outlenp);
 
-#define RD_TS_MAX  INT64_MAX
-
-
-typedef uint8_t rd_bool_t;
-#define rd_true   1
-#define rd_false  0
-
-#endif /* _RDTYPES_H_ */
+#endif /* _RDZSTD_H_ */

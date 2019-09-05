@@ -25,7 +25,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#pragma once
+#ifndef _RDKAFKA_FEATURE_H_
+#define _RDKAFKA_FEATURE_H_
 
 
 /**
@@ -65,6 +66,19 @@
  *  + EOS message format KIP-98 */
 #define RD_KAFKA_FEATURE_MSGVER2     0x200
 
+/* >= 0.11.0.0: Idempotent Producer support */
+#define RD_KAFKA_FEATURE_IDEMPOTENT_PRODUCER 0x400
+
+/* >= 2.1.0-IV2: ZSTD compression */
+#define RD_KAFKA_FEATURE_ZSTD 0x800
+
+/* All features (except UNITTEST) */
+#define RD_KAFKA_FEATURE_ALL  0xfff
+
+/* Unit-test mock broker: broker supports everything.
+ * Should be used with RD_KAFKA_FEATURE_ALL, but not be included in bitmask */
+#define RD_KAFKA_FEATURE_UNITTEST 0x100000
+
 
 int rd_kafka_get_legacy_ApiVersions (const char *broker_version,
 				     struct rd_kafka_ApiVersion **apisp,
@@ -77,3 +91,5 @@ int rd_kafka_features_check (rd_kafka_broker_t *rkb,
 			     size_t broker_api_cnt);
 
 const char *rd_kafka_features2str (int features);
+
+#endif /* _RDKAFKA_FEATURE_H_ */

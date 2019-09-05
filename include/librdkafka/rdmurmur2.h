@@ -1,7 +1,7 @@
 /*
- * librdkafka - The Apache Kafka C/C++ library
+ * librdkafka - Apache Kafka C library
  *
- * Copyright (c) 2016 Magnus Edenhill
+ * Copyright (c) 2018 Magnus Edenhill
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,11 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef _RDREGEX_H_
-#define _RDREGEX_H_
 
-typedef struct rd_regex_s rd_regex_t;
+#ifndef __RDMURMUR2___H__
+#define __RDMURMUR2___H__
 
-void rd_regex_destroy (rd_regex_t *re);
-rd_regex_t *rd_regex_comp (const char *pattern, char *errstr, size_t errstr_size);
-int rd_regex_exec (rd_regex_t *re, const char *str);
+uint32_t rd_murmur2 (const void *key, size_t len);
+int unittest_murmur2 (void);
 
-int rd_regex_match (const char *pattern, const char *str,
-		    char *errstr, size_t errstr_size);
-
-#endif /* _RDREGEX_H_ */
+#endif // __RDMURMUR2___H__

@@ -1,7 +1,7 @@
 /*
  * librdkafka - The Apache Kafka C/C++ library
  *
- * Copyright (c) 2016 Magnus Edenhill
+ * Copyright (c) 2019 Magnus Edenhill
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,33 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef _RDREGEX_H_
-#define _RDREGEX_H_
 
-typedef struct rd_regex_s rd_regex_t;
 
-void rd_regex_destroy (rd_regex_t *re);
-rd_regex_t *rd_regex_comp (const char *pattern, char *errstr, size_t errstr_size);
-int rd_regex_exec (rd_regex_t *re, const char *str);
+#ifndef _RDKAFKA_CERT_H_
+#define _RDKAFKA_CERT_H_
 
-int rd_regex_match (const char *pattern, const char *str,
-		    char *errstr, size_t errstr_size);
 
-#endif /* _RDREGEX_H_ */
+/**
+ * @struct rd_kafka_cert
+ *
+ * @brief Internal representation of a cert_type,cert_enc,memory tuple.
+ *
+ * @remark Certificates are read-only after construction.
+ */
+typedef struct rd_kafka_cert_s {
+        rd_kafka_cert_type_t type;
+        rd_kafka_cert_enc_t  encoding;
+        rd_refcnt_t          refcnt;
+#if WITH_SSL
+        X509                *x509;   /**< Certificate (public key) */
+        EVP_PKEY            *pkey;   /**< Private key */
+        X509_STORE          *store;  /**< CA certificate chain store */
+#endif
+} rd_kafka_cert_t;
+
+void rd_kafka_conf_cert_dtor (int scope, void *pconf);
+void rd_kafka_conf_cert_copy (int scope, void *pdst, const void *psrc,
+                              void *dstptr, const void *srcptr,
+                              size_t filter_cnt, const char **filter);
+
+#endif /* _RDKAFKA_CERT_H_ */

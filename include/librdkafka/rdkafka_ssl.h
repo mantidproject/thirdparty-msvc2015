@@ -1,7 +1,7 @@
 /*
  * librdkafka - The Apache Kafka C/C++ library
  *
- * Copyright (c) 2016 Magnus Edenhill
+ * Copyright (c) 2019 Magnus Edenhill
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,31 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef _RDREGEX_H_
-#define _RDREGEX_H_
 
-typedef struct rd_regex_s rd_regex_t;
 
-void rd_regex_destroy (rd_regex_t *re);
-rd_regex_t *rd_regex_comp (const char *pattern, char *errstr, size_t errstr_size);
-int rd_regex_exec (rd_regex_t *re, const char *str);
+#ifndef _RDKAFKA_SSL_H_
+#define _RDKAFKA_SSL_H_
 
-int rd_regex_match (const char *pattern, const char *str,
-		    char *errstr, size_t errstr_size);
+void rd_kafka_transport_ssl_close (rd_kafka_transport_t *rktrans);
+int rd_kafka_transport_ssl_connect (rd_kafka_broker_t *rkb,
+                                    rd_kafka_transport_t *rktrans,
+                                    char *errstr, size_t errstr_size);
+int rd_kafka_transport_ssl_handshake (rd_kafka_transport_t *rktrans);
+ssize_t rd_kafka_transport_ssl_send (rd_kafka_transport_t *rktrans,
+                                     rd_slice_t *slice,
+                                     char *errstr, size_t errstr_size);
+ssize_t rd_kafka_transport_ssl_recv (rd_kafka_transport_t *rktrans,
+                                     rd_buf_t *rbuf,
+                                     char *errstr, size_t errstr_size);
 
-#endif /* _RDREGEX_H_ */
+
+void rd_kafka_ssl_ctx_term (rd_kafka_t *rk);
+int rd_kafka_ssl_ctx_init (rd_kafka_t *rk,
+                           char *errstr, size_t errstr_size);
+
+void rd_kafka_ssl_term (void);
+void rd_kafka_ssl_init(void);
+
+const char *rd_kafka_ssl_last_error_str (void);
+
+#endif /* _RDKAFKA_SSL_H_ */

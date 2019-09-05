@@ -26,7 +26,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#pragma once
+#ifndef _RDKAFKA_TRANSPORT_H_
+#define _RDKAFKA_TRANSPORT_H_
 
 #ifndef _MSC_VER
 #include <poll.h>
@@ -46,6 +47,10 @@ ssize_t rd_kafka_transport_send (rd_kafka_transport_t *rktrans,
 ssize_t rd_kafka_transport_recv (rd_kafka_transport_t *rktrans,
                                  rd_buf_t *rbuf,
                                  char *errstr, size_t errstr_size);
+
+void rd_kafka_transport_request_sent (rd_kafka_broker_t *rkb,
+                                      rd_kafka_buf_t *rkbuf);
+
 int rd_kafka_transport_framed_recv (rd_kafka_transport_t *rktrans,
                                     rd_kafka_buf_t **rkbufp,
                                     char *errstr, size_t errstr_size);
@@ -60,13 +65,6 @@ void rd_kafka_transport_poll_set(rd_kafka_transport_t *rktrans, int event);
 void rd_kafka_transport_poll_clear(rd_kafka_transport_t *rktrans, int event);
 int rd_kafka_transport_poll(rd_kafka_transport_t *rktrans, int tmout);
 
-#if WITH_SSL
-void rd_kafka_transport_ssl_ctx_term (rd_kafka_t *rk);
-int rd_kafka_transport_ssl_ctx_init (rd_kafka_t *rk,
-				     char *errstr, size_t errstr_size);
+void rd_kafka_transport_init (void);
 
-void rd_kafka_transport_ssl_term (void);
-void rd_kafka_transport_ssl_init (void);
-#endif
-void rd_kafka_transport_term (void);
-void rd_kafka_transport_init(void);
+#endif /* _RDKAFKA_TRANSPORT_H_ */

@@ -1,7 +1,7 @@
 /*
- * librdkafka - The Apache Kafka C/C++ library
+ * librdkafka - Apache Kafka C library
  *
- * Copyright (c) 2016 Magnus Edenhill
+ * Copyright (c) 2018 Magnus Edenhill
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,40 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef _RDREGEX_H_
-#define _RDREGEX_H_
 
-typedef struct rd_regex_s rd_regex_t;
+#ifndef _RDKAFKA_AUX_H_
+#define _RDKAFKA_AUX_H_
 
-void rd_regex_destroy (rd_regex_t *re);
-rd_regex_t *rd_regex_comp (const char *pattern, char *errstr, size_t errstr_size);
-int rd_regex_exec (rd_regex_t *re, const char *str);
+/**
+ * @name Auxiliary types
+ */
 
-int rd_regex_match (const char *pattern, const char *str,
-		    char *errstr, size_t errstr_size);
+#include "rdkafka_conf.h"
 
-#endif /* _RDREGEX_H_ */
+
+
+/**
+ * @brief Topic [ + Error code + Error string ]
+ *
+ * @remark Public type.
+ * @remark Single allocation.
+ */
+struct rd_kafka_topic_result_s {
+        char *topic;             /**< Points to data */
+        rd_kafka_resp_err_t err; /**< Error code */
+        char *errstr;            /**< Points to data after topic, unless NULL */
+        char  data[1];           /**< topic followed by errstr */
+};
+
+void rd_kafka_topic_result_destroy (rd_kafka_topic_result_t *terr);
+void rd_kafka_topic_result_free (void *ptr);
+
+rd_kafka_topic_result_t *
+rd_kafka_topic_result_new (const char *topic, ssize_t topic_size,
+                           rd_kafka_resp_err_t err,
+                           const char *errstr);
+
+
+/**@}*/
+
+#endif /* _RDKAFKA_AUX_H_ */
