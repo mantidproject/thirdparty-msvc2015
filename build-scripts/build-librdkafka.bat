@@ -6,7 +6,7 @@
 
 echo There seems to be an issue with patching the solution files reliably. For now this has been done by hand and the project files are in the extras directory
 
-:: exit /b 1
+exit /b 1
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Setup environment. Important to ensure correct detection of environment
