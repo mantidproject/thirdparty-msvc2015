@@ -41,7 +41,8 @@ rd_kafka_event_type_t rd_kafka_op2event (rd_kafka_op_type_t optype) {
 		[RD_KAFKA_OP_REBALANCE] = RD_KAFKA_EVENT_REBALANCE,
 		[RD_KAFKA_OP_OFFSET_COMMIT] = RD_KAFKA_EVENT_OFFSET_COMMIT,
                 [RD_KAFKA_OP_LOG] = RD_KAFKA_EVENT_LOG,
-		[RD_KAFKA_OP_STATS] = RD_KAFKA_EVENT_STATS
+		[RD_KAFKA_OP_STATS] = RD_KAFKA_EVENT_STATS,
+                [RD_KAFKA_OP_OAUTHBEARER_REFRESH] = RD_KAFKA_EVENT_OAUTHBEARER_TOKEN_REFRESH
 	};
 
 	return map[(int)optype & ~RD_KAFKA_OP_FLAGMASK];
@@ -54,7 +55,8 @@ rd_kafka_event_type_t rd_kafka_op2event (rd_kafka_op_type_t optype) {
  */
 static RD_UNUSED RD_INLINE
 int rd_kafka_event_setup (rd_kafka_t *rk, rd_kafka_op_t *rko) {
-	rko->rko_evtype = rd_kafka_op2event(rko->rko_type);
+        if (!rko->rko_evtype)
+                rko->rko_evtype = rd_kafka_op2event(rko->rko_type);
 	switch (rko->rko_evtype)
 	{
 	case RD_KAFKA_EVENT_NONE:
@@ -67,15 +69,36 @@ int rd_kafka_event_setup (rd_kafka_t *rk, rd_kafka_op_t *rko) {
 		rko->rko_u.dr.do_purge2 = 1;
 		return 1;
 
+        case RD_KAFKA_EVENT_ERROR:
+                if (rko->rko_err == RD_KAFKA_RESP_ERR__FATAL) {
+                        /* Translate ERR__FATAL to the underlying fatal error
+                         * code and string */
+                        rd_kafka_resp_err_t ferr;
+                        char errstr[512];
+                        ferr = rd_kafka_fatal_error(rk, errstr, sizeof(errstr));
+                        if (likely(ferr)) {
+                                rko->rko_err = ferr;
+                                if (rko->rko_u.err.errstr)
+                                        rd_free(rko->rko_u.err.errstr);
+                                rko->rko_u.err.errstr = rd_strdup(errstr);
+                                rko->rko_u.err.fatal = 1;
+                        }
+                }
+                return 1;
+
 	case RD_KAFKA_EVENT_REBALANCE:
-	case RD_KAFKA_EVENT_ERROR:
         case RD_KAFKA_EVENT_LOG:
         case RD_KAFKA_EVENT_OFFSET_COMMIT:
         case RD_KAFKA_EVENT_STATS:
+        case RD_KAFKA_EVENT_CREATETOPICS_RESULT:
+        case RD_KAFKA_EVENT_DELETETOPICS_RESULT:
+        case RD_KAFKA_EVENT_CREATEPARTITIONS_RESULT:
+        case RD_KAFKA_EVENT_ALTERCONFIGS_RESULT:
+        case RD_KAFKA_EVENT_DESCRIBECONFIGS_RESULT:
+        case RD_KAFKA_EVENT_OAUTHBEARER_TOKEN_REFRESH:
 		return 1;
 
 	default:
 		return 0;
-		
 	}
 }

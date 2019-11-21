@@ -19,14 +19,14 @@ exit /b 1
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Download and unpack source
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set SRC_PKG_URL="https://github.com/edenhill/librdkafka/archive/v0.11.1.zip"
-@set SRC_PKG=v0.11.1.zip
+@set SRC_PKG_URL="https://codeload.github.com/edenhill/librdkafka/zip/v1.1.0"
+@set SRC_PKG=v1.1.0.zip
 @set BUILD_DIR=%BUILD_ROOT%\librdkafka
 
 @call try-mkdir.cmd %BUILD_DIR%
 @cd %BUILD_DIR%
 @call download-file.cmd %SRC_PKG% %SRC_PKG_URL%
-@set LIBRDKAFKA_ROOT=%BUILD_DIR%\librdkafka-0.11.1
+@set LIBRDKAFKA_ROOT=%BUILD_DIR%\librdkafka-1.1.0
 @call extract-zip-file.cmd %SRC_PKG% %CD%
 
 
@@ -62,7 +62,7 @@ goto:eof
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: %1 Configuration to build: Release/Debug
 :build-rdkafka
-msbuild /nologo /p:Configuration=%1 /p:PlatformToolset=v140 /p:Platform="x64" %VS_BUILD_DIR%\librdkafka.sln
+msbuild /nologo /p:Configuration=%1 /p:PlatformToolset=v160 /p:Platform="x64" %VS_BUILD_DIR%\librdkafka.sln
 goto:eof
 
 :: %1 Configuration to build: Release/Debug
