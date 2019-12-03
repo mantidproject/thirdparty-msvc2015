@@ -13,8 +13,8 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Download
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set SRC_PKG_URL="https://www.threadingbuildingblocks.org/sites/default/files/software_releases/windows/tbb2017_20161004oss_win.zip"
-@set SRC_PKG=tbb2017_20161004oss_win.zip
+@set SRC_PKG_URL="https://github.com/intel/tbb/releases/download/2019_U9/tbb2019_20191006oss_win.zip"
+@set SRC_PKG=tbb2019_20191006oss_win.zip
 @set BUILD_DIR=%BUILD_ROOT%\tbb
 @call try-mkdir.cmd %BUILD_DIR%
 @cd %BUILD_DIR%
@@ -34,15 +34,18 @@
 :: Includes under the SRC_ROOT\include directory
 @set INCLUDE_DIRS=serial tbb
 for %%D in (%INCLUDE_DIRS%) do (
+  rmdir /S /Q %INSTALL_PREFIX%\include\%%D
   xcopy include\%%D %INSTALL_PREFIX%\include\%%D /Y /I /E
 )
 
 :: Library export files
 :: xcopy cmd by default copies all files from the given directory to the destination and does not include the directory itself
 @set VC_DIR=intel64\vc14
+del /Q %INSTALL_PREFIX%\lib\tbb*
 xcopy lib\%VC_DIR% %INSTALL_PREFIX%\lib /Y /I
 
 :: Runtime DLLs
+del /Q %INSTALL_PREFIX%\bin\tbb*
 xcopy bin\%VC_DIR% %INSTALL_PREFIX%\bin /Y /I
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

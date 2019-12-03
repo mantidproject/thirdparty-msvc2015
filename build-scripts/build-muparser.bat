@@ -12,31 +12,27 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Download and unpack source.
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set SRC_PKG_URL="https://docs.google.com/uc?export=download&id=0BzuB-ydOOoduejdwdTQwcF9JLTA"
+@set SRC_PKG_URL=https://github.com/beltoforion/muparser/archive/v2.2.6.1.zip
 @set BUILD_DIR=%BUILD_ROOT%\muparser
-@set SRC_PKG=muparser_v2_2_4.zip
-@set SRC_ROOT=%BUILD_DIR%\muparser_v2_2_4
+@set SRC_PKG=v2.2.6.1.zip
+@set SRC_ROOT=%BUILD_DIR%\muparser-2.2.6.1
 @if not exist %SRC_ROOT% call download-and-extract.cmd %BUILD_DIR%\%SRC_PKG% %SRC_PKG_URL%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Patch
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+echo Patching cmake files to add debug suffix
+cd %SRC_ROOT%
+@if not exist CMakeLists.txt.orig patch -p0 --input=%MUPSR_EXTRAS_DIR%\debug-suffix.patch --backup
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Set configure options for static, release and debug builds
-cd %SRC_ROOT%
-sed -e's/DEBUG = 0/DEBUG = 1/' build\makefile.vc > build\makefile.vc.debug
-cd build
-nmake -f makefile.vc
-nmake -f makefile.vc.debug
-
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Install
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-xcopy %SRC_ROOT%\include\*.h %INSTALL_PREFIX%\include /Y /I
-xcopy %SRC_ROOT%\lib\*.lib %INSTALL_PREFIX%\lib /Y /I
+mkdir cmakebuild
+cd cmakebuild
+cmake -G "Visual Studio 14 2015 Win64" -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=OFF "-DCMAKE_PREFIX_PATH:PATH=%INSTALL_PREFIX%" ^
+ "-DCMAKE_INSTALL_PREFIX=%INSTALL_PREFIX%" %SRC_ROOT%
+@call build-and-install.cmd %SRC_ROOT%\cmakebuild\build ALL_BUILD.vcxproj
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize

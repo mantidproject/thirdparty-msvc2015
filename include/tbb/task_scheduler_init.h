@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2005-2016 Intel Corporation
+    Copyright (c) 2005-2019 Intel Corporation
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -12,17 +12,30 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-
-
-
 */
+
+#include "internal/_deprecated_header_message_guard.h"
+
+#if !defined(__TBB_show_deprecation_message_task_scheduler_init_H) && defined(__TBB_show_deprecated_header_message)
+#define  __TBB_show_deprecation_message_task_scheduler_init_H
+#pragma message("TBB Warning: tbb/task_scheduler_init.h is deprecated. For details, please see Deprecated Features appendix in the TBB reference manual.")
+#endif
+
+#if defined(__TBB_show_deprecated_header_message)
+#undef __TBB_show_deprecated_header_message
+#endif
 
 #ifndef __TBB_task_scheduler_init_H
 #define __TBB_task_scheduler_init_H
 
+#define __TBB_task_scheduler_init_H_include_area
+#include "internal/_warning_suppress_enable_notice.h"
+
 #include "tbb_stddef.h"
 #include "limits.h"
+#if __TBB_SUPPORTS_WORKERS_WAITING_IN_TERMINATE
+#include <new> // nothrow_t
+#endif
 
 namespace tbb {
 
@@ -50,20 +63,20 @@ namespace internal {
     and will persist until this thread exits. Default concurrency level is defined
     as described in task_scheduler_init::initialize().
     @ingroup task_scheduling */
-class task_scheduler_init: internal::no_copy {
+class __TBB_DEPRECATED_VERBOSE task_scheduler_init: internal::no_copy {
     enum ExceptionPropagationMode {
         propagation_mode_exact = 1u,
         propagation_mode_captured = 2u,
         propagation_mode_mask = propagation_mode_exact | propagation_mode_captured
     };
-#if __TBB_SUPPORTS_WORKERS_WAITING_IN_TERMINATE
-    enum {
-        wait_workers_in_terminate_flag = 128u
-    };
-#endif
 
     /** NULL if not currently initialized. */
     internal::scheduler* my_scheduler;
+
+    bool internal_terminate( bool blocking );
+#if __TBB_SUPPORTS_WORKERS_WAITING_IN_TERMINATE
+    bool __TBB_EXPORTED_METHOD internal_blocking_terminate( bool throwing );
+#endif
 public:
 
     //! Typedef for number of threads that is automatic.
@@ -93,12 +106,21 @@ public:
     //! Inverse of method initialize.
     void __TBB_EXPORTED_METHOD terminate();
 
-    //! Shorthand for default constructor followed by call to initialize(number_of_threads).
 #if __TBB_SUPPORTS_WORKERS_WAITING_IN_TERMINATE
-    task_scheduler_init( int number_of_threads=automatic, stack_size_type thread_stack_size=0, bool wait_workers_in_terminate = false ) : my_scheduler(NULL)
-#else
-    task_scheduler_init( int number_of_threads=automatic, stack_size_type thread_stack_size=0 ) : my_scheduler(NULL)
+#if TBB_USE_EXCEPTIONS
+    //! terminate() that waits for worker threads termination. Throws exception on error.
+    void blocking_terminate() {
+        internal_blocking_terminate( /*throwing=*/true );
+    }
 #endif
+    //! terminate() that waits for worker threads termination. Returns false on error.
+    bool blocking_terminate(const std::nothrow_t&) __TBB_NOEXCEPT(true) {
+        return internal_blocking_terminate( /*throwing=*/false );
+    }
+#endif // __TBB_SUPPORTS_WORKERS_WAITING_IN_TERMINATE
+
+    //! Shorthand for default constructor followed by call to initialize(number_of_threads).
+    task_scheduler_init( int number_of_threads=automatic, stack_size_type thread_stack_size=0 ) : my_scheduler(NULL)
     {
         // Two lowest order bits of the stack size argument may be taken to communicate
         // default exception propagation mode of the client to be used when the
@@ -111,10 +133,6 @@ public:
 #if TBB_USE_EXCEPTIONS
         thread_stack_size |= TBB_USE_CAPTURED_EXCEPTION ? propagation_mode_captured : propagation_mode_exact;
 #endif /* TBB_USE_EXCEPTIONS */
-#if __TBB_SUPPORTS_WORKERS_WAITING_IN_TERMINATE
-        if (wait_workers_in_terminate)
-            my_scheduler = (internal::scheduler*)wait_workers_in_terminate_flag;
-#endif
         initialize( number_of_threads, thread_stack_size );
     }
 
@@ -149,5 +167,8 @@ public:
 };
 
 } // namespace tbb
+
+#include "internal/_warning_suppress_disable_notice.h"
+#undef __TBB_task_scheduler_init_H_include_area
 
 #endif /* __TBB_task_scheduler_init_H */
