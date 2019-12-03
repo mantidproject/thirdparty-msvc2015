@@ -15,9 +15,9 @@
 :: patched to build with CMake
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: When the version is updated, update the --hdf5-version= version for h5py below
-@set SRC_PKG_URL="http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.8.15-patch1.zip"
+@set SRC_PKG_URL="https://www.hdfgroup.org/package/hdf5-1-10-5-zip/?wpdmdl=13572&refresh=5de6201156f221575362577"
 @set BUILD_DIR=%BUILD_ROOT%\hdf5
-@set SRC_PKG=hdf5-1.8.15-patch1.zip
+@set SRC_PKG=hdf5-1.10.5.zip
 @call download-and-extract.cmd %BUILD_DIR%\%SRC_PKG% %SRC_PKG_URL%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -27,16 +27,18 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 echo Patching cmake files for Visual Studio 2015
 @set SRC_ROOT=%BUILD_DIR%\%SRC_PKG:.zip=%\
-cd %SRC_ROOT%
-@if not exist config\cmake_ext_mod\HDFTests.c.orig patch -p0 --input=%HDF5_EXTRAS_DIR%\HDFTests.c.patch --backup
-@if not exist config\cmake_ext_mod\ConfigureChecks.cmake.orig patch -p0 --input=%HDF5_EXTRAS_DIR%\ConfigureChecks.cmake.patch --backup
+::cd %SRC_ROOT%
+::@if not exist config\cmake_ext_mod\HDFTests.c.orig patch -p0 --input=%HDF5_EXTRAS_DIR%\HDFTests.c.patch --backup
+::@if not exist config\cmake_ext_mod\ConfigureChecks.cmake.orig patch -p0 --input=%HDF5_EXTRAS_DIR%\ConfigureChecks.cmake.patch --backup
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+@del /Q %INSTALL_PREFIX%\include\H5*
+@del /Q %INSTALL_PREFIX%\hdf5*
 @call cmake-configure %SRC_ROOT%\ -C "%SRC_ROOT%\config\cmake\cacheinit.cmake" -C "%HDF5_EXTRAS_DIR%\hdf5.cmake" ^
  "-DCMAKE_PREFIX_PATH:PATH=%INSTALL_PREFIX%" "-DCMAKE_INSTALL_PREFIX=%INSTALL_PREFIX%"
-@call build-and-install.cmd %SRC_ROOT%\build ALL_BUILD.vcxproj
+ @call build-and-install.cmd %SRC_ROOT%\build ALL_BUILD.vcxproj
 :: remove unwanted files
 for %%F in (COPYING USING_HDF5_CMake.txt USING_HDF5_VS.txt Release.txt) do ( del %INSTALL_PREFIX%\%%F )
 
@@ -48,7 +50,7 @@ for %%F in (COPYING USING_HDF5_CMake.txt USING_HDF5_VS.txt Release.txt) do ( del
 cd %BUILD_DIR%
 @call download-and-extract.cmd %BUILD_DIR%\!SRC_PKG! !SRC_PKG_URL!
 
-echo Patching cmake files for Visual Studio 2015
+echo Patching files for Visual Studio 2015
 @set SRC_ROOT=h5py-2.5.0
 cd !SRC_ROOT!
 @if not exist setup_build.py.orig patch -p0 --input=%HDF5_EXTRAS_DIR%\h5py-setup_build.py.patch --backup
@@ -57,7 +59,7 @@ cd !SRC_ROOT!
 @set DISTUTILS_USE_SDK=1
 @set MSSdk=1
 cd %BUILD_DIR%\h5py-2.5.0
-%PYTHON_INSTALL_PREFIX%\python setup.py configure --hdf5=%INSTALL_PREFIX% --hdf5-version=1.8.15
+%PYTHON_INSTALL_PREFIX%\python setup.py configure --hdf5=%INSTALL_PREFIX% --hdf5-version=1.10.5
 %PYTHON_INSTALL_PREFIX%\python setup.py install
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

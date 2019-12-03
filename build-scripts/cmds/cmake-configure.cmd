@@ -9,5 +9,5 @@ set src_root=%1
 set build_dir=%~p1build
 if not exist %build_dir% mkdir %build_dir%
 cd %build_dir%
-cmake -G "%generator%" %2 %3 %4 %5 %6 %7 %8 %9 %src_root%
+cmake -G "%generator%" -DCMAKE_SYSTEM_VERSION=%SDK_VERSION% %2 %3 %4 %5 %6 %7 %8 %9 %src_root%
 @endlocal

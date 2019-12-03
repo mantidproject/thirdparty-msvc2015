@@ -74,6 +74,3 @@
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 /* #undef size_t */
-
-/* Define if cmake is used and building dynamic libraries */
-#define SZ_BUILT_AS_DYNAMIC_LIB 1
