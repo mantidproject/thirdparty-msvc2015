@@ -45,20 +45,15 @@ for %%F in (COPYING USING_HDF5_CMake.txt USING_HDF5_VS.txt Release.txt) do ( del
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build h5py against this version
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set SRC_PKG_URL=https://github.com/h5py/h5py/archive/2.5.0.zip
-@set SRC_PKG=h5py-2.5.0.zip
+@set SRC_PKG_URL=https://github.com/h5py/h5py/archive/2.10.0.zip
+@set SRC_PKG=h5py-2.10.0.zip
 cd %BUILD_DIR%
 @call download-and-extract.cmd %BUILD_DIR%\!SRC_PKG! !SRC_PKG_URL!
-
-echo Patching files for Visual Studio 2015
-@set SRC_ROOT=h5py-2.5.0
-cd !SRC_ROOT!
-@if not exist setup_build.py.orig patch -p0 --input=%HDF5_EXTRAS_DIR%\h5py-setup_build.py.patch --backup
 
 :: use compiler already initialized
 @set DISTUTILS_USE_SDK=1
 @set MSSdk=1
-cd %BUILD_DIR%\h5py-2.5.0
+cd %BUILD_DIR%\h5py-2.10.0
 %PYTHON_INSTALL_PREFIX%\python setup.py configure --hdf5=%INSTALL_PREFIX% --hdf5-version=1.10.5
 %PYTHON_INSTALL_PREFIX%\python setup.py install
 
