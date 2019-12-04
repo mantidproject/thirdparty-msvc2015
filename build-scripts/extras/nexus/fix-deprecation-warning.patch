@@ -1,0 +1,11 @@
+--- include/napi.h.in.orig	2019-12-20 13:51:20.757173400 +0000
++++ include/napi.h.in	2019-12-20 13:50:41.736566200 +0000
+@@ -435,7 +435,7 @@
+    * \li NX_COMP_HUF Huffmann encoding (only HDF-4)
+    * \ingroup c_readwrite
+    */
+-extern  NXstatus  NXcompress (NXhandle handle, int compr_type) NEXUS_DEPRECATED_FUNCTION();
++extern  NXstatus  NXcompress (NXhandle handle, int compr_type) NEXUS_DEPRECATED_FUNCTION("Use NXcompmakedata instead.");
+ 
+   /**
+    * Open access to a dataset. After this call it is possible to write and read data or 

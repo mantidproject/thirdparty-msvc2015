@@ -23,7 +23,7 @@
   
  ----------------------------------------------------------------------------*/
 /** \file 
- * Documentation for the NeXus-API version 4.4.2
+ * Documentation for the NeXus-API version 4.4.3
  * 2000-2011, the NeXus International Advisory Commitee
  * \defgroup c_main C API 
  * \defgroup c_types Data Types
@@ -57,7 +57,7 @@
 #endif /* __cplusplus */
 
 /* NeXus HDF45 */
-#define NEXUS_VERSION   "4.4.2"                /* major.minor.patch */
+#define NEXUS_VERSION   "4.4.3"                /* major.minor.patch */
 
 #define CONSTCHAR       const char
 
@@ -259,9 +259,9 @@ typedef struct {
  */
 
 #if (defined(__GNUC__) || defined(__clang__))
-#define NEXUS_DEPRECATED_FUNCTION __attribute__((deprecated))
+#define NEXUS_DEPRECATED_FUNCTION(msg) __attribute__((deprecated(msg)))
 #else
-#define NEXUS_DEPRECATED_FUNCTION
+#define NEXUS_DEPRECATED_FUNCTION(msg)
 #endif
 
 #ifdef __cplusplus
@@ -435,7 +435,7 @@ extern  NXstatus NXcompmakedata64 (NXhandle handle, CONSTCHAR* label, int dataty
    * \li NX_COMP_HUF Huffmann encoding (only HDF-4)
    * \ingroup c_readwrite
    */
-extern  NXstatus  NXcompress (NXhandle handle, int compr_type) NEXUS_DEPRECATED_FUNCTION;
+extern  NXstatus  NXcompress (NXhandle handle, int compr_type) NEXUS_DEPRECATED_FUNCTION();
 
   /**
    * Open access to a dataset. After this call it is possible to write and read data or 
@@ -632,7 +632,7 @@ extern  NXstatus  NXgetslab64(NXhandle handle, void* data, const int64_t start[]
    * \return NX_OK on success, NX_ERROR in the case of an error, NX_EOD when there are no more items.   
    * \ingroup c_readwrite
    */
-extern  NXstatus  NXgetnextattr(NXhandle handle, NXname pName, int *iLength, int *iType) NEXUS_DEPRECATED_FUNCTION;
+extern  NXstatus  NXgetnextattr(NXhandle handle, NXname pName, int *iLength, int *iType) NEXUS_DEPRECATED_FUNCTION("Use NXgetnextattra instead");
 
   /**
    * Read an attribute containing a single string or numerical value.
@@ -878,7 +878,7 @@ extern  NXstatus  NXgetrawinfo64(NXhandle handle, int* rank, int64_t dimension[]
 
 /** \typedef void (*ErrFunc)(void *data, char *text)
  * All NeXus error reporting happens through this special function, the 
- * ErrFunc. The NeXus-API allows to replace this error reporting function
+ * ErrFunc. The NeXus-API allows this error reporting function to be replaced
  * through a user defined implementation. The default error function prints to stderr. User 
  * defined ones may pop up dialog boxes or whatever.
  * \param data A pointer to some user defined data structure
