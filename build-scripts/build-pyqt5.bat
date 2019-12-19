@@ -35,7 +35,8 @@ if exist %PYTHONHOME%\Lib\site-packages\PyQt5 (
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Build private sip module
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-call build-sip.bat PyQt5.sip %BUILD_DIR%
+@call %~dp0build-sip PyQt5.sip %BUILD_DIR%
+if ERRORLEVEL exit /b 1
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Use two build directories as the build is inplace
@@ -47,6 +48,9 @@ call build-sip.bat PyQt5.sip %BUILD_DIR%
 call download-file.cmd %SRC_PKG% %SRC_PKG_URL%
 
 :: debug build first so that release exes for pyrcc etc are installed over the debug ones
+:: Copy private PyQt5.sip from release to debug as sip won't have done this
+copy /Y %PYTHONHOME%\Lib\site-packages\PyQt5\sip.pyd  %PYTHONHOME%\msvc-site-packages\debug\PyQt5
+copy /Y %PYTHONHOME%\Lib\site-packages\PyQt5\sip.pyi  %PYTHONHOME%\msvc-site-packages\debug\PyQt5
 @set PYQT_ROOT_DEBUG=%BUILD_DIR%\debug
 call try-mkdir.cmd %PYQT_ROOT_DEBUG%
 cd /d %PYQT_ROOT_DEBUG%
@@ -81,6 +85,7 @@ cd %3
 @if not exist configure.py.orig (
   :: assume patches not applied
   call patch -p0 --input=%PYQT5_EXTRAS_DIR%\configure.py.patch --backup
+  call patch -p0 --input=%PYQT5_EXTRAS_DIR%\findqtdll.patch --backup
   :: replace all Python.h instances with our wrap variant
   for /r %%f in (*.h) do (
     sed -i -e "s@<Python.h>@<wrappython.h>@" %%f
@@ -96,13 +101,18 @@ cd %3
 @echo [Paths] > %QT_CONF_FILE%
 @echo Prefix = %QT_ROOT:\=/% >> %QT_CONF_FILE%
 
-@if "%_buildtype%" == "debug" ( set DEBUG_ARGS= -u --destdir=%PYTHONHOME%\msvc-site-packages\debug )
-@echo Running configure.py --verbose --confirm-license --qsci-api --no-designer-plugin --disable=QtNfc --disable=QtQuick --disable=QtQml --disable=QtQuickWidgets %DEBUG_ARGS%
+set BUILD_ARGS=--verbose --confirm-license --link-full-dll --no-qsci-api --no-designer-plugin --disable=QtNfc --disable=QtQuick --disable=QtQml --disable=QtQuickWidgets
+@if "%_buildtype%" == "debug" ( set DEBUG_ARGS=-u --destdir=%PYTHONHOME%\msvc-site-packages\debug )
+@echo Running configure.py %BUILD_ARGS% %DEBUG_ARGS%
 @echo %QT_ROOT%
-@call python configure.py --verbose --confirm-license --qsci-api --no-designer-plugin --disable=QtNfc --disable=QtQuick --disable=QtQml --disable=QtQuickWidgets %DEBUG_ARGS%
+@call python configure.py %BUILD_ARGS% %DEBUG_ARGS%
 
 REM :: jom seems to have an issue with parallel builds
-@call nmake
+if exist C:\Builds\jom\jom.exe (
+  @call jom /J 24
+) else (
+  @call nmake
+)
 @call nmake install
 
 @cd %_cwd_on_entry%

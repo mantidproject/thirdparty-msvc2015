@@ -1,0 +1,37 @@
+--- __init__.py.orig	2018-10-01 15:38:40.000000000 +0100
++++ __init__.py	2019-12-19 12:37:05.414974900 +0000
+@@ -14,3 +14,34 @@
+ # 
+ # This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+ # WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
++
++def find_qt():
++    import os, sys
++
++    qtcore_dll = '\\Qt5Core.dll'
++
++	# packaging puts Qt DLLs next to python executable
++    dll_dir = os.path.dirname(sys.executable)
++    if not os.path.isfile(dll_dir + qtcore_dll):
++        path = os.environ['PATH']
++
++        # development build paths
++        dll_dir = os.path.dirname(sys.executable) + '\\..\\qt5\\bin'
++        if os.path.isfile(dll_dir + qtcore_dll):
++            path = dll_dir + ';' + path
++            os.environ['PATH'] = path
++        else:
++            for dll_dir in path.split(';'):
++                if os.path.isfile(dll_dir + qtcore_dll):
++                    break
++            else:
++                return
++
++    try:
++        os.add_dll_directory(dll_dir)
++    except AttributeError:
++        pass
++
++
++find_qt()
++del find_qt
