@@ -1,7 +1,15 @@
 @setlocal enableextensions
 ::
 :: Build script Sip
-@echo Building Python Sip
+:: Expected to be called from the PyQt build script with the first argument as the name of the
+:: sip module
+
+if "%2"=="" (
+  @echo "Usage build-sip name-of-module build-root"
+  exit /b 1
+)
+set SIP_MODULE=%1
+@echo Building Python Sip as %2
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Setup environment. Important to ensure correct detection of environment
@@ -10,7 +18,7 @@
 @set SIP_EXTRAS_DIR=%~dp0extras\sip
 @set INCLUDE=%INSTALL_PREFIX%\include;%INCLUDE%
 @set LIB=%INSTALL_PREFIX%\lib;%LIB%
-@set PYTHONHOME=%INSTALL_PREFIX%\lib\python2.7
+@set PYTHONHOME=%INSTALL_PREFIX%\lib\python3.8
 @set PATH=%INSTALL_PREFIX%\bin;%PYTHONHOME%;%PATH%
 
 :: Clean
@@ -19,33 +27,28 @@ if exist %PYTHONHOME% (
   del %PYTHONHOME%\Lib\site-packages\sip*
 )
 
-@set BUILD_DIR=%BUILD_ROOT%\sip
+@set BUILD_DIR=%2\sip
 @call try-mkdir %BUILD_DIR%
 @cd %BUILD_DIR%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: SIP
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set SRC_PKG_URL="https://sourceforge.net/projects/pyqt/files/sip/sip-4.19.12/sip-4.19.12.zip"
-@set SRC_PKG=sip-4.19.12.zip
+@set SRC_PKG_URL="https://sourceforge.net/projects/pyqt/files/sip/sip-4.19.13/sip-4.19.13.zip"
+@set SRC_PKG=sip-4.19.13.zip
 call download-file.cmd %SRC_PKG% %SRC_PKG_URL%
-@set SIP_ROOT=%BUILD_DIR%\sip-4.19.12
+@set SIP_ROOT=%BUILD_DIR%\sip-4.19.13
 if not exist %SIP_ROOT% call extract-zip-file.cmd %SRC_PKG% %CD%
 cd /d %SIP_ROOT%
-:: Patch
-if not exist siplib\apiversions.c.orig call patch -p0 --input=%SIP_EXTRAS_DIR%\apiversions.c.patch --backup
-if not exist siplib\array.c.orig call patch -p0 --input=%SIP_EXTRAS_DIR%\array.c.patch --backup
-if not exist siplib\array.h.orig call patch -p0 --input=%SIP_EXTRAS_DIR%\array.h.patch --backup
-if not exist siplib\descriptors.c.orig call patch -p0 --input=%SIP_EXTRAS_DIR%\descriptors.c.patch --backup
-if not exist siplib\int_convertors.c.orig call patch -p0 --input=%SIP_EXTRAS_DIR%\int_convertors.c.patch --backup
-if not exist siplib\qtlib.c.orig call patch -p0 --input=%SIP_EXTRAS_DIR%\qtlib.c.patch --backup
-if not exist siplib\sipint.h.orig call patch -p0 --input=%SIP_EXTRAS_DIR%\sipint.h.patch --backup
-if not exist siplib\siplib.c.orig call patch -p0 --input=%SIP_EXTRAS_DIR%\siplib.c.patch --backup
-if not exist siplib\sip.h.orig call patch -p0 --input=%SIP_EXTRAS_DIR%\sip.h.patch --backup
-if not exist siplib\voidptr.c.orig call patch -p0 --input=%SIP_EXTRAS_DIR%\voidptr.c.patch --backup
-if not exist sipgen\gencode.c.orig call patch -p0 --input=%SIP_EXTRAS_DIR%\gencode.c.patch --backup
-if not exist siputils.py.orig call patch -p0 --input=%SIP_EXTRAS_DIR%\siputils-no-debug.patch --backup
-call python configure.py --platform=%QMAKESPEC%
+:: replace all Python.h instances with our wrap variant
+for /r %%f in (*.h) do (
+sed -i -e "s@<Python.h>@<wrappython.h>@" %%f
+)
+for /r %%f in (*.c*) do (
+sed -i -e "s@<Python.h>@<wrappython.h>@" %%f
+)
+
+call python configure.py --sip-module  "%SIP_MODULE" --platform %QMAKESPEC%
 call nmake
 call nmake install
 
