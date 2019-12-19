@@ -5,7 +5,7 @@
 :: sip module
 
 if "%2"=="" (
-  @echo "Usage build-sip name-of-module build-root"
+  @echo "Usage build-sip name-of-module build-root [libonly]"
   exit /b 1
 )
 set SIP_MODULE=%1
@@ -20,12 +20,7 @@ set SIP_MODULE=%1
 @set LIB=%INSTALL_PREFIX%\lib;%LIB%
 @set PYTHONHOME=%INSTALL_PREFIX%\lib\python3.8
 @set PATH=%INSTALL_PREFIX%\bin;%PYTHONHOME%;%PATH%
-
-:: Clean
-if exist %PYTHONHOME% (
-  del %PYTHONHOME%\Lib\site-packages\sipconfig.*
-  del %PYTHONHOME%\Lib\site-packages\sip*
-)
+@set SIPCONFIG=%PYTHONHOME%\Lib\site-packages\sipconfig.py
 
 @set BUILD_DIR=%2\sip
 @call try-mkdir %BUILD_DIR%
@@ -50,12 +45,14 @@ sed -i -e "s@<Python.h>@<wrappython.h>@" %%f
 
 call python configure.py --platform=%QMAKESPEC% --sip-module "%SIP_MODULE%"
 call nmake
-call nmake install
+if "%3"=="libonly" (
+  cd siplib
+  call nmake install
+) else (
+  call nmake install
+  :: Fix the sipconfig file so that it is relocatable
+  move /Y %SIPCONFIG% %SIPCONFIG%.bak
+  call python %SIP_EXTRAS_DIR%\patch-sipconfig.py %SIPCONFIG%.bak > %SIPCONFIG%
+  del %SIPCONFIG%.bak
+)
 
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Fix the sipconfig file so that it is relocatable
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set SIPCONFIG=%PYTHON_INSTALL_PREFIX%\Lib\site-packages\sipconfig.py
-move /Y %SIPCONFIG% %SIPCONFIG%.bak
-call python %SIP_EXTRAS_DIR%\patch-sipconfig.py %SIPCONFIG%.bak > %SIPCONFIG%
-del %SIPCONFIG%.bak

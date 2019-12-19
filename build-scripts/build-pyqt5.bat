@@ -36,7 +36,6 @@ if exist %PYTHONHOME%\Lib\site-packages\PyQt5 (
 :: Build private sip module
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call %~dp0build-sip PyQt5.sip %BUILD_DIR%
-if ERRORLEVEL exit /b 1
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Use two build directories as the build is inplace
