@@ -19,6 +19,8 @@ if not exist %PYTHON_INSTALL_PREFIX% (
 
 :: special wrappython.h header to avoid requireing a debug Python interpreter
 copy /Y %PYTHON_EXTRAS_DIR%\wrappython.h %PYTHON_INSTALL_PREFIX%\Include
+:: sitecustomize to set PATH to thridparty dependencies
+copy /Y %PYTHON_EXTRAS_DIR%\sitecustomize.py %PYTHON_INSTALL_PREFIX%\Lib\site-packages
 
 :: site-packages
 @echo Installing site-packages
