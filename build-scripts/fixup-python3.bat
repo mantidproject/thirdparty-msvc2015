@@ -23,9 +23,9 @@ if not exist %PYTHON_INSTALL_PREFIX% (
 if not exist %PYTHON_INSTALL_PREFIX%\Include\wrappython.h (
   copy /Y %PYTHON_EXTRAS_DIR%\wrappython.h %PYTHON_INSTALL_PREFIX%\Include
 )
-if not exist %PYTHON_INSTALL_PREFIX%\Lib\site-packages\sitecustomize.py (
+if not exist %PYTHON_INSTALL_PREFIX%\Lib\sitecustomize.py (
   :: sitecustomize to set PATH to thirdparty dependencies
-  copy /Y %PYTHON_EXTRAS_DIR%\sitecustomize.py %PYTHON_INSTALL_PREFIX%\Lib\site-packages
+  copy /Y %PYTHON_EXTRAS_DIR%\sitecustomize.py %PYTHON_INSTALL_PREFIX%\Lib\sitecustomize.py
 )
 
 :: site-packages

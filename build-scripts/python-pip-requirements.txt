@@ -13,5 +13,6 @@ qtpy
 requests
 scipy
 sphinx
+sphinx-bootstrap-theme
 xmlrunner
 yapf
