@@ -1,7 +1,7 @@
 @setlocal enableextensions
 ::
 :: Assuming Python 3.8 has been installed into lib\python3.8
-:: Patches are applied to fix several issues
+:: Install requirements as specified by pip requirements file.
 ::
 @echo Setting up bundled Python distribution
 
@@ -10,7 +10,9 @@
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @call %~dp0cmds\common-setup.cmd
 set PYTHON_EXTRAS_DIR=%~dp0\extras\python
-
+set PYTHON_EXE=%PYTHON_INSTALL_PREFIX%\python.exe
+set WRITE_LAUNCHER=%PYTHON_EXTRAS_DIR%\write-launcher-script.py
+set PYTHON_SITE_PACKAGES=%PYTHON_INSTALL_PREFIX%\Lib\site-packages
 
 if not exist %PYTHON_INSTALL_PREFIX% (
   @echo Cannot find Python installed in %PYTHON_INSTALL_PREFIX%
@@ -18,19 +20,23 @@ if not exist %PYTHON_INSTALL_PREFIX% (
 )
 
 :: special wrappython.h header to avoid requireing a debug Python interpreter
-copy /Y %PYTHON_EXTRAS_DIR%\wrappython.h %PYTHON_INSTALL_PREFIX%\Include
-:: sitecustomize to set PATH to thridparty dependencies
-copy /Y %PYTHON_EXTRAS_DIR%\sitecustomize.py %PYTHON_INSTALL_PREFIX%\Lib\site-packages
+if not exist %PYTHON_INSTALL_PREFIX%\Include\wrappython.h (
+  copy /Y %PYTHON_EXTRAS_DIR%\wrappython.h %PYTHON_INSTALL_PREFIX%\Include
+)
+if not exist %PYTHON_INSTALL_PREFIX%\Lib\site-packages\sitecustomize.py (
+  :: sitecustomize to set PATH to thirdparty dependencies
+  copy /Y %PYTHON_EXTRAS_DIR%\sitecustomize.py %PYTHON_INSTALL_PREFIX%\Lib\site-packages
+)
 
 :: site-packages
 @echo Installing site-packages
-%PYTHON_EXE% -m pip install -r %~dp0\requirements.txt
+%PYTHON_EXE% -m pip install -r %~dp0\python-pip-requirements.txt
+IF %ERRORLEVEL% NEQ 0 (
+   @echo Error installing pip packages
+   exit /b %ERRORLEVEL%
+) 
 
 :: replace the .exe launchers with relocatable files
-set PYTHON_EXE=%PYTHON_INSTALL_PREFIX%\python.exe
-set WRITE_LAUNCHER=%PYTHON_EXTRAS_DIR%\write-launcher-script.py
-set PYTHON_SITE_PACKAGES=%PYTHON_INSTALL_PREFIX%\Lib\site-packages
-
 @call:write-python-launcher Babel-2.7.0
 @call:write-python-launcher chardet-3.0.4
 @call:write-python-launcher flake8-3.7.9
@@ -55,15 +61,6 @@ goto:eof
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Functions
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Patch a file if it has not been patched already
-:: %1 Directory of file to patch
-:: %2 File to be patched
-:: %3 Patch file
-:try-patch
-if not exist %2.orig (
-  patch -b --directory=%1  -i %3
-)
-goto:eof
 
 :: Write a launcher script for a Python script. By default setuptools writes
 :: a .exe file that is hardwired for the path on the machine it was installed
