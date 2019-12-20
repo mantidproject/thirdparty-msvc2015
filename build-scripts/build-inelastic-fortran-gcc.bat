@@ -1,7 +1,7 @@
 @setlocal enableextensions
 ::
 :: Build script for Inelastic Python modules
-:: It requires the Intel Composer XE Fortran compiler for Windows
+:: It requires mingw compiler suite for Windows
 ::
 :: NOTE: The built .pyd modules must be copied to the repository by hand
 @echo Building Inelastic Python modules
@@ -10,12 +10,11 @@
 :: Setup environment. Do not use the common set up script as we use
 :: the intel fortran compiler plus MSVC 9
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set PATH=C:\Perl64\bin;C:\Program Files (x86)\CMake\bin;C:\Program Files (x86)\Git\bin;C:\Program Files\7-Zip;%~dp0\cmds;C:\MinGW64\bin;%PATH%
+@set PATH=C:\Perl64\bin;C:\Program Files (x86)\CMake\bin;C:\Program Files (x86)\Git\bin;C:\Program Files\7-Zip;%~dp0\cmds;C:\mingw-w64\x86_64-8.1.0-win32-seh-rt_v6-rev0\mingw64\bin;%PATH%
 
 :: Install root for dependencies (goes via a 'function' to make it absolute)
-@call:set-python-root %~dp0..\
-@set PYTHON_EXE=%PYTHON_INSTALL_PREFIX%\python.exe
-@set F2PY_SCRIPT=%PYTHON_INSTALL_PREFIX%\Scripts\f2py.py
+@set PYTHON_EXE=%~dp0..\lib\python3.8\python.exe
+@set F2PY_SCRIPT=%~dp0..\lib\python3.8\Scripts\f2py
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Source
@@ -59,7 +58,7 @@ goto:eof
 :: Functions
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :set-python-root
-set PYTHON_INSTALL_PREFIX=%~f1\lib\python2.7
+set PYTHON_INSTALL_PREFIX=%~f1\\lib\\python3.8
 goto:eof
 
 :: %1 Remote URL
