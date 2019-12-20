@@ -47,7 +47,8 @@ call download-file.cmd %SRC_PKG% %SRC_PKG_URL%
 
 :: debug build first so that release exes for pyrcc etc are installed over the debug ones
 :: Copy private PyQt5.sip from release to debug as sip won't have done this
-copy /Y %PYTHONHOME%\Lib\site-packages\PyQt4\sip.pyd  %PYTHONHOME%\msvc-site-packages\debug\PyQt4
+call try-mkdir.cmd %PYTHONHOME%\msvc-site-packages\debug\PyQt4
+copy /Y %PYTHONHOME%\Lib\site-packages\PyQt4\sip.pyd  %PYTHONHOME%\msvc-site-packages\debug\PyQt4\sip.pyd
 @set PYQT_ROOT_DEBUG=%BUILD_DIR%\debug
 call try-mkdir.cmd %PYQT_ROOT_DEBUG%
 cd /d %PYQT_ROOT_DEBUG%
