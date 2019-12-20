@@ -42,6 +42,11 @@ sed -i -e "s@<Python.h>@<wrappython.h>@" %%f
 for /r %%f in (*.c*) do (
 sed -i -e "s@<Python.h>@<wrappython.h>@" %%f
 )
+:: patch siputils so that debug builds don't require the debug python interpreter
+@if not exist siputils.py.bak (
+  :: assume patches not applied
+  call patch -p0 --input=%SIP_EXTRAS_DIR%\siputils-no-debug.patch --backup
+)
 
 call python configure.py --platform=%QMAKESPEC% --sip-module "%SIP_MODULE%"
 call nmake
