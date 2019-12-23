@@ -45,8 +45,6 @@ cd %JPEG_SRC_ROOT%
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @set HDF4_SRC_ROOT=%CMAKEHDF_SRC_ROOT%\hdf-4.2.13
 cd %HDF4_SRC_ROOT%
-if not exist config\cmake_ext_mod\HDFTests.c.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\HDFTests.c.patch --backup
-if not exist config\cmake_ext_mod\ConfigureChecks.cmake.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\ConfigureChecks.cmake.patch --backup
 @call cmake-configure.cmd %HDF4_SRC_ROOT%\ "-C%NEXUS_EXTRAS_DIR%\hdf4.cmake" "-DCMAKE_INSTALL_PREFIX=%LOCAL_INSTALL_PREFIX%" ^
  "-DCMAKE_PREFIX_PATH=%INSTALL_PREFIX:\\=/%;%LOCAL_INSTALL_UNIX%" ^
  "-DJPEG_DIR:PATH=%LOCAL_INSTALL_UNIX/cmake/JPEG"
@@ -56,17 +54,25 @@ if not exist config\cmake_ext_mod\ConfigureChecks.cmake.orig patch -p0 --input=%
 :: Nexus
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @echo Building NeXus
-@set NXS_PKG_URL="https://github.com/nexusformat/code/archive/v4.4.3.zip"
-@set NXS_PKG=4.4.3.zip
-@set NXS_SRC_ROOT=%BUILD_DIR%\code-4.4.3
+@set NXS_PKG_URL="https://github.com/nexusformat/code/archive/master.zip"
+@set NXS_PKG=code-master.zip
+@set NXS_SRC_ROOT=%BUILD_DIR%\code-master
 if not exist %NXS_SRC_ROOT% call download-and-extract.cmd %BUILD_DIR%\%NXS_PKG% %NXS_PKG_URL%
 
 cd %NXS_SRC_ROOT%
-if not exist src/CMakeLists.txt.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\CMakeListsC.txt.patch --backup
-if not exist src/NeXus.def.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\NeXus.def.patch --backup
-if not exist bindings/cpp/NeXusFile.cpp.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\NeXusFile.cpp.patch --backup
-if not exist bindings/cpp/CMakeLists.txt.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\CMakeListsCPP.txt.patch --backup
+if not exist src\CMakeLists.txt.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\CMakeListsC.txt.patch --backup
+if not exist src\NeXus.def.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\NeXus.def.patch --backup
+if not exist bindings\cpp\NeXusFile.cpp.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\NeXusFile.cpp.patch --backup
+if not exist bindings\cpp\NeXusFile.hpp.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\fix-deprecation-warning-cpp.patch --backup
+if not exist bindings\cpp\CMakeLists.txt.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\CMakeListsCPP.txt.patch --backup
 if not exist cmake_include\FindHDF4.cmake.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\FindHDF4.cmake.patch --backup
+if not exist include\napi.h.in.orig patch -p0 --input=%NEXUS_EXTRAS_DIR%\fix-deprecation-warning.patch --backup
+
+:: Remove old installed libraries
+del /Q %INSTALL_PREFIX%\bin\*NeXus*
+del /Q %INSTALL_PREFIX%\lib\*NeXus*
+rmdir /S /Q %INSTALL_PREFIX%\include\nexus
+del /Q %INSTALL_PREFIX%\include\napi*
 
 :: HDF libraries. Scripts require an environment variable
 @set HDF4_ROOT=%LOCAL_INSTALL_UNIX%

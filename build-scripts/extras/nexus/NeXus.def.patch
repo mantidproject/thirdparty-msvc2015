@@ -1,10 +1,11 @@
---- src/NeXus.def.orig	Mon Aug 15 09:24:48 2016
-+++ src/NeXus.def	Mon Dec 03 08:57:26 2018
-@@ -1,6 +1,6 @@
+--- src/NeXus.def.orig	2019-09-26 16:36:43.000000000 +0100
++++ src/NeXus.def	2019-12-04 09:39:39.124503500 +0000
+@@ -1,6 +1,7 @@
 -LIBRARY NeXus.dll
 +LIBRARY libNeXus-0.dll
  EXPORTS
  NXIReportError
++NXReportError
  NXIprintlink
  NXMDisableErrorReporting
  NXMEnableErrorReporting
