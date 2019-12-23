@@ -41,10 +41,13 @@ IF %ERRORLEVEL% NEQ 0 (
 @call:write-python-launcher chardet-3.0.4
 @call:write-python-launcher flake8-3.7.9
 @call:write-python-launcher ipython-7.10.2
+@call:write-python-launcher jupyter_client-5.3.4
+@call:write-python-launcher jupyter_core-4.6.1
 @call:write-python-launcher numpy-1.17.4
 @call:write-python-launcher Pygments-2.5.2
 @call:write-python-launcher pip-19.2.3
 @call:write-python-launcher pyflakes-2.1.1
+@call:write-python-launcher qtconsole-4.6.0
 @call:write-python-launcher setuptools-41.2.0
 @call:write-python-launcher Sphinx-2.3.0
 

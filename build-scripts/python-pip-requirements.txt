@@ -9,6 +9,7 @@ psutil
 pycifrw
 pywin32
 pyyaml
+qtconsole
 qtpy
 requests
 scipy
