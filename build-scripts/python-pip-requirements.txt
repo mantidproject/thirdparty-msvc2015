@@ -2,8 +2,8 @@
 # our C++ dependencies. Notably missing h5py, PyQt4/PyQt5
 flake8
 ipython
+lxml
 matplotlib
-minixsv
 numpy
 psutil
 pycifrw
