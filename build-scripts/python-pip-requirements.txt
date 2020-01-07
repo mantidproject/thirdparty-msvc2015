@@ -15,5 +15,6 @@ requests
 scipy
 sphinx
 sphinx-bootstrap-theme
+toml
 xmlrunner
 yapf
