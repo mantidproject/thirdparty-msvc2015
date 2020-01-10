@@ -1,6 +1,6 @@
---- configure.py.orig	2017-08-23 12:51:48.626249200 +0100
-+++ configure.py	2017-08-23 12:51:58.250211500 +0100
-@@ -894,19 +894,6 @@
+--- configure.py.orig	2018-10-01 15:38:40.000000000 +0100
++++ configure.py	2019-12-19 13:32:24.076436500 +0000
+@@ -816,19 +816,6 @@
          configuration.  opts are the command line options.
          """
  
@@ -20,3 +20,12 @@
          self.debug = opts.debug
  
          # Get the target Python version.
+@@ -2751,7 +2738,7 @@
+ 
+     if metadata.qpy_lib:
+         # This is the easiest way to make sure it is set for handwritten code.
+-        if not target_config.py_debug:
++        if not (target_config.py_debug or target_config.link_full_dll):
+             pro_lines.append('DEFINES += Py_LIMITED_API=0x03040000')
+ 
+         pro_lines.append('INCLUDEPATH += %s' %

@@ -11,7 +11,7 @@
 @set INCLUDE=%INSTALL_PREFIX%\include;%INCLUDE%
 @set LIB=%INSTALL_PREFIX%\lib;%LIB%
 @set QT_ROOT=%INSTALL_PREFIX%\lib\qt4
-@set PYTHONHOME=%INSTALL_PREFIX%\lib\python2.7
+@set PYTHONHOME=%INSTALL_PREFIX%\lib\python3.8
 @set PATH_NO_QT=%INSTALL_PREFIX%\bin;%PYTHONHOME%;D:\Builds\jom;%PATH%
 @set PATH=%QT_ROOT%\bin;%PATH_NO_QT%
 
@@ -32,15 +32,23 @@ if exist %PYTHONHOME%\Lib\site-packages\PyQt4 (
 @cd %BUILD_DIR%
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: Build private sip module
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+@call %~dp0build-sip PyQt4.sip %BUILD_DIR% libonly
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Use two build directories as the build is inplace
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @set QMAKESPEC=%QT_ROOT%\mkspecs\win32-msvc2015
-@set SRC_PKG_URL="https://downloads.sourceforge.net/project/pyqt/PyQt4/PyQt-4.12.1/PyQt4_gpl_win-4.12.1.zip"
-@set SRC_PKG=PyQt4_gpl_win-4.12.1.zip
-@set EXTRACTED_SRC=PyQt4_gpl_win-4.12.1
+@set SRC_PKG_URL="https://downloads.sourceforge.net/project/pyqt/PyQt4/PyQt-4.12.3/PyQt4_gpl_win-4.12.3.zip"
+@set SRC_PKG=PyQt4_gpl_win-4.12.3.zip
+@set EXTRACTED_SRC=PyQt4_gpl_win-4.12.3
 call download-file.cmd %SRC_PKG% %SRC_PKG_URL%
 
 :: debug build first so that release exes for pyrcc etc are installed over the debug ones
+:: Copy private PyQt5.sip from release to debug as sip won't have done this
+call try-mkdir.cmd %PYTHONHOME%\msvc-site-packages\debug\PyQt4
+copy /Y %PYTHONHOME%\Lib\site-packages\PyQt4\sip.pyd  %PYTHONHOME%\msvc-site-packages\debug\PyQt4\sip.pyd
 @set PYQT_ROOT_DEBUG=%BUILD_DIR%\debug
 call try-mkdir.cmd %PYQT_ROOT_DEBUG%
 cd /d %PYQT_ROOT_DEBUG%
@@ -99,7 +107,7 @@ cd %3
 @echo [Paths] > %QT_CONF_FILE%
 @echo Prefix = %QT_ROOT:\=/% >> %QT_CONF_FILE%
 
-@if "%_buildtype%" == "debug" ( set DEBUG_ARGS= -u --destdir=%PYTHONHOME%\msvc-site-packages\debug )
+@if "%_buildtype%" == "debug" ( set DEBUG_ARGS=-u --destdir=%PYTHONHOME%\msvc-site-packages\debug )
 
 :: There is an issue compiling pylupdate. Moc hangs on translator.h in the makefile so we compile it first
 pushd pylupdate
@@ -107,10 +115,9 @@ del moc_translator.cpp 2> nul
 del moc_translator.obj 2> nul
 @call moc.exe -o moc_translator.cpp translator.h
 popd
-@echo Running configure.py --confirm-license --qsci-api --no-designer-plugin %DEBUG_ARGS%
-@call python configure.py --confirm-license --qsci-api --no-designer-plugin %DEBUG_ARGS%
+@echo Running configure.py --confirm-license --no-qsci-api --no-designer-plugin %DEBUG_ARGS%
+@call python configure.py --confirm-license --no-qsci-api --no-designer-plugin %DEBUG_ARGS%
 
-REM :: jom seems to have an issue with parallel builds
 @call nmake
 @call nmake install
 

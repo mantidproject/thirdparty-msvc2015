@@ -26,7 +26,7 @@
 @call:set-install-root %~dp0..\..
 
 :: This will be used by a lot of scripts
-@set PYTHON_INSTALL_PREFIX=%INSTALL_PREFIX%\lib\python2.7
+@set PYTHON_INSTALL_PREFIX=%INSTALL_PREFIX%\lib\python3.8
 goto:eof
 
 :set-install-root
