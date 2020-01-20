@@ -1,0 +1,21 @@
+--- Lib/site-packages/tornado/platform/asyncio.py.orig	2020-01-20 16:15:06.172388700 +0000
++++ Lib/site-packages/tornado/platform/asyncio.py	2020-01-20 16:15:43.383954700 +0000
+@@ -21,6 +21,7 @@ the same event loop.
+ 
+ import concurrent.futures
+ import functools
++import sys
+ 
+ from threading import get_ident
+ from tornado.gen import convert_yielded
+@@ -34,6 +35,10 @@ from typing import Any, TypeVar, Awaitab
+ if typing.TYPE_CHECKING:
+     from typing import Set, Dict, Tuple  # noqa: F401
+ 
++if sys.platform == 'win32':
++    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
++
++
+ _T = TypeVar("_T")
+ 
+ 
