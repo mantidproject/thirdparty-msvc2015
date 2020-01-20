@@ -100,7 +100,7 @@ cd %3
 @echo [Paths] > %QT_CONF_FILE%
 @echo Prefix = %QT_ROOT:\=/% >> %QT_CONF_FILE%
 
-set BUILD_ARGS=--verbose --confirm-license --link-full-dll --no-qsci-api --no-designer-plugin --disable=QtNfc --disable=QtQuick --disable=QtQml --disable=QtQuickWidgets
+set BUILD_ARGS=--verbose --confirm-license --link-full-dll --no-qsci-api --no-designer-plugin --disable=QtNfc --disable=QtQuick --disable=QtQml --disable=QtQuickWidgets --sipdir=%PYTHONHOME%\share\sip\PyQt5
 @if "%_buildtype%" == "debug" ( set DEBUG_ARGS=-u --destdir=%PYTHONHOME%\msvc-site-packages\debug )
 @echo Running configure.py %BUILD_ARGS% %DEBUG_ARGS%
 @echo %QT_ROOT%
