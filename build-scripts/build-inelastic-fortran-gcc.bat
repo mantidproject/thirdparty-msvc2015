@@ -10,7 +10,7 @@
 :: Setup environment. Do not use the common set up script as we use
 :: the intel fortran compiler plus MSVC 9
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-@set PATH=C:\Perl64\bin;C:\Program Files (x86)\CMake\bin;C:\Program Files (x86)\Git\bin;C:\Program Files\7-Zip;%~dp0\cmds;C:\mingw-w64\x86_64-8.1.0-win32-seh-rt_v6-rev0\mingw64\bin;%PATH%
+@set PATH=C:\Perl64\bin;C:\Program Files (x86)\CMake\bin;C:\Program Files (x86)\Git\bin;C:\Program Files\7-Zip;%~dp0\cmds;C:\MinGW64\bin;%PATH%
 
 :: Install root for dependencies (goes via a 'function' to make it absolute)
 @set PYTHON_EXE=%~dp0..\lib\python3.8\python.exe

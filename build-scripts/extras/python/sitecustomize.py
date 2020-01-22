@@ -25,6 +25,7 @@ def find_thirdparty():
     extra_paths = (
         py_exe_dir,  # required for C++ tests that embed Python to find Python DLL
         thirdparty_bin,
+        thirdparty_bin + "\\mingw",
         thirdparty_lib + "\\qt4\\bin",
         thirdparty_lib + "\\qt4\\lib",
         thirdparty_lib + "\\qt5\\bin",

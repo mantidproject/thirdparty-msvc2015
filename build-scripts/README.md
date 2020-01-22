@@ -30,7 +30,13 @@ set MSSdk=1
 Inelastic Fortran Modules
 -------------------------
 
-The Inelastic fortran modules can be built by the `build-inelastic-fortran.cmd` script. It requires that
-the Intel Visual Composer XE Fortran compiler along with the VC++ for Python is installed.
+These currently require gcc < 5 to build and run correctly as they use legacy Fortran options:
+
+* [tdm64-gcc-4.6.1.exe](https://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Installer/Previous/1.1006.0/tdm64-gcc-4.6.1.exe/download)
+* [gcc-4.6.1-tdm64-1-fortran.zip](https://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Old%20Releases/TDM-GCC%204.6%20series/4.6.1-tdm64-1/gcc-4.6.1-tdm64-1-fortran.zip/download)
+
+Install gcc then unzip gfortran into the same folder.
+
+The build script assumes they are installed C:\MinGW64.
 
 It is **not** included in the main buld script at this time.
