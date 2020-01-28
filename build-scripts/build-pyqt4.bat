@@ -116,7 +116,7 @@ del moc_translator.obj 2> nul
 @call moc.exe -o moc_translator.cpp translator.h
 popd
 @echo Running configure.py --confirm-license --no-qsci-api --no-designer-plugin %DEBUG_ARGS%
-@call python configure.py --confirm-license --no-qsci-api --no-designer-plugin %DEBUG_ARGS%
+@call python configure.py --confirm-license --no-qsci-api --no-designer-plugin --sipdir=%PYTHONHOME%\share\sip\PyQt4 %DEBUG_ARGS%
 
 @call nmake
 @call nmake install

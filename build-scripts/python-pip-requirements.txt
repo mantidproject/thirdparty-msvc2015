@@ -1,7 +1,7 @@
 # contains all requirements that do not need to build against
 # our C++ dependencies. Notably missing h5py, PyQt4/PyQt5
 flake8
-ipython
+ipython[notebook]
 lxml
 matplotlib
 numpy

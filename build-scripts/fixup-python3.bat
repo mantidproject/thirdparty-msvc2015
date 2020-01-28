@@ -23,9 +23,9 @@ if not exist %PYTHON_INSTALL_PREFIX% (
 if not exist %PYTHON_INSTALL_PREFIX%\Include\wrappython.h (
   copy /Y %PYTHON_EXTRAS_DIR%\wrappython.h %PYTHON_INSTALL_PREFIX%\Include
 )
-if not exist %PYTHON_INSTALL_PREFIX%\Lib\sitecustomize.py (
+if not exist %PYTHON_INSTALL_PREFIX%\Lib\site-packages\sitecustomize.py (
   :: sitecustomize to set PATH to thirdparty dependencies
-  copy /Y %PYTHON_EXTRAS_DIR%\sitecustomize.py %PYTHON_INSTALL_PREFIX%\Lib\sitecustomize.py
+  copy /Y %PYTHON_EXTRAS_DIR%\sitecustomize.py %PYTHON_INSTALL_PREFIX%\Lib\site-packages\sitecustomize.py
 )
 
 :: site-packages
@@ -41,8 +41,12 @@ IF %ERRORLEVEL% NEQ 0 (
 @call:write-python-launcher chardet-3.0.4
 @call:write-python-launcher flake8-3.7.9
 @call:write-python-launcher ipython-7.10.2
+@call:write-python-launcher jsonschema-3.2.0
 @call:write-python-launcher jupyter_client-5.3.4
 @call:write-python-launcher jupyter_core-4.6.1
+@call:write-python-launcher nbformat-5.0.3
+@call:write-python-launcher nbconvert-5.6.1
+@call:write-python-launcher notebook-6.0.2
 @call:write-python-launcher numpy-1.17.4
 @call:write-python-launcher Pygments-2.5.2
 @call:write-python-launcher pip-19.2.3
@@ -54,6 +58,11 @@ IF %ERRORLEVEL% NEQ 0 (
 :: delete some exes that are not required as others exist that cover them
 del /Q %PYTHON_INSTALL_PREFIX%\Scripts\pip3.8.exe
 del /Q %PYTHON_INSTALL_PREFIX%\Scripts\easy_install-3.8.exe
+
+:: apply patches
+if not exist %PYTHON_INSTALL_PREFIX%\Lib\site-packages\tornado\platform\asyncio.py.orig (
+    call patch -p0 --input=%PYTHON_EXTRAS_DIR%\win32-asyncio-selector.patch
+)
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Finalize
