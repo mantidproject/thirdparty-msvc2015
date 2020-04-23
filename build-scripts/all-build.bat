@@ -23,6 +23,7 @@ cd /D %~dp0
 @call build-boost.bat
 @call build-gsl.bat
 @call build-jsoncpp.bat
+@call build-lib3mf.bat
 @call build-muparser.bat
 @call build-nexus.bat
 @call build-oce.bat
