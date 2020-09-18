@@ -4,7 +4,7 @@ if("${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}" LESS 2.5)
    message(FATAL_ERROR "CMake >= 2.6.0 required")
 endif()
 cmake_policy(PUSH)
-cmake_policy(VERSION 2.6)
+cmake_policy(VERSION 2.6...3.17)
 #----------------------------------------------------------------
 # Generated CMake target import file.
 #----------------------------------------------------------------
@@ -64,7 +64,7 @@ add_library(hdf5::hdf5-shared SHARED IMPORTED)
 set_target_properties(hdf5::hdf5-shared PROPERTIES
   INTERFACE_COMPILE_DEFINITIONS "H5_BUILT_AS_DYNAMIC_LIB;\$<IF:\$<CONFIG:Debug>,DEBUG,NDEBUG>"
   INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include;${_IMPORT_PREFIX}/include"
-  INTERFACE_LINK_LIBRARIES "\$<\$<C_COMPILER_ID:MSVC>:>;\$<\$<CXX_COMPILER_ID:MSVC>:>;\$<\$<NOT:\$<PLATFORM_ID:Windows>>:>;\$<\$<BOOL:OFF>:Threads::Threads>"
+  INTERFACE_LINK_LIBRARIES "\$<\$<C_COMPILER_ID:MSVC>:>;\$<\$<CXX_COMPILER_ID:MSVC>:>;\$<\$<NOT:\$<PLATFORM_ID:Windows>>:>;\$<\$<BOOL:ON>:Threads::Threads>"
 )
 
 # Create imported target hdf5::hdf5_hl-static
