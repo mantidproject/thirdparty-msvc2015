@@ -4,9 +4,9 @@
 General Information:
 -------------------
                    HDF5 Version: 1.10.5
-                  Configured on: 2019-12-03
+                  Configured on: 2020-09-18
                   Configured by: Visual Studio 14 2015 Win64
-                    Host system: Windows-10.0.18362
+                    Host system: Windows-10.0.18363
               Uname information: Windows
                        Byte sex: little-endian
              Installation point: C:/Users/gigm/code/mantidproject/mantid/external/src/ThirdParty
@@ -27,7 +27,7 @@ Linking Options:
                      H5_LDFLAGS: 
                      AM_LDFLAGS: 
                 Extra libraries: 
-                       Archiver: 
+                       Archiver: C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/x86_amd64/lib.exe
                          Ranlib: 
 
 Languages:
@@ -68,7 +68,7 @@ Features:
 Parallel Filtered Dataset Writes: 
               Large Parallel I/O: 
               High-level library: ON
-                    Threadsafety: OFF
+                    Threadsafety: ON
              Default API mapping: v110
   With deprecated public symbols: ON
           I/O filters (external):  DEFLATE DECODE
