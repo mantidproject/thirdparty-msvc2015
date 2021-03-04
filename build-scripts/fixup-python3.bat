@@ -54,6 +54,10 @@ IF %ERRORLEVEL% NEQ 0 (
 @call:write-python-launcher qtconsole-4.6.0
 @call:write-python-launcher setuptools-41.2.0
 @call:write-python-launcher Sphinx-2.3.0
+@call:write-python-launcher identify-2.1.0
+@call:write-python-launcher pre_commit-2.10.1
+@call:write-python-launcher virtualenv-20.4.2
+@call:write-python-launcher nodeenv-1.5.0
 
 :: delete some exes that are not required as others exist that cover them
 del /Q %PYTHON_INSTALL_PREFIX%\Scripts\pip3.8.exe
