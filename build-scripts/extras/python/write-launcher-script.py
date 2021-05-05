@@ -141,7 +141,7 @@ def get_entry_points(entry_points_file):
             continue
         if line.startswith("["):
             script_section = False
-            if "console_scripts" or "gui_scripts" in line:
+            if "console_scripts" in line or "gui_scripts" in line:
                 script_section = True
             continue
         if not script_section:
