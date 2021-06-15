@@ -1,0 +1,11 @@
+--- python/src/scipp/runtime_config.py.old	Thu May 21 10:38:25 2020
+*** python/src/scipp/runtime_config.py	Thu May 21 10:48:42 2020
+***************
+*** 104,109 ****
+  
+      # Load user configuration
+      return config.config(
+-         ('yaml', config_filename, True),
+          ('dict', defaults),
+      )
+--- 104,108 ----
