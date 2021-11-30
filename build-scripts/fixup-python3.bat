@@ -58,6 +58,7 @@ IF %ERRORLEVEL% NEQ 0 (
 @call:write-python-launcher pre_commit-2.10.1
 @call:write-python-launcher virtualenv-20.4.2
 @call:write-python-launcher nodeenv-1.5.0
+@call:write-python-launcher euphonic-0.6.3
 
 :: delete some exes that are not required as others exist that cover them
 del /Q %PYTHON_INSTALL_PREFIX%\Scripts\pip3.8.exe
