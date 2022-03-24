@@ -31,6 +31,12 @@
 
 #ifdef _DEBUG
 # ifndef MANTID_DEBUG_PYTHON
+// Workaround for VS 2022 which doesn't like _DEBUG being messed with. Based on PyBind solution
+// https://github.com/pybind/pybind11/pull/3497
+#  include<yvals.h>
+#  if _MSVC_STL_VERSION >= 143
+#      include <crtdefs.h>
+#  endif
 #  undef _DEBUG // Don't let Python force the debug library just because we're debugging.
 #  define DEBUG_UNDEFINED_FROM_WRAP_PYTHON_H
 # endif
