@@ -31,6 +31,7 @@ cd /D %~dp0
 @call fetch-tbb.bat
 @call build-lz4.bat
 @call build-librdkafka.bat
+@call build-scipp.bat
 
 :: gui
 @call build-qt4.bat
